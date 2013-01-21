@@ -6,10 +6,14 @@ setlocal enabledelayedexpansion
 rem Set current dir to bat file location
 CD /D %~dp0
 
-for %%i in (src\app\CHAOS.Portal.Client\*.js) do (set files=!files!%%~i )
+for %%i in (src\app\CHAOS.Portal.Client\*.ts) do (set files=!files!%%~i )
 
-echo Merging and minifing CHAOS TypeScript SDK - %files% -
+echo Compiling
 
-tools\AjaxMin\AjaxMin.exe -clobber -rename:none %files% -out build\PortalClient.min.js
+tsc --declaration --out build\PortalClient.js %files%
+
+echo Minifing
+
+tools\AjaxMin\AjaxMin.exe -clobber -rename:none build\PortalClient.js -out build\PortalClient.min.js
 
 echo Done
