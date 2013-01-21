@@ -42,6 +42,11 @@ module CHAOS.Portal.Client
 			}, serviceCaller);
 		}
 
+		public static Clear(): void
+		{
+			this.SetCookie("", "", -2);
+		}
+
 		private static GetCookie(): { GUID: string; PasswordGUID: string; }
 		{
 			var cookie = document.cookie;
@@ -70,7 +75,7 @@ module CHAOS.Portal.Client
 			return result;
 		}
 
-		private static SetCookie(guid, passwordGUID, expireInDays):void
+		private static SetCookie(guid:string, passwordGUID:string, expireInDays:number):void
 		{
 			var expireDate = new Date();
 			expireDate.setDate(expireDate.getDate() + expireInDays);

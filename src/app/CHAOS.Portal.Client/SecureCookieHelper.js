@@ -41,6 +41,9 @@ var CHAOS;
                         }
                     }, serviceCaller);
                 }
+                SecureCookieHelper.Clear = function Clear() {
+                    this.SetCookie("", "", -2);
+                }
                 SecureCookieHelper.GetCookie = function GetCookie() {
                     var cookie = document.cookie;
                     if(cookie == undefined || cookie == null) {
