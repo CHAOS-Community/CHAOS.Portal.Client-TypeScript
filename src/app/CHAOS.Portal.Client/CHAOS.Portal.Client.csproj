@@ -79,7 +79,7 @@
     <TypeScriptSourceMap> --sourcemap</TypeScriptSourceMap>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)\tools\AjaxMin\AjaxMin.exe -CLOBBER:TRUE $(ProjectDir)Data.js $(ProjectDir)PortalClient.js $(ProjectDir)PortalExtensions.js $(ProjectDir)MCMExtensions.js -out $(SolutionDir)\build\PortalClient.min.js</PostBuildEvent>
+    <PostBuildEvent>$(SolutionDir)build.bat</PostBuildEvent>
   </PropertyGroup>
   <Target Name="BeforeBuild">
     <Message Text="Compiling TypeScript files" />
