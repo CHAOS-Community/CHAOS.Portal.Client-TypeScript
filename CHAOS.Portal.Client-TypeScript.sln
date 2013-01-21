@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHAOS.Portal.Client", "src\app\CHAOS.Portal.Client\CHAOS.Portal.Client.csproj", "{86770305-9CA5-4BA7-83DD-F8DF67EF3ED7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHAOS.Portal.Client.TypeScriptExamples", "src\examples\CHAOS.Portal.Client.TypeScriptExamples\CHAOS.Portal.Client.TypeScriptExamples.csproj", "{FB6C0E7B-6A33-4178-943D-C170F1BF7375}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHAOS.Portal.Client.JavaScriptExamples", "src\examples\CHAOS.Portal.Client.JavaScriptExamples\CHAOS.Portal.Client.JavaScriptExamples.csproj", "{678E3E8A-F099-45B7-B035-676D0589E335}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86770305-9CA5-4BA7-83DD-F8DF67EF3ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86770305-9CA5-4BA7-83DD-F8DF67EF3ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86770305-9CA5-4BA7-83DD-F8DF67EF3ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86770305-9CA5-4BA7-83DD-F8DF67EF3ED7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB6C0E7B-6A33-4178-943D-C170F1BF7375}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB6C0E7B-6A33-4178-943D-C170F1BF7375}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB6C0E7B-6A33-4178-943D-C170F1BF7375}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB6C0E7B-6A33-4178-943D-C170F1BF7375}.Release|Any CPU.Build.0 = Release|Any CPU
+		{678E3E8A-F099-45B7-B035-676D0589E335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{678E3E8A-F099-45B7-B035-676D0589E335}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{678E3E8A-F099-45B7-B035-676D0589E335}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{678E3E8A-F099-45B7-B035-676D0589E335}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
