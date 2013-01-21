@@ -1,9 +1,11 @@
-var client = CHAOS.Portal.Client.Initialize("http://api.test.chaos-systems.com/");
+var client = CHAOS.Portal.Client.Initialize("");
+throw "Insert api path";
 client.SessionAcquired().Add(function (session) {
     document.getElementById('guid').textContent = session.GUID;
     CHAOS.Portal.Client.EmailPassword.Login(function (response) {
         document.getElementById('user').textContent = response.Error == null ? response.Result.Results[0].Email : response.Error.Message;
-    }, "jacob@geckon.com", "1234");
+    }, "email", "password");
+    throw "Insert email and password";
 });
 client.SessionAuthenticated().Add(function () {
     CHAOS.Portal.Client.MetadataSchema.Get(function (response) {

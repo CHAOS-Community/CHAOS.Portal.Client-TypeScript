@@ -60,7 +60,7 @@ var CHAOS;
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    serviceCaller.CallService(callback, "SecureCookie/Create", Client.HttpMethod.Post(), null, true);
+                    serviceCaller.CallService(callback, "SecureCookie/Create", Client.HttpMethod.Get(), null, true);
                 }
                 SecureCookie.Login = function Login(callback, guid, passwordGUID, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
@@ -75,7 +75,7 @@ var CHAOS;
                             callback(response);
                         }
                     };
-                    serviceCaller.CallService(outerCallback, "SecureCookie/Login", Client.HttpMethod.Post(), {
+                    serviceCaller.CallService(outerCallback, "SecureCookie/Login", Client.HttpMethod.Get(), {
                         guid: guid,
                         passwordGUID: passwordGUID
                     }, true);

@@ -36,7 +36,7 @@ var CHAOS;
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
                     Client.SecureCookie.Create(function (response) {
-                        if(response.Error != null) {
+                        if(response.Error == null) {
                             _this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, _this.COOKIE_LIFE_TIME_DAYS);
                         }
                     }, serviceCaller);

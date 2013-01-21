@@ -37,7 +37,7 @@ module CHAOS.Portal.Client
 		{
 			SecureCookie.Create(response =>
 			{
-				if(response.Error != null)
+				if(response.Error == null)
 					this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, this.COOKIE_LIFE_TIME_DAYS);
 			}, serviceCaller);
 		}

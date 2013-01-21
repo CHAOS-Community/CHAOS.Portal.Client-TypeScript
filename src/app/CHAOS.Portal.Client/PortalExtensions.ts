@@ -53,7 +53,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			serviceCaller.CallService(callback, "SecureCookie/Create", HttpMethod.Post(), null, true);
+			serviceCaller.CallService(callback, "SecureCookie/Create", HttpMethod.Get(), null, true);
 		}
 
     	public static Login(callback:(response: IPortalResponse) => void, guid:string, passwordGUID:string, serviceCaller: IServiceCaller = null)
@@ -70,7 +70,7 @@ module CHAOS.Portal.Client
 					callback(response);
 			}
 
-			serviceCaller.CallService(outerCallback, "SecureCookie/Login", HttpMethod.Post(), { guid: guid, passwordGUID: passwordGUID }, true);
+			serviceCaller.CallService(outerCallback, "SecureCookie/Login", HttpMethod.Get(), { guid: guid, passwordGUID: passwordGUID }, true);
     	}
     }
 
