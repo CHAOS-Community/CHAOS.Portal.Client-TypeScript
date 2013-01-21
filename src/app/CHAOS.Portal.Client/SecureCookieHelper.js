@@ -19,7 +19,6 @@ var CHAOS;
                         }
                         return;
                     }
-                    var test = login.wer;
                     Client.SecureCookie.Login(function (response) {
                         if(response.Error == null) {
                             _this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, _this.COOKIE_LIFE_TIME_DAYS);

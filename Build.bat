@@ -10,6 +10,6 @@ for %%i in (src\app\CHAOS.Portal.Client\*.js) do (set files=!files!%%~i )
 
 echo Merging and minifing CHAOS TypeScript SDK - %files% -
 
-tools\AjaxMin\AjaxMin.exe -CLOBBER:TRUE %files% -out build\PortalClient.min.js
+tools\AjaxMin\AjaxMin.exe -clobber -rename:none %files% -out build\PortalClient.min.js
 
 echo Done
