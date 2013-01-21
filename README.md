@@ -1,6 +1,6 @@
 #CHAOS.Portal.Client (TypeScript)
-This is a TypeScript (JavaScript) Portal API Client. It enables easy communication with a CHAOS Portal API (protocol version 6).
-
+This is a TypeScript (fully JavaScript compatible) Portal API Client. It enables easy communication with a CHAOS Portal API (protocol version 6).  
+  
 ##Requirements
 None
 
