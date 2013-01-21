@@ -39,6 +39,10 @@
     <Content Include="PortalExtensions.js">
       <DependentUpon>PortalExtensions.ts</DependentUpon>
     </Content>
+    <TypeScriptCompile Include="SecureCookieHelper.ts" />
+    <Content Include="SecureCookieHelper.js">
+      <DependentUpon>SecureCookieHelper.ts</DependentUpon>
+    </Content>
     <Content Include="web.config" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
