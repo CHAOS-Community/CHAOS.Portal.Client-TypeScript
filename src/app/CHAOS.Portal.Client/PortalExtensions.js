@@ -18,7 +18,7 @@ var CHAOS;
                             callback(response);
                         }
                     };
-                    serviceCaller.CallService(outerCallback, "Session/Create", Client.HttpMethod.Get(), null, false);
+                    serviceCaller.CallService(outerCallback, "Session/Create", Client.HttpMethod.Post(), null, false);
                 }
                 return Session;
             })();

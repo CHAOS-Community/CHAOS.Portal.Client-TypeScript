@@ -74,6 +74,17 @@ module CHAOS.Portal.Client
     	}
     }
 
+	export class View
+    {
+    	public static Get(callback:(response: IPortalResponse) => void, name:string, serviceCaller: IServiceCaller = null)
+    	{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			serviceCaller.CallService(callback, "View/Get", HttpMethod.Get(), { name: name }, true);
+    	}
+    }
+
 	export function Initialize(servicePath:string, clientGUID:string = null, autoCreateSession:bool = true):IPortalClient
     {
 		var client = new PortalClient(servicePath, clientGUID);

@@ -40,7 +40,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-			serviceCaller.CallService(callback, "Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), {query: query, sort: sort, accessPointGUID: accessPointGUID, pageIndex: pageIndex, pageSize: pageSize, includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations}, true);
+			serviceCaller.CallService(callback, "Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), {query: query, sort: sort, accessPointGUID: accessPointGUID, pageIndex: pageIndex, pageSize: pageSize, includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations}, accessPointGUID == null);
 		}
 
 		public static GetByFolderID(callback: (response: CHAOS.Portal.Client.IPortalResponse) => void, folderID:number, includeChildFolders:bool = true, sort: string = null, accessPointGUID: string = null, pageIndex: number = 0, pageSize: number = 10, includeMetadata: bool = false, includeFiles: bool = false, includeObjectRelations: bool = false, includeAccessPoints: bool = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null)

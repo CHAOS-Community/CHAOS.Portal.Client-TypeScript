@@ -38,7 +38,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.0.0";
+                    return "2.0.1";
                 }
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
@@ -213,7 +213,7 @@ var CHAOS;
                             callback(response);
                         }
                     };
-                    serviceCaller.CallService(outerCallback, "Session/Create", Client.HttpMethod.Get(), null, false);
+                    serviceCaller.CallService(outerCallback, "Session/Create", Client.HttpMethod.Post(), null, false);
                 }
                 return Session;
             })();
