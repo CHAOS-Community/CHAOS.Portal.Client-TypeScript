@@ -22,7 +22,7 @@ module CHAOS.Portal.Client
 				return;
 			}
 
-			SecureCookie.Login(response => {
+			SecureCookie.Login(login.GUID, login.PasswordGUID, serviceCaller).WithCallback(response => {
 				if (response.Error == null)
 				{
 					this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, this.COOKIE_LIFE_TIME_DAYS);
@@ -30,16 +30,16 @@ module CHAOS.Portal.Client
 				}
 				else
 					if(callback != null) callback(false);
-			}, login.GUID, login.PasswordGUID, serviceCaller);
+			});
 		}
 
 		public static Create(serviceCaller:CHAOS.Portal.Client.IServiceCaller = null):void
 		{
-			SecureCookie.Create(response =>
+			SecureCookie.Create(serviceCaller).WithCallback(response =>
 			{
 				if(response.Error == null)
 					this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, this.COOKIE_LIFE_TIME_DAYS);
-			}, serviceCaller);
+			});
 		}
 
 		public static Clear(): void

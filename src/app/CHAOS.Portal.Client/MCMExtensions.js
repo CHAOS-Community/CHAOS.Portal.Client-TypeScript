@@ -4,14 +4,13 @@ var CHAOS;
         (function (Client) {
             var MetadataSchema = (function () {
                 function MetadataSchema() { }
-                MetadataSchema.Get = function Get(callback, metadataSchemaGUID, serviceCaller) {
-                    if (typeof callback === "undefined") { callback = null; }
+                MetadataSchema.Get = function Get(metadataSchemaGUID, serviceCaller) {
                     if (typeof metadataSchemaGUID === "undefined") { metadataSchemaGUID = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
                     }
-                    serviceCaller.CallService(callback, "MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
+                    return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
                         metadataSchemaGUID: metadataSchemaGUID
                     }, true);
                 }
@@ -20,8 +19,7 @@ var CHAOS;
             Client.MetadataSchema = MetadataSchema;            
             var Folder = (function () {
                 function Folder() { }
-                Folder.Get = function Get(callback, id, folderTypeID, parentID, serviceCaller) {
-                    if (typeof callback === "undefined") { callback = null; }
+                Folder.Get = function Get(id, folderTypeID, parentID, serviceCaller) {
                     if (typeof id === "undefined") { id = null; }
                     if (typeof folderTypeID === "undefined") { folderTypeID = null; }
                     if (typeof parentID === "undefined") { parentID = null; }
@@ -29,7 +27,7 @@ var CHAOS;
                     if(serviceCaller == null) {
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
                     }
-                    serviceCaller.CallService(callback, "Folder/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
+                    return serviceCaller.CallService("Folder/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
                         id: id,
                         folderTypeID: folderTypeID,
                         parentID: parentID
@@ -40,19 +38,18 @@ var CHAOS;
             Client.Folder = Folder;            
             var Object = (function () {
                 function Object() { }
-                Object.Create = function Create(callback, guid, objectTypeID, folderID, serviceCaller) {
+                Object.Create = function Create(guid, objectTypeID, folderID, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
                     }
-                    serviceCaller.CallService(callback, "Object/Create", CHAOS.Portal.Client.HttpMethod.Post(), {
+                    return serviceCaller.CallService("Object/Create", CHAOS.Portal.Client.HttpMethod.Post(), {
                         guid: guid,
                         objectTypeID: objectTypeID,
                         folderID: folderID
                     }, true);
                 }
-                Object.Get = function Get(callback, query, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
-                    if (typeof callback === "undefined") { callback = null; }
+                Object.Get = function Get(query, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof query === "undefined") { query = null; }
                     if (typeof sort === "undefined") { sort = null; }
                     if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
@@ -66,7 +63,7 @@ var CHAOS;
                     if(serviceCaller == null) {
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
                     }
-                    serviceCaller.CallService(callback, "Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), {
+                    return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), {
                         query: query,
                         sort: sort,
                         accessPointGUID: accessPointGUID,
@@ -75,9 +72,9 @@ var CHAOS;
                         includeMetadata: includeMetadata,
                         includeFiles: includeFiles,
                         includeObjectRelations: includeObjectRelations
-                    }, true);
+                    }, accessPointGUID == null);
                 }
-                Object.GetByFolderID = function GetByFolderID(callback, folderID, includeChildFolders, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
+                Object.GetByFolderID = function GetByFolderID(folderID, includeChildFolders, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof includeChildFolders === "undefined") { includeChildFolders = true; }
                     if (typeof sort === "undefined") { sort = null; }
                     if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
@@ -88,23 +85,23 @@ var CHAOS;
                     if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    Object.Get(callback, (includeChildFolders ? "(FolderTree:" : "(FolderID:") + folderID + ")", sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
+                    return Object.Get((includeChildFolders ? "(FolderTree:" : "(FolderID:") + folderID + ")", sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
                 }
-                Object.GetByObjectGUID = function GetByObjectGUID(callback, objectGUID, accessPointGUID, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
+                Object.GetByObjectGUID = function GetByObjectGUID(objectGUID, accessPointGUID, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
                     if (typeof includeMetadata === "undefined") { includeMetadata = false; }
                     if (typeof includeFiles === "undefined") { includeFiles = false; }
                     if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    Object.Get(callback, "(GUID:" + objectGUID + ")", null, accessPointGUID, 0, 1, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
+                    return Object.Get("(GUID:" + objectGUID + ")", null, accessPointGUID, 0, 1, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
                 }
-                Object.SetPublishSettings = function SetPublishSettings(callback, objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
+                Object.SetPublishSettings = function SetPublishSettings(objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
                     }
-                    serviceCaller.CallService(callback, "Object/SetPublishSettings", CHAOS.Portal.Client.HttpMethod.Post(), {
+                    return serviceCaller.CallService("Object/SetPublishSettings", CHAOS.Portal.Client.HttpMethod.Post(), {
                         objectGUID: objectGUID,
                         accessPointGUID: accessPointGUID,
                         startDate: startDate,
@@ -116,12 +113,12 @@ var CHAOS;
             Client.Object = Object;            
             var Metadata = (function () {
                 function Metadata() { }
-                Metadata.Set = function Set(callback, objectGUID, metadataSchemaGUID, languageCode, revisionID, metadataXML, serviceCaller) {
+                Metadata.Set = function Set(objectGUID, metadataSchemaGUID, languageCode, revisionID, metadataXML, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
                     }
-                    serviceCaller.CallService(callback, "Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post(), {
+                    return serviceCaller.CallService("Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post(), {
                         objectGUID: objectGUID,
                         metadataSchemaGUID: metadataSchemaGUID,
                         languageCode: languageCode,

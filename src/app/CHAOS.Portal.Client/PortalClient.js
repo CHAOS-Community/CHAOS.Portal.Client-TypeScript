@@ -3,8 +3,8 @@ var CHAOS;
     (function (Portal) {
         (function (Client) {
             var PortalClient = (function () {
-                function PortalClient(servicePath, clientGUID) {
-                    if (typeof clientGUID === "undefined") { clientGUID = null; }
+                function PortalClient(servicePath, clientGuid) {
+                    if (typeof clientGuid === "undefined") { clientGuid = null; }
                     this._authenticationType = null;
                     if(typeof servicePath === "undefined") {
                         throw "Parameter servicePath must be set";
@@ -13,12 +13,12 @@ var CHAOS;
                         servicePath += "/";
                     }
                     this._servicePath = servicePath;
-                    this.ClientGUID = clientGUID;
+                    this.ClientGuid = clientGuid;
                     this._sessionAcquired = new Event(this);
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.0.1";
+                    return "2.1.1";
                 }
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
@@ -41,7 +41,7 @@ var CHAOS;
                 PortalClient.prototype.SessionAuthenticated = function () {
                     return this._sessionAuthenticated;
                 };
-                PortalClient.prototype.CallService = function (callback, path, httpMethod, parameters, requiresSession) {
+                PortalClient.prototype.CallService = function (path, httpMethod, parameters, requiresSession) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
                     if(parameters == null) {
@@ -52,9 +52,9 @@ var CHAOS;
                         if(!this.HasSession()) {
                             throw "Session not acquired";
                         }
-                        parameters["sessionGUID"] = this.GetCurrentSession().GUID;
+                        parameters["sessionGUID"] = this.GetCurrentSession().Guid;
                     }
-                    new ServiceCall().Call(callback, this.GetServicePath() + "latest/" + path, httpMethod, parameters);
+                    return new CallState().Call(this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path, httpMethod, parameters);
                 };
                 PortalClient.prototype.UpdateSession = function (session) {
                     this._currentSession = session;
@@ -67,6 +67,24 @@ var CHAOS;
                 return PortalClient;
             })();
             Client.PortalClient = PortalClient;            
+            var CallState = (function () {
+                function CallState() { }
+                CallState.prototype.Call = function (path, httpMethod, parameters) {
+                    if (typeof parameters === "undefined") { parameters = null; }
+                    var _this = this;
+                    this._completed = new Event(this);
+                    this._call = new ServiceCall();
+                    this._call.Call(function (response) {
+                        return _this._completed.Raise(response);
+                    }, path, httpMethod, parameters);
+                    return this;
+                };
+                CallState.prototype.WithCallback = function (callback) {
+                    this._completed.Add(callback);
+                    return this;
+                };
+                return CallState;
+            })();            
             var ServiceCall = (function () {
                 function ServiceCall() { }
                 ServiceCall.prototype.Call = function (callback, path, httpMethod, parameters) {

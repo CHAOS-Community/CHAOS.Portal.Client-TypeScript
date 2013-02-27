@@ -4,21 +4,16 @@ var CHAOS;
         (function (Client) {
             var Session = (function () {
                 function Session() { }
-                Session.Create = function Create(callback, serviceCaller) {
-                    if (typeof callback === "undefined") { callback = null; }
+                Session.Create = function Create(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    var outerCallback = function (response) {
+                    return serviceCaller.CallService("Session/Create", Client.HttpMethod.Get(), null, false).WithCallback(function (response) {
                         if(response.Error == null) {
                             serviceCaller.UpdateSession(response.Result.Results[0]);
                         }
-                        if(callback != null) {
-                            callback(response);
-                        }
-                    };
-                    serviceCaller.CallService(outerCallback, "Session/Create", Client.HttpMethod.Post(), null, false);
+                    });
                 }
                 return Session;
             })();
@@ -33,18 +28,14 @@ var CHAOS;
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    var outerCallback = function (response) {
+                    return serviceCaller.CallService("EmailPassword/Login", Client.HttpMethod.Get(), {
+                        email: email,
+                        password: password
+                    }, true).WithCallback(function (response) {
                         if(response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(EmailPassword.AuthenticationType());
                         }
-                        if(callback != null) {
-                            callback(response);
-                        }
-                    };
-                    serviceCaller.CallService(outerCallback, "EmailPassword/Login", Client.HttpMethod.Get(), {
-                        email: email,
-                        password: password
-                    }, true);
+                    });
                 }
                 return EmailPassword;
             })();
@@ -54,41 +45,65 @@ var CHAOS;
                 SecureCookie.AuthenticationType = function AuthenticationType() {
                     return "SecureCookie";
                 }
-                SecureCookie.Create = function Create(callback, serviceCaller) {
-                    if (typeof callback === "undefined") { callback = null; }
+                SecureCookie.Create = function Create(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    serviceCaller.CallService(callback, "SecureCookie/Create", Client.HttpMethod.Get(), null, true);
+                    return serviceCaller.CallService("SecureCookie/Create", Client.HttpMethod.Get(), null, true);
                 }
-                SecureCookie.Login = function Login(callback, guid, passwordGUID, serviceCaller) {
+                SecureCookie.Login = function Login(guid, passwordGUID, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    var outerCallback = function (response) {
+                    return serviceCaller.CallService("SecureCookie/Login", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        passwordGUID: passwordGUID
+                    }, true).WithCallback(function (response) {
                         if(response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(SecureCookie.AuthenticationType());
                         }
-                        if(callback != null) {
-                            callback(response);
-                        }
-                    };
-                    serviceCaller.CallService(outerCallback, "SecureCookie/Login", Client.HttpMethod.Get(), {
-                        guid: guid,
-                        passwordGUID: passwordGUID
-                    }, true);
+                    });
                 }
                 return SecureCookie;
             })();
             Client.SecureCookie = SecureCookie;            
+            var View = (function () {
+                function View() { }
+                View.Get = function Get(view, query, sort, pageIndex, pageSize, serviceCaller) {
+                    if (typeof query === "undefined") { query = null; }
+                    if (typeof sort === "undefined") { sort = null; }
+                    if (typeof pageIndex === "undefined") { pageIndex = 0; }
+                    if (typeof pageSize === "undefined") { pageSize = 10; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("View/Get", Client.HttpMethod.Get(), {
+                        view: view,
+                        query: query,
+                        sort: sort,
+                        pageIndex: pageIndex,
+                        pageSize: pageSize
+                    }, true);
+                }
+                View.List = function List(serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("View/List", Client.HttpMethod.Get(), null, true);
+                }
+                return View;
+            })();
+            Client.View = View;            
             function Initialize(servicePath, clientGUID, autoCreateSession) {
                 if (typeof clientGUID === "undefined") { clientGUID = null; }
                 if (typeof autoCreateSession === "undefined") { autoCreateSession = true; }
                 var client = new Client.PortalClient(servicePath, clientGUID);
                 if(autoCreateSession) {
-                    Session.Create(null, client);
+                    Session.Create(client);
                 }
                 ServiceCallerService.SetDefaultCaller(client);
                 return client;

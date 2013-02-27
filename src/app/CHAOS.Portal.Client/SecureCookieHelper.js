@@ -19,7 +19,7 @@ var CHAOS;
                         }
                         return;
                     }
-                    Client.SecureCookie.Login(function (response) {
+                    Client.SecureCookie.Login(login.GUID, login.PasswordGUID, serviceCaller).WithCallback(function (response) {
                         if(response.Error == null) {
                             _this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, _this.COOKIE_LIFE_TIME_DAYS);
                             if(callback != null) {
@@ -30,16 +30,16 @@ var CHAOS;
                                 callback(false);
                             }
                         }
-                    }, login.GUID, login.PasswordGUID, serviceCaller);
+                    });
                 }
                 SecureCookieHelper.Create = function Create(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
-                    Client.SecureCookie.Create(function (response) {
+                    Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if(response.Error == null) {
                             _this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, _this.COOKIE_LIFE_TIME_DAYS);
                         }
-                    }, serviceCaller);
+                    });
                 }
                 SecureCookieHelper.Clear = function Clear() {
                     this.SetCookie("", "", -2);

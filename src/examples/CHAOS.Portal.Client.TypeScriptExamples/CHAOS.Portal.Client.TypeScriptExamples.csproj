@@ -59,11 +59,11 @@
       <Link>PortalClient.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="app.js">
-      <DependentUpon>app.ts</DependentUpon>
+    <Content Include="Basic.html" />
+    <TypeScriptCompile Include="Basic.ts" />
+    <Content Include="Basic.js">
+      <DependentUpon>Basic.ts</DependentUpon>
     </Content>
-    <Content Include="default.htm" />
-    <TypeScriptCompile Include="app.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="web.config" />

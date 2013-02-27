@@ -8,13 +8,13 @@ module CHAOS.Portal.Client
 		IsAuthenticated(): bool;
 		SessionAcquired(): IEvent;
 		SessionAuthenticated(): IEvent;
-		ClientGUID: string;
+		ClientGuid: string;
 	}
 
 	export interface ISession
 	{
-		GUID: string;
-		UserGUID: string;
+		Guid: string;
+		UserGuid: string;
 		DateCreated: number;
 		DateModified: number;
 		FullName: string;
@@ -22,9 +22,14 @@ module CHAOS.Portal.Client
 
 	export interface IServiceCaller
 	{
-		CallService(callback: (response: IPortalResponse) => void , path: string, httpMethod: string, parameters: { [index:string]:any; }, requiresSession: bool): void;
+		CallService(path: string, httpMethod: string, parameters: { [index:string]:any; }, requiresSession: bool):ICallState;
 		UpdateSession(session: ISession): void;
 		SetSessionAuthenticated(type: string): void;
+	}
+
+	export interface ICallState
+	{
+		WithCallback(callback:(response: IPortalResponse) => void):ICallState;
 	}
 
 	export interface IPortalResponse

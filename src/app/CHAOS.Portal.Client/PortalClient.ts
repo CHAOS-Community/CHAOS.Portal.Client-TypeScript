@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.1.0"; }
+		public static GetClientVersion():string { return "2.2.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -19,9 +19,9 @@ module CHAOS.Portal.Client
 		public IsAuthenticated(): bool { return this._authenticationType != null; }
 		public SessionAcquired():IEvent { return this._sessionAcquired; }
 		public SessionAuthenticated():IEvent { return this._sessionAuthenticated; }
-		public ClientGUID:string;
+		public ClientGuid:string;
 
-		constructor(servicePath:string, clientGUID: string = null)
+		constructor(servicePath:string, clientGuid:string = null)
 		{
 			if(typeof servicePath === "undefined")
 				throw "Parameter servicePath must be set";
@@ -30,13 +30,13 @@ module CHAOS.Portal.Client
 				servicePath += "/";
 
 			this._servicePath = servicePath;
-			this.ClientGUID = clientGUID;
+			this.ClientGuid = clientGuid;
 
 			this._sessionAcquired = new Event(this);
 			this._sessionAuthenticated = new Event(this);
 		}
 
-		public CallService(callback:(response: IPortalResponse) => void, path:string, httpMethod:string, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):void
+		public CallService(path:string, httpMethod:string, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState
 		{
 			if (parameters == null)
 				parameters = {};
@@ -46,11 +46,10 @@ module CHAOS.Portal.Client
 				if(!this.HasSession())
 					throw "Session not acquired";
 
-				parameters["sessionGUID"] = this.GetCurrentSession().GUID;
+				parameters["sessionGUID"] = this.GetCurrentSession().Guid;
 			}
 
-			new ServiceCall().Call(callback, this.GetServicePath() + "latest/" + path, httpMethod, parameters);
-			//new ServiceCall(callback, this.GetServicePath() + "/" + PortalClient.GetProtocolVersion() + "/" + path, httpMethod, parameters);
+			return new CallState().Call(this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path, httpMethod, parameters);
 		}
 
 		public UpdateSession(session: ISession): void
@@ -66,6 +65,29 @@ module CHAOS.Portal.Client
 
 			this._sessionAuthenticated.Raise(type);
 		}
+    }
+
+	class CallState implements ICallState
+    {
+		private _completed:Event;
+    	private _call:ServiceCall;
+
+    	public Call(path: string, httpMethod: string, parameters: { [index: string]: any; } = null): ICallState
+    	{
+    		this._completed = new Event(this);
+			this._call = new ServiceCall();
+
+			this._call.Call((response: IPortalResponse) => this._completed.Raise(response), path, httpMethod, parameters);
+
+    		return this;
+    	}
+
+    	public WithCallback(callback: (response: IPortalResponse) => void ): ICallState
+    	{
+    		this._completed.Add(callback);
+			
+			return this;
+    	}
     }
 
     class ServiceCall

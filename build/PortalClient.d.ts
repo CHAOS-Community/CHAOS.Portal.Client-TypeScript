@@ -6,21 +6,24 @@ module CHAOS.Portal.Client {
         IsAuthenticated(): bool;
         SessionAcquired(): IEvent;
         SessionAuthenticated(): IEvent;
-        ClientGUID: string;
+        ClientGuid: string;
     }
     interface ISession {
-        GUID: string;
-        UserGUID: string;
+        Guid: string;
+        UserGuid: string;
         DateCreated: number;
         DateModified: number;
         FullName: string;
     }
     interface IServiceCaller {
-        CallService(callback: (response: IPortalResponse) => void, path: string, httpMethod: string, parameters: {
+        CallService(path: string, httpMethod: string, parameters: {
             [index: string]: any;
-        }, requiresSession: bool): void;
+        }, requiresSession: bool): ICallState;
         UpdateSession(session: ISession): void;
         SetSessionAuthenticated(type: string): void;
+    }
+    interface ICallState {
+        WithCallback(callback: (response: IPortalResponse) => void): ICallState;
     }
     interface IPortalResponse {
         Header: IHeader;
@@ -65,27 +68,31 @@ module CHAOS.Portal.Client {
         public IsAuthenticated(): bool;
         public SessionAcquired(): IEvent;
         public SessionAuthenticated(): IEvent;
-        public ClientGUID: string;
-        constructor (servicePath: string, clientGUID?: string);
-        public CallService(callback: (response: IPortalResponse) => void, path: string, httpMethod: string, parameters?: {
+        public ClientGuid: string;
+        constructor (servicePath: string, clientGuid?: string);
+        public CallService(path: string, httpMethod: string, parameters?: {
             [index: string]: any;
-        }, requiresSession?: bool): void;
+        }, requiresSession?: bool): ICallState;
         public UpdateSession(session: ISession): void;
         public SetSessionAuthenticated(type: string): void;
     }
 }
 module CHAOS.Portal.Client {
     class Session {
-        static Create(callback?: (response: IPortalResponse) => void, serviceCaller?: IServiceCaller): void;
+        static Create(serviceCaller?: IServiceCaller): ICallState;
     }
     class EmailPassword {
         static AuthenticationType(): string;
-        static Login(callback: (response: IPortalResponse) => void, email: string, password: string, serviceCaller?: IServiceCaller): void;
+        static Login(callback: (response: IPortalResponse) => void, email: string, password: string, serviceCaller?: IServiceCaller): ICallState;
     }
     class SecureCookie {
         static AuthenticationType(): string;
-        static Create(callback?: (response: IPortalResponse) => void, serviceCaller?: IServiceCaller): void;
-        static Login(callback: (response: IPortalResponse) => void, guid: string, passwordGUID: string, serviceCaller?: IServiceCaller): void;
+        static Create(serviceCaller?: IServiceCaller): ICallState;
+        static Login(guid: string, passwordGUID: string, serviceCaller?: IServiceCaller): ICallState;
+    }
+    class View {
+        static Get(view: string, query?: string, sort?: string, pageIndex?: number, pageSize?: number, serviceCaller?: IServiceCaller): ICallState;
+        static List(serviceCaller?: IServiceCaller): ICallState;
     }
     function Initialize(servicePath: string, clientGUID?: string, autoCreateSession?: bool): IPortalClient;
     class ServiceCallerService {
@@ -96,20 +103,20 @@ module CHAOS.Portal.Client {
 }
 module CHAOS.Portal.Client {
     class MetadataSchema {
-        static Get(callback?: (response: IPortalResponse) => void, metadataSchemaGUID?: string, serviceCaller?: IServiceCaller): void;
+        static Get(metadataSchemaGUID?: string, serviceCaller?: IServiceCaller): ICallState;
     }
     class Folder {
-        static Get(callback?: (response: IPortalResponse) => void, id?: number, folderTypeID?: number, parentID?: number, serviceCaller?: IServiceCaller): void;
+        static Get(id?: number, folderTypeID?: number, parentID?: number, serviceCaller?: IServiceCaller): ICallState;
     }
     class Object {
-        static Create(callback: (response: IPortalResponse) => void, guid: string, objectTypeID: number, folderID: number, serviceCaller?: IServiceCaller): void;
-        static Get(callback?: (response: IPortalResponse) => void, query?: string, sort?: string, accessPointGUID?: string, pageIndex?: number, pageSize?: number, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): void;
-        static GetByFolderID(callback: (response: IPortalResponse) => void, folderID: number, includeChildFolders?: bool, sort?: string, accessPointGUID?: string, pageIndex?: number, pageSize?: number, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): void;
-        static GetByObjectGUID(callback: (response: IPortalResponse) => void, objectGUID: string, accessPointGUID?: string, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): void;
-        static SetPublishSettings(callback: (response: IPortalResponse) => void, objectGUID: string, accessPointGUID: string, startDate: Date, endDate: Date, serviceCaller?: IServiceCaller): void;
+        static Create(guid: string, objectTypeID: number, folderID: number, serviceCaller?: IServiceCaller): ICallState;
+        static Get(query?: string, sort?: string, accessPointGUID?: string, pageIndex?: number, pageSize?: number, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): ICallState;
+        static GetByFolderID(folderID: number, includeChildFolders?: bool, sort?: string, accessPointGUID?: string, pageIndex?: number, pageSize?: number, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): ICallState;
+        static GetByObjectGUID(objectGUID: string, accessPointGUID?: string, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): ICallState;
+        static SetPublishSettings(objectGUID: string, accessPointGUID: string, startDate: Date, endDate: Date, serviceCaller?: IServiceCaller): ICallState;
     }
     class Metadata {
-        static Set(callback: (response: IPortalResponse) => void, objectGUID: string, metadataSchemaGUID: string, languageCode: string, revisionID: number, metadataXML: string, serviceCaller?: IServiceCaller): void;
+        static Set(objectGUID: string, metadataSchemaGUID: string, languageCode: string, revisionID: number, metadataXML: string, serviceCaller?: IServiceCaller): ICallState;
     }
 }
 module CHAOS.Portal.Client {

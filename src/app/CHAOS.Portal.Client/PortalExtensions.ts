@@ -4,21 +4,16 @@ module CHAOS.Portal.Client
 {
 	export class Session
     {
-    	public static Create(callback:(response: IPortalResponse) => void = null, serviceCaller: IServiceCaller = null)
+    	public static Create(serviceCaller: IServiceCaller = null):ICallState
     	{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			var outerCallback = (response: IPortalResponse) =>
+			return serviceCaller.CallService("Session/Create", HttpMethod.Get(), null, false).WithCallback((response: IPortalResponse) =>
 			{
 				if(response.Error == null)
 					serviceCaller.UpdateSession(response.Result.Results[0]);
-
-				if(callback != null)
-					callback(response);
-			}
-
-			serviceCaller.CallService(outerCallback, "Session/Create", HttpMethod.Get(), null, false);
+			});
     	}
     }
 
@@ -26,21 +21,16 @@ module CHAOS.Portal.Client
     {
 		public static AuthenticationType():string { return "EmailPassword"; }
 
-    	public static Login(callback:(response: IPortalResponse) => void, email:string, password:string, serviceCaller: IServiceCaller = null)
+    	public static Login(callback:(response: IPortalResponse) => void, email:string, password:string, serviceCaller: IServiceCaller = null):ICallState
     	{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			var outerCallback = (response: IPortalResponse) =>
+			return serviceCaller.CallService("EmailPassword/Login", HttpMethod.Get(), { email: email, password: password }, true).WithCallback((response: IPortalResponse) =>
 			{
 				if(response.Error == null)
 					serviceCaller.SetSessionAuthenticated(AuthenticationType());
-
-				if(callback != null)
-					callback(response);
-			}
-
-			serviceCaller.CallService(outerCallback, "EmailPassword/Login", HttpMethod.Get(), { email: email, password: password }, true);
+			});
     	}
     }
 
@@ -48,40 +38,43 @@ module CHAOS.Portal.Client
     {
 		public static AuthenticationType():string { return "SecureCookie"; }
 
-		public static Create(callback: (response: IPortalResponse) => void = null, serviceCaller: IServiceCaller = null)
+		public static Create(serviceCaller: IServiceCaller = null):ICallState
 		{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			serviceCaller.CallService(callback, "SecureCookie/Create", HttpMethod.Get(), null, true);
+			return serviceCaller.CallService("SecureCookie/Create", HttpMethod.Get(), null, true);
 		}
 
-    	public static Login(callback:(response: IPortalResponse) => void, guid:string, passwordGUID:string, serviceCaller: IServiceCaller = null)
+    	public static Login(guid:string, passwordGUID:string, serviceCaller: IServiceCaller = null):ICallState
     	{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			var outerCallback = (response: IPortalResponse) =>
+			return serviceCaller.CallService("SecureCookie/Login", HttpMethod.Get(), { guid: guid, passwordGUID: passwordGUID }, true).WithCallback((response: IPortalResponse) =>
 			{
 				if(response.Error == null)
 					serviceCaller.SetSessionAuthenticated(AuthenticationType());
-
-				if(callback != null)
-					callback(response);
-			}
-
-			serviceCaller.CallService(outerCallback, "SecureCookie/Login", HttpMethod.Get(), { guid: guid, passwordGUID: passwordGUID }, true);
+			});
     	}
     }
 
 	export class View
     {
-    	public static Get(callback:(response: IPortalResponse) => void, name:string, serviceCaller: IServiceCaller = null)
+    	public static Get(view:string, query:string = null, sort:string = null, pageIndex:number = 0, pageSize:number = 10, serviceCaller: IServiceCaller = null):ICallState
     	{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			serviceCaller.CallService(callback, "View/Get", HttpMethod.Get(), { name: name }, true);
+			return serviceCaller.CallService("View/Get", HttpMethod.Get(), {view: view, query: query, sort: sort, pageIndex: pageIndex, pageSize: pageSize}, true);
+    	}
+
+		public static List(serviceCaller: IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("View/List", HttpMethod.Get(), null, true);
     	}
     }
 
@@ -90,7 +83,7 @@ module CHAOS.Portal.Client
 		var client = new PortalClient(servicePath, clientGUID);
 
 		if(autoCreateSession)
-			Session.Create(null, client);
+			Session.Create(client);
 
     	ServiceCallerService.SetDefaultCaller(client);
 
