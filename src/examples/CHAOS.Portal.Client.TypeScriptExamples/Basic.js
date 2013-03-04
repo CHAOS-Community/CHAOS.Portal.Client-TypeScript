@@ -1,4 +1,4 @@
-var client = CHAOS.Portal.Client.Initialize("http://dev.api.chaos-systems.com");
+var client = CHAOS.Portal.Client.Initialize("");
 client.SessionAcquired().Add(function (session) {
     document.getElementById('guid').textContent = session.Guid;
     CHAOS.Portal.Client.MetadataSchema.Get().WithCallback(function (response) {

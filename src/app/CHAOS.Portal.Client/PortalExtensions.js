@@ -23,7 +23,7 @@ var CHAOS;
                 EmailPassword.AuthenticationType = function AuthenticationType() {
                     return "EmailPassword";
                 }
-                EmailPassword.Login = function Login(callback, email, password, serviceCaller) {
+                EmailPassword.Login = function Login(email, password, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();

@@ -83,7 +83,7 @@ module CHAOS.Portal.Client {
     }
     class EmailPassword {
         static AuthenticationType(): string;
-        static Login(callback: (response: IPortalResponse) => void, email: string, password: string, serviceCaller?: IServiceCaller): ICallState;
+        static Login(email: string, password: string, serviceCaller?: IServiceCaller): ICallState;
     }
     class SecureCookie {
         static AuthenticationType(): string;

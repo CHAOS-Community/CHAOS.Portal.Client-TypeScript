@@ -21,7 +21,7 @@ module CHAOS.Portal.Client
     {
 		public static AuthenticationType():string { return "EmailPassword"; }
 
-    	public static Login(callback:(response: IPortalResponse) => void, email:string, password:string, serviceCaller: IServiceCaller = null):ICallState
+    	public static Login(email:string, password:string, serviceCaller: IServiceCaller = null):ICallState
     	{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
