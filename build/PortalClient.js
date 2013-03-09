@@ -99,8 +99,15 @@ var CHAOS;
                     }, path, httpMethod, parameters);
                     return this;
                 };
-                CallState.prototype.WithCallback = function (callback) {
-                    this._completed.Add(callback);
+                CallState.prototype.WithCallback = function (callback, context) {
+                    if (typeof context === "undefined") { context = null; }
+                    if(context == null) {
+                        this._completed.Add(callback);
+                    } else {
+                        this._completed.Add(function (response) {
+                            return callback.call(context, response);
+                        });
+                    }
                     return this;
                 };
                 return CallState;
