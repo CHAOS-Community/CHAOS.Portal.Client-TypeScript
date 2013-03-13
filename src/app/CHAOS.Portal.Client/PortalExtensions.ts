@@ -46,12 +46,12 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("SecureCookie/Create", HttpMethod.Get(), null, true);
 		}
 
-    	public static Login(guid:string, passwordGUID:string, serviceCaller: IServiceCaller = null):ICallState
+    	public static Login(guid:string, passwordGuid:string, serviceCaller: IServiceCaller = null):ICallState
     	{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService("SecureCookie/Login", HttpMethod.Get(), { guid: guid, passwordGUID: passwordGUID }, true).WithCallback((response: IPortalResponse) =>
+			return serviceCaller.CallService("SecureCookie/Login", HttpMethod.Get(), { guid: guid, passwordGuid: passwordGuid }, true).WithCallback((response: IPortalResponse) =>
 			{
 				if(response.Error == null)
 					serviceCaller.SetSessionAuthenticated(AuthenticationType());

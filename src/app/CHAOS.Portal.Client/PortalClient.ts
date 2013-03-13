@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.2.2"; }
+		public static GetClientVersion():string { return "2.2.3"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;

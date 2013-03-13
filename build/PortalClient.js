@@ -38,7 +38,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.2.1";
+                    return "2.2.3";
                 }
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
@@ -272,14 +272,14 @@ var CHAOS;
                     }
                     return serviceCaller.CallService("SecureCookie/Create", Client.HttpMethod.Get(), null, true);
                 }
-                SecureCookie.Login = function Login(guid, passwordGUID, serviceCaller) {
+                SecureCookie.Login = function Login(guid, passwordGuid, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
                     return serviceCaller.CallService("SecureCookie/Login", Client.HttpMethod.Get(), {
                         guid: guid,
-                        passwordGUID: passwordGUID
+                        passwordGuid: passwordGuid
                     }, true).WithCallback(function (response) {
                         if(response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(SecureCookie.AuthenticationType());
@@ -506,9 +506,9 @@ var CHAOS;
                         }
                         return;
                     }
-                    Client.SecureCookie.Login(login.GUID, login.PasswordGUID, serviceCaller).WithCallback(function (response) {
+                    Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
                         if(response.Error == null) {
-                            _this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, _this.COOKIE_LIFE_TIME_DAYS);
+                            _this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                             if(callback != null) {
                                 callback(true);
                             }
@@ -524,7 +524,7 @@ var CHAOS;
                     var _this = this;
                     Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if(response.Error == null) {
-                            _this.SetCookie(response.Result.Results[0].GUID, response.Result.Results[0].PasswordGUID, _this.COOKIE_LIFE_TIME_DAYS);
+                            _this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                         }
                     });
                 }
@@ -536,29 +536,29 @@ var CHAOS;
                     if(cookie == undefined || cookie == null) {
                         return null;
                     }
-                    var guidRegEx = /SecureCookieGUID\=(.+?)(?:;|$)/;
-                    var passwordRegex = /SecureCookieGUIDPassword\=(.+?)(?:;|$)/;
+                    var guidRegEx = /SecureCookieGuid\=(.+?)(?:;|$)/;
+                    var passwordRegex = /SecureCookiePasswordGuid\=(.+?)(?:;|$)/;
                     var result = {
-                        GUID: "",
-                        PasswordGUID: ""
+                        Guid: "",
+                        PasswordGuid: ""
                     };
                     var match = guidRegEx.exec(cookie);
                     if(match == null) {
                         return null;
                     }
-                    result.GUID = match[1];
+                    result.Guid = match[1];
                     match = passwordRegex.exec(cookie);
                     if(match == null) {
                         return null;
                     }
-                    result.PasswordGUID = match[1];
+                    result.PasswordGuid = match[1];
                     return result;
                 }
-                SecureCookieHelper.SetCookie = function SetCookie(guid, passwordGUID, expireInDays) {
+                SecureCookieHelper.SetCookie = function SetCookie(guid, passwordGuid, expireInDays) {
                     var expireDate = new Date();
                     expireDate.setDate(expireDate.getDate() + expireInDays);
-                    document.cookie = "SecureCookieGUID=" + (guid == null ? "" : guid) + "; expires=" + expireDate.toUTCString() + ";";
-                    document.cookie = "SecureCookieGUIDPassword=" + (passwordGUID == null ? "" : passwordGUID) + "; expires=" + expireDate.toUTCString() + ";";
+                    document.cookie = "SecureCookieGuid=" + (guid == null ? "" : guid) + "; expires=" + expireDate.toUTCString() + ";";
+                    document.cookie = "SecureCookiePasswordGuid=" + (passwordGuid == null ? "" : passwordGuid) + "; expires=" + expireDate.toUTCString() + ";";
                 }
                 return SecureCookieHelper;
             })();

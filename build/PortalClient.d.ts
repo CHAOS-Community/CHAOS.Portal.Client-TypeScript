@@ -89,7 +89,7 @@ module CHAOS.Portal.Client {
     class SecureCookie {
         static AuthenticationType(): string;
         static Create(serviceCaller?: IServiceCaller): ICallState;
-        static Login(guid: string, passwordGUID: string, serviceCaller?: IServiceCaller): ICallState;
+        static Login(guid: string, passwordGuid: string, serviceCaller?: IServiceCaller): ICallState;
     }
     class View {
         static Get(view: string, query?: string, sort?: string, pageIndex?: number, pageSize?: number, serviceCaller?: IServiceCaller): ICallState;
@@ -128,6 +128,6 @@ module CHAOS.Portal.Client {
         static Create(serviceCaller?: IServiceCaller): void;
         static Clear(): void;
         static GetCookie();
-        static SetCookie(guid, passwordGUID, expireInDays);
+        static SetCookie(guid, passwordGuid, expireInDays);
     }
 }

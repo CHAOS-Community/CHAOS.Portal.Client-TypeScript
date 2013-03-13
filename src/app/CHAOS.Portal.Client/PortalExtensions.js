@@ -52,14 +52,14 @@ var CHAOS;
                     }
                     return serviceCaller.CallService("SecureCookie/Create", Client.HttpMethod.Get(), null, true);
                 }
-                SecureCookie.Login = function Login(guid, passwordGUID, serviceCaller) {
+                SecureCookie.Login = function Login(guid, passwordGuid, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
                     return serviceCaller.CallService("SecureCookie/Login", Client.HttpMethod.Get(), {
                         guid: guid,
-                        passwordGUID: passwordGUID
+                        passwordGuid: passwordGuid
                     }, true).WithCallback(function (response) {
                         if(response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(SecureCookie.AuthenticationType());
