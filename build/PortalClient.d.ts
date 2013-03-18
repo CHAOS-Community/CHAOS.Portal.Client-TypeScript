@@ -25,6 +25,8 @@ module CHAOS.Portal.Client {
     interface ICallState {
         WithCallback(callback: (response: IPortalResponse) => void): ICallState;
         WithCallback(callback: (response: IPortalResponse) => void, context: any): ICallState;
+        WithCallbackAndToken(callback: (response: IPortalResponse, token: any) => void, token: any): ICallState;
+        WithCallbackAndToken(callback: (response: IPortalResponse, token: any) => void, token: any, context: any): ICallState;
     }
     interface IPortalResponse {
         Header: IHeader;

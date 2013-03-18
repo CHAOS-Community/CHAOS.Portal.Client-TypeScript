@@ -18,7 +18,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.2.2";
+                    return "2.2.4";
                 }
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
@@ -86,6 +86,19 @@ var CHAOS;
                     } else {
                         this._completed.Add(function (response) {
                             return callback.call(context, response);
+                        });
+                    }
+                    return this;
+                };
+                CallState.prototype.WithCallbackAndToken = function (callback, token, context) {
+                    if (typeof context === "undefined") { context = null; }
+                    if(context == null) {
+                        this._completed.Add(function (response) {
+                            return callback(response, token);
+                        });
+                    } else {
+                        this._completed.Add(function (response) {
+                            return callback.call(context, response, token);
                         });
                     }
                     return this;

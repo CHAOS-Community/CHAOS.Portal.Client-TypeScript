@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.2.3"; }
+		public static GetClientVersion():string { return "2.2.4"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -88,6 +88,16 @@ module CHAOS.Portal.Client
 				this._completed.Add(callback);
 			else
 				this._completed.Add((response: IPortalResponse) => callback.call(context, response));
+			
+			return this;
+    	}
+
+    	public WithCallbackAndToken(callback: (response: IPortalResponse, token: any) => void, token:any, context: any = null): ICallState
+    	{
+			if(context == null)
+				this._completed.Add((response: IPortalResponse) => callback(response, token));
+			else
+				this._completed.Add((response: IPortalResponse) => callback.call(context, response, token));
 			
 			return this;
     	}
