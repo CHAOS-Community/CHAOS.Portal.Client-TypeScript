@@ -14,6 +14,48 @@ var CHAOS;
                         metadataSchemaGUID: metadataSchemaGUID
                     }, true);
                 };
+                MetadataSchema.Create = function Create(name, schemaXml, guid, serviceCaller) {
+                    if (typeof guid === "undefined") { guid = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("MetadataSchema/Create", CHAOS.Portal.Client.HttpMethod.Post(), {
+                        name: name,
+                        schemaXml: schemaXml,
+                        guid: guid
+                    }, true);
+                };
+                MetadataSchema.Update = function Update(name, schemaXml, guid, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("MetadataSchema/Update", CHAOS.Portal.Client.HttpMethod.Post(), {
+                        name: name,
+                        schemaXml: schemaXml,
+                        guid: guid
+                    }, true);
+                };
+                MetadataSchema.Delete = function Delete(guid, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("MetadataSchema/Delete", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        guid: guid
+                    }, true);
+                };
+                MetadataSchema.HasPermissionToMetadataSchema = function HasPermissionToMetadataSchema(guid, MetadataSchemaPermission, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("MetadataSchema/HasPermissionToMetadataSchema", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        guid: guid,
+                        MetadataSchemaPermission: MetadataSchemaPermission
+                    }, true);
+                };
                 return MetadataSchema;
             })();
             Client.MetadataSchema = MetadataSchema;            
@@ -129,6 +171,38 @@ var CHAOS;
                 return Metadata;
             })();
             Client.Metadata = Metadata;            
+            var ObjectType = (function () {
+                function ObjectType() { }
+                ObjectType.Get = function Get(serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("ObjectType/Get", CHAOS.Portal.Client.HttpMethod.Get(), null, true);
+                };
+                ObjectType.Set = function Set(name, id, serviceCaller) {
+                    if (typeof id === "undefined") { id = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("ObjectType/Set", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        id: id,
+                        name: name
+                    }, true);
+                };
+                ObjectType.Delete = function Delete(id, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("ObjectType/Delete", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        id: id
+                    }, true);
+                };
+                return ObjectType;
+            })();
+            Client.ObjectType = ObjectType;            
         })(Portal.Client || (Portal.Client = {}));
         var Client = Portal.Client;
     })(CHAOS.Portal || (CHAOS.Portal = {}));

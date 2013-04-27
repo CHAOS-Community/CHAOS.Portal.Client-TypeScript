@@ -111,6 +111,10 @@ module CHAOS.Portal.Client {
 module CHAOS.Portal.Client {
     class MetadataSchema {
         static Get(metadataSchemaGUID?: string, serviceCaller?: IServiceCaller): ICallState;
+        static Create(name: string, schemaXml: string, guid?: string, serviceCaller?: IServiceCaller): ICallState;
+        static Update(name: string, schemaXml: string, guid: string, serviceCaller?: IServiceCaller): ICallState;
+        static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState;
+        static HasPermissionToMetadataSchema(guid: string, MetadataSchemaPermission: number, serviceCaller?: IServiceCaller): ICallState;
     }
     class Folder {
         static Get(id?: number, folderTypeID?: number, parentID?: number, serviceCaller?: IServiceCaller): ICallState;
@@ -124,6 +128,11 @@ module CHAOS.Portal.Client {
     }
     class Metadata {
         static Set(objectGUID: string, metadataSchemaGUID: string, languageCode: string, revisionID: number, metadataXML: string, serviceCaller?: IServiceCaller): ICallState;
+    }
+    class ObjectType {
+        static Get(serviceCaller?: IServiceCaller): ICallState;
+        static Set(name: string, id?: number, serviceCaller?: IServiceCaller): ICallState;
+        static Delete(id: number, serviceCaller?: IServiceCaller): ICallState;
     }
 }
 module CHAOS.Portal.Client {

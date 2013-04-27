@@ -12,6 +12,38 @@ module CHAOS.Portal.Client
 
 			return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get(), { metadataSchemaGUID: metadataSchemaGUID }, true);
     	}
+
+		public static Create(name:string, schemaXml:string, guid:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		{
+           if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("MetadataSchema/Create", CHAOS.Portal.Client.HttpMethod.Post(), { name: name, schemaXml: schemaXml, guid: guid }, true);
+		}
+
+		public static Update(name:string, schemaXml:string, guid:string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		{
+           if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("MetadataSchema/Update", CHAOS.Portal.Client.HttpMethod.Post(), { name: name, schemaXml: schemaXml, guid: guid }, true);
+		}
+
+		public static Delete(guid:string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		{
+           if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("MetadataSchema/Delete", CHAOS.Portal.Client.HttpMethod.Get(), { guid: guid }, true);
+		}
+
+		public static HasPermissionToMetadataSchema(guid:string, MetadataSchemaPermission:number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		{
+           if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("MetadataSchema/HasPermissionToMetadataSchema", CHAOS.Portal.Client.HttpMethod.Get(), { guid: guid, MetadataSchemaPermission: MetadataSchemaPermission }, true);
+		}
     }
 
 	export class Folder
@@ -70,6 +102,33 @@ module CHAOS.Portal.Client
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
 			return serviceCaller.CallService("Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post(), { objectGUID: objectGUID, metadataSchemaGUID: metadataSchemaGUID, languageCode: languageCode, revisionID: revisionID, metadataXML: metadataXML }, true);
+    	}
+	}
+
+	export class ObjectType
+	{
+		public static Get(serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("ObjectType/Get", CHAOS.Portal.Client.HttpMethod.Get(), null, true);
+    	}
+
+		public static Set(name:string, id:number = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("ObjectType/Set", CHAOS.Portal.Client.HttpMethod.Get(), { id: id, name: name }, true);
+    	}
+
+		public static Delete(id:number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("ObjectType/Delete", CHAOS.Portal.Client.HttpMethod.Get(), { id: id }, true);
     	}
 	}
 }
