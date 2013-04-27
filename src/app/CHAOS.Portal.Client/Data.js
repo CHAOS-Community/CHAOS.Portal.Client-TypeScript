@@ -6,10 +6,10 @@ var CHAOS;
                 function HttpMethod() { }
                 HttpMethod.Get = function Get() {
                     return "GET";
-                }
+                };
                 HttpMethod.Post = function Post() {
                     return "POST";
-                }
+                };
                 return HttpMethod;
             })();
             Client.HttpMethod = HttpMethod;            
@@ -18,4 +18,3 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
-//@ sourceMappingURL=Data.js.map

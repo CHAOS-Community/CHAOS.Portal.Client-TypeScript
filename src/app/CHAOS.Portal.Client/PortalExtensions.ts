@@ -59,6 +59,25 @@ module CHAOS.Portal.Client
     	}
     }
 
+	export class User
+	{
+		public static Get(pageIndex:number = 0, pageSize:number = 10, serviceCaller: IServiceCaller = null):ICallState
+		{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("User/Get", HttpMethod.Get(), {pageIndex: pageIndex, pageSize: pageSize}, true);
+		}
+
+		public static GetCurrent(serviceCaller: IServiceCaller = null):ICallState
+		{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("View/GetCurrent", HttpMethod.Get(), null, true);
+		}
+	}
+
 	export class View
     {
     	public static Get(view:string, query:string = null, sort:string = null, pageIndex:number = 0, pageSize:number = 10, serviceCaller: IServiceCaller = null):ICallState

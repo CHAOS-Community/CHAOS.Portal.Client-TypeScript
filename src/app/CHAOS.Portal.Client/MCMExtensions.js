@@ -13,7 +13,7 @@ var CHAOS;
                     return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
                         metadataSchemaGUID: metadataSchemaGUID
                     }, true);
-                }
+                };
                 return MetadataSchema;
             })();
             Client.MetadataSchema = MetadataSchema;            
@@ -32,7 +32,7 @@ var CHAOS;
                         folderTypeID: folderTypeID,
                         parentID: parentID
                     }, true);
-                }
+                };
                 return Folder;
             })();
             Client.Folder = Folder;            
@@ -48,7 +48,7 @@ var CHAOS;
                         objectTypeID: objectTypeID,
                         folderID: folderID
                     }, true);
-                }
+                };
                 Object.Get = function Get(query, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof query === "undefined") { query = null; }
                     if (typeof sort === "undefined") { sort = null; }
@@ -73,7 +73,7 @@ var CHAOS;
                         includeFiles: includeFiles,
                         includeObjectRelations: includeObjectRelations
                     }, accessPointGUID == null);
-                }
+                };
                 Object.GetByFolderID = function GetByFolderID(folderID, includeChildFolders, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof includeChildFolders === "undefined") { includeChildFolders = true; }
                     if (typeof sort === "undefined") { sort = null; }
@@ -86,7 +86,7 @@ var CHAOS;
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     return Object.Get((includeChildFolders ? "(FolderTree:" : "(FolderID:") + folderID + ")", sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
-                }
+                };
                 Object.GetByObjectGUID = function GetByObjectGUID(objectGUID, accessPointGUID, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
                     if (typeof includeMetadata === "undefined") { includeMetadata = false; }
@@ -95,7 +95,7 @@ var CHAOS;
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     return Object.Get("(GUID:" + objectGUID + ")", null, accessPointGUID, 0, 1, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
-                }
+                };
                 Object.SetPublishSettings = function SetPublishSettings(objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
@@ -107,7 +107,7 @@ var CHAOS;
                         startDate: startDate,
                         endDate: endDate
                     }, true);
-                }
+                };
                 return Object;
             })();
             Client.Object = Object;            
@@ -125,7 +125,7 @@ var CHAOS;
                         revisionID: revisionID,
                         metadataXML: metadataXML
                     }, true);
-                }
+                };
                 return Metadata;
             })();
             Client.Metadata = Metadata;            
@@ -134,4 +134,3 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
-//@ sourceMappingURL=MCMExtensions.js.map

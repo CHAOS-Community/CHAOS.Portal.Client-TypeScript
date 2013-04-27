@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHAOS.Portal.Client.TypeScr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHAOS.Portal.Client.JavaScriptExamples", "src\examples\CHAOS.Portal.Client.JavaScriptExamples\CHAOS.Portal.Client.JavaScriptExamples.csproj", "{678E3E8A-F099-45B7-B035-676D0589E335}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B7A223AF-C945-4D5E-931B-AADBD176114A}"
+	ProjectSection(SolutionItems) = preProject
+		WE-settings.xml = WE-settings.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

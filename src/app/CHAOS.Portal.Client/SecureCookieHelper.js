@@ -7,7 +7,7 @@ var CHAOS;
                 SecureCookieHelper.COOKIE_LIFE_TIME_DAYS = 90;
                 SecureCookieHelper.DoesCookieExist = function DoesCookieExist() {
                     return this.GetCookie() != null;
-                }
+                };
                 SecureCookieHelper.Login = function Login(callback, serviceCaller) {
                     if (typeof callback === "undefined") { callback = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
@@ -25,13 +25,11 @@ var CHAOS;
                             if(callback != null) {
                                 callback(true);
                             }
-                        } else {
-                            if(callback != null) {
-                                callback(false);
-                            }
+                        } else if(callback != null) {
+                            callback(false);
                         }
                     });
-                }
+                };
                 SecureCookieHelper.Create = function Create(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
@@ -40,10 +38,10 @@ var CHAOS;
                             _this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                         }
                     });
-                }
+                };
                 SecureCookieHelper.Clear = function Clear() {
                     this.SetCookie("", "", -2);
-                }
+                };
                 SecureCookieHelper.GetCookie = function GetCookie() {
                     var cookie = document.cookie;
                     if(cookie == undefined || cookie == null) {
@@ -66,13 +64,13 @@ var CHAOS;
                     }
                     result.PasswordGuid = match[1];
                     return result;
-                }
+                };
                 SecureCookieHelper.SetCookie = function SetCookie(guid, passwordGuid, expireInDays) {
                     var expireDate = new Date();
                     expireDate.setDate(expireDate.getDate() + expireInDays);
                     document.cookie = "SecureCookieGuid=" + (guid == null ? "" : guid) + "; expires=" + expireDate.toUTCString() + ";";
                     document.cookie = "SecureCookiePasswordGuid=" + (passwordGuid == null ? "" : passwordGuid) + "; expires=" + expireDate.toUTCString() + ";";
-                }
+                };
                 return SecureCookieHelper;
             })();
             Client.SecureCookieHelper = SecureCookieHelper;            
@@ -81,4 +79,3 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
-//@ sourceMappingURL=SecureCookieHelper.js.map

@@ -44,6 +44,21 @@
       <DependentUpon>SecureCookieHelper.ts</DependentUpon>
     </Content>
     <Content Include="web.config" />
+    <Content Include="PortalExtensions.js.map">
+      <DependentUpon>PortalExtensions.ts</DependentUpon>
+    </Content>
+    <Content Include="Data.js.map">
+      <DependentUpon>Data.ts</DependentUpon>
+    </Content>
+    <Content Include="SecureCookieHelper.js.map">
+      <DependentUpon>SecureCookieHelper.ts</DependentUpon>
+    </Content>
+    <Content Include="MCMExtensions.js.map">
+      <DependentUpon>MCMExtensions.ts</DependentUpon>
+    </Content>
+    <Content Include="PortalClient.js.map">
+      <DependentUpon>PortalClient.ts</DependentUpon>
+    </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

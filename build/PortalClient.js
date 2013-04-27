@@ -6,10 +6,10 @@ var CHAOS;
                 function HttpMethod() { }
                 HttpMethod.Get = function Get() {
                     return "GET";
-                }
+                };
                 HttpMethod.Post = function Post() {
                     return "POST";
-                }
+                };
                 return HttpMethod;
             })();
             Client.HttpMethod = HttpMethod;            
@@ -39,10 +39,10 @@ var CHAOS;
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
                     return "2.2.4";
-                }
+                };
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
-                }
+                };
                 PortalClient.prototype.GetServicePath = function () {
                     return this._servicePath;
                 };
@@ -247,7 +247,7 @@ var CHAOS;
                             serviceCaller.UpdateSession(response.Result.Results[0]);
                         }
                     });
-                }
+                };
                 return Session;
             })();
             Client.Session = Session;            
@@ -255,7 +255,7 @@ var CHAOS;
                 function EmailPassword() { }
                 EmailPassword.AuthenticationType = function AuthenticationType() {
                     return "EmailPassword";
-                }
+                };
                 EmailPassword.Login = function Login(email, password, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
@@ -269,7 +269,7 @@ var CHAOS;
                             serviceCaller.SetSessionAuthenticated(EmailPassword.AuthenticationType());
                         }
                     });
-                }
+                };
                 return EmailPassword;
             })();
             Client.EmailPassword = EmailPassword;            
@@ -277,14 +277,14 @@ var CHAOS;
                 function SecureCookie() { }
                 SecureCookie.AuthenticationType = function AuthenticationType() {
                     return "SecureCookie";
-                }
+                };
                 SecureCookie.Create = function Create(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
                     return serviceCaller.CallService("SecureCookie/Create", Client.HttpMethod.Get(), null, true);
-                }
+                };
                 SecureCookie.Login = function Login(guid, passwordGuid, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
@@ -298,10 +298,34 @@ var CHAOS;
                             serviceCaller.SetSessionAuthenticated(SecureCookie.AuthenticationType());
                         }
                     });
-                }
+                };
                 return SecureCookie;
             })();
             Client.SecureCookie = SecureCookie;            
+            var User = (function () {
+                function User() { }
+                User.Get = function Get(pageIndex, pageSize, serviceCaller) {
+                    if (typeof pageIndex === "undefined") { pageIndex = 0; }
+                    if (typeof pageSize === "undefined") { pageSize = 10; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("User/Get", Client.HttpMethod.Get(), {
+                        pageIndex: pageIndex,
+                        pageSize: pageSize
+                    }, true);
+                };
+                User.GetCurrent = function GetCurrent(serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("View/GetCurrent", Client.HttpMethod.Get(), null, true);
+                };
+                return User;
+            })();
+            Client.User = User;            
             var View = (function () {
                 function View() { }
                 View.Get = function Get(view, query, sort, pageIndex, pageSize, serviceCaller) {
@@ -320,14 +344,14 @@ var CHAOS;
                         pageIndex: pageIndex,
                         pageSize: pageSize
                     }, true);
-                }
+                };
                 View.List = function List(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
                     return serviceCaller.CallService("View/List", Client.HttpMethod.Get(), null, true);
-                }
+                };
                 return View;
             })();
             Client.View = View;            
@@ -350,10 +374,10 @@ var CHAOS;
                         throw new Error("Default service caller not set");
                     }
                     return ServiceCallerService._defaultCaller;
-                }
+                };
                 ServiceCallerService.SetDefaultCaller = function SetDefaultCaller(value) {
                     ServiceCallerService._defaultCaller = value;
-                }
+                };
                 return ServiceCallerService;
             })();
             Client.ServiceCallerService = ServiceCallerService;            
@@ -377,7 +401,7 @@ var CHAOS;
                     return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
                         metadataSchemaGUID: metadataSchemaGUID
                     }, true);
-                }
+                };
                 return MetadataSchema;
             })();
             Client.MetadataSchema = MetadataSchema;            
@@ -396,7 +420,7 @@ var CHAOS;
                         folderTypeID: folderTypeID,
                         parentID: parentID
                     }, true);
-                }
+                };
                 return Folder;
             })();
             Client.Folder = Folder;            
@@ -412,7 +436,7 @@ var CHAOS;
                         objectTypeID: objectTypeID,
                         folderID: folderID
                     }, true);
-                }
+                };
                 Object.Get = function Get(query, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof query === "undefined") { query = null; }
                     if (typeof sort === "undefined") { sort = null; }
@@ -437,7 +461,7 @@ var CHAOS;
                         includeFiles: includeFiles,
                         includeObjectRelations: includeObjectRelations
                     }, accessPointGUID == null);
-                }
+                };
                 Object.GetByFolderID = function GetByFolderID(folderID, includeChildFolders, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof includeChildFolders === "undefined") { includeChildFolders = true; }
                     if (typeof sort === "undefined") { sort = null; }
@@ -450,7 +474,7 @@ var CHAOS;
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     return Object.Get((includeChildFolders ? "(FolderTree:" : "(FolderID:") + folderID + ")", sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
-                }
+                };
                 Object.GetByObjectGUID = function GetByObjectGUID(objectGUID, accessPointGUID, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
                     if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
                     if (typeof includeMetadata === "undefined") { includeMetadata = false; }
@@ -459,7 +483,7 @@ var CHAOS;
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     return Object.Get("(GUID:" + objectGUID + ")", null, accessPointGUID, 0, 1, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
-                }
+                };
                 Object.SetPublishSettings = function SetPublishSettings(objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
@@ -471,7 +495,7 @@ var CHAOS;
                         startDate: startDate,
                         endDate: endDate
                     }, true);
-                }
+                };
                 return Object;
             })();
             Client.Object = Object;            
@@ -489,7 +513,7 @@ var CHAOS;
                         revisionID: revisionID,
                         metadataXML: metadataXML
                     }, true);
-                }
+                };
                 return Metadata;
             })();
             Client.Metadata = Metadata;            
@@ -507,7 +531,7 @@ var CHAOS;
                 SecureCookieHelper.COOKIE_LIFE_TIME_DAYS = 90;
                 SecureCookieHelper.DoesCookieExist = function DoesCookieExist() {
                     return this.GetCookie() != null;
-                }
+                };
                 SecureCookieHelper.Login = function Login(callback, serviceCaller) {
                     if (typeof callback === "undefined") { callback = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
@@ -525,13 +549,11 @@ var CHAOS;
                             if(callback != null) {
                                 callback(true);
                             }
-                        } else {
-                            if(callback != null) {
-                                callback(false);
-                            }
+                        } else if(callback != null) {
+                            callback(false);
                         }
                     });
-                }
+                };
                 SecureCookieHelper.Create = function Create(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
@@ -540,10 +562,10 @@ var CHAOS;
                             _this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                         }
                     });
-                }
+                };
                 SecureCookieHelper.Clear = function Clear() {
                     this.SetCookie("", "", -2);
-                }
+                };
                 SecureCookieHelper.GetCookie = function GetCookie() {
                     var cookie = document.cookie;
                     if(cookie == undefined || cookie == null) {
@@ -566,13 +588,13 @@ var CHAOS;
                     }
                     result.PasswordGuid = match[1];
                     return result;
-                }
+                };
                 SecureCookieHelper.SetCookie = function SetCookie(guid, passwordGuid, expireInDays) {
                     var expireDate = new Date();
                     expireDate.setDate(expireDate.getDate() + expireInDays);
                     document.cookie = "SecureCookieGuid=" + (guid == null ? "" : guid) + "; expires=" + expireDate.toUTCString() + ";";
                     document.cookie = "SecureCookiePasswordGuid=" + (passwordGuid == null ? "" : passwordGuid) + "; expires=" + expireDate.toUTCString() + ";";
-                }
+                };
                 return SecureCookieHelper;
             })();
             Client.SecureCookieHelper = SecureCookieHelper;            

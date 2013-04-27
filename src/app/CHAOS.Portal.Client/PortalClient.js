@@ -19,10 +19,10 @@ var CHAOS;
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
                     return "2.2.4";
-                }
+                };
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
-                }
+                };
                 PortalClient.prototype.GetServicePath = function () {
                     return this._servicePath;
                 };
@@ -211,4 +211,3 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
-//@ sourceMappingURL=PortalClient.js.map
