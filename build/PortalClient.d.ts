@@ -97,6 +97,12 @@ module CHAOS.Portal.Client {
         static Get(pageIndex?: number, pageSize?: number, serviceCaller?: IServiceCaller): ICallState;
         static GetCurrent(serviceCaller?: IServiceCaller): ICallState;
     }
+    class Group {
+        static Get(serviceCaller?: IServiceCaller): ICallState;
+        static Create(name: string, systemPermission: number, serviceCaller?: IServiceCaller): ICallState;
+        static Update(guid: string, newName: string, newSystemPermission?: number, serviceCaller?: IServiceCaller): ICallState;
+        static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState;
+    }
     class View {
         static Get(view: string, query?: string, sort?: string, pageIndex?: number, pageSize?: number, serviceCaller?: IServiceCaller): ICallState;
         static List(serviceCaller?: IServiceCaller): ICallState;

@@ -93,6 +93,49 @@ var CHAOS;
                 return User;
             })();
             Client.User = User;            
+            var Group = (function () {
+                function Group() { }
+                Group.Get = function Get(serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/Get", Client.HttpMethod.Get(), null, true);
+                };
+                Group.Create = function Create(name, systemPermission, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/Create", Client.HttpMethod.Get(), {
+                        name: name,
+                        systemPermission: systemPermission
+                    }, true);
+                };
+                Group.Update = function Update(guid, newName, newSystemPermission, serviceCaller) {
+                    if (typeof newSystemPermission === "undefined") { newSystemPermission = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/Update", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        newName: newName,
+                        newSystemPermission: newSystemPermission
+                    }, true);
+                };
+                Group.Delete = function Delete(guid, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/Delete", Client.HttpMethod.Get(), {
+                        guid: guid
+                    }, true);
+                };
+                return Group;
+            })();
+            Client.Group = Group;            
             var View = (function () {
                 function View() { }
                 View.Get = function Get(view, query, sort, pageIndex, pageSize, serviceCaller) {

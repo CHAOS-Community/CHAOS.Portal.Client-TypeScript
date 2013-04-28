@@ -78,6 +78,41 @@ module CHAOS.Portal.Client
 		}
 	}
 
+	export class Group
+	{
+		public static Get(serviceCaller: IServiceCaller = null):ICallState
+		{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Group/Get", HttpMethod.Get(), null, true);
+		}
+
+		public static Create(name:string, systemPermission:number, serviceCaller: IServiceCaller = null):ICallState
+		{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Group/Create", HttpMethod.Get(), {name:name, systemPermission : systemPermission }, true);
+		}
+
+		public static Update(guid:string, newName:string, newSystemPermission :number = null, serviceCaller: IServiceCaller = null):ICallState
+		{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Group/Update", HttpMethod.Get(), {guid: guid, newName:newName, newSystemPermission : newSystemPermission }, true);
+		}
+
+		public static Delete(guid:string, serviceCaller: IServiceCaller = null):ICallState
+		{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Group/Delete", HttpMethod.Get(), {guid:guid}, true);
+		}
+	}
+
 	export class View
     {
     	public static Get(view:string, query:string = null, sort:string = null, pageIndex:number = 0, pageSize:number = 10, serviceCaller: IServiceCaller = null):ICallState
