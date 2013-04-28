@@ -61,12 +61,12 @@ module CHAOS.Portal.Client
 
 	export class User
 	{
-		public static Get(pageIndex:number = 0, pageSize:number = 10, serviceCaller: IServiceCaller = null):ICallState
+		public static Get(serviceCaller: IServiceCaller = null):ICallState
 		{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService("User/Get", HttpMethod.Get(), {pageIndex: pageIndex, pageSize: pageSize}, true);
+			return serviceCaller.CallService("User/Get", HttpMethod.Get(), null, true);
 		}
 
 		public static GetCurrent(serviceCaller: IServiceCaller = null):ICallState

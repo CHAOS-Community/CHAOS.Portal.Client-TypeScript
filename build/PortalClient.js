@@ -304,17 +304,12 @@ var CHAOS;
             Client.SecureCookie = SecureCookie;            
             var User = (function () {
                 function User() { }
-                User.Get = function Get(pageIndex, pageSize, serviceCaller) {
-                    if (typeof pageIndex === "undefined") { pageIndex = 0; }
-                    if (typeof pageSize === "undefined") { pageSize = 10; }
+                User.Get = function Get(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    return serviceCaller.CallService("User/Get", Client.HttpMethod.Get(), {
-                        pageIndex: pageIndex,
-                        pageSize: pageSize
-                    }, true);
+                    return serviceCaller.CallService("User/Get", Client.HttpMethod.Get(), null, true);
                 };
                 User.GetCurrent = function GetCurrent(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }

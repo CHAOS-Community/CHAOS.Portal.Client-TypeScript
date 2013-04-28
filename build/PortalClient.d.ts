@@ -94,7 +94,7 @@ module CHAOS.Portal.Client {
         static Login(guid: string, passwordGuid: string, serviceCaller?: IServiceCaller): ICallState;
     }
     class User {
-        static Get(pageIndex?: number, pageSize?: number, serviceCaller?: IServiceCaller): ICallState;
+        static Get(serviceCaller?: IServiceCaller): ICallState;
         static GetCurrent(serviceCaller?: IServiceCaller): ICallState;
     }
     class Group {
