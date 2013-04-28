@@ -78,6 +78,68 @@ var CHAOS;
                 return Folder;
             })();
             Client.Folder = Folder;            
+            var FolderType = (function () {
+                function FolderType() { }
+                FolderType.Get = function Get(name, serviceCaller) {
+                    if (typeof name === "undefined") { name = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("FolderType/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        name: name
+                    }, true);
+                };
+                return FolderType;
+            })();
+            Client.FolderType = FolderType;            
+            var Format = (function () {
+                function Format() { }
+                Format.Get = function Get(name, serviceCaller) {
+                    if (typeof name === "undefined") { name = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Format/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        name: name
+                    }, true);
+                };
+                return Format;
+            })();
+            Client.Format = Format;            
+            var FormatType = (function () {
+                function FormatType() { }
+                FormatType.Get = function Get(name, serviceCaller) {
+                    if (typeof name === "undefined") { name = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("FormatType/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        name: name
+                    }, true);
+                };
+                return FormatType;
+            })();
+            Client.FormatType = FormatType;            
+            var Language = (function () {
+                function Language() { }
+                Language.Get = function Get(name, languageCode, serviceCaller) {
+                    if (typeof name === "undefined") { name = null; }
+                    if (typeof languageCode === "undefined") { languageCode = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Language/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        name: name,
+                        languageCode: languageCode
+                    }, true);
+                };
+                return Language;
+            })();
+            Client.Language = Language;            
             var Object = (function () {
                 function Object() { }
                 Object.Create = function Create(guid, objectTypeID, folderID, serviceCaller) {
@@ -153,6 +215,21 @@ var CHAOS;
                 return Object;
             })();
             Client.Object = Object;            
+            var ObjectRelationType = (function () {
+                function ObjectRelationType() { }
+                ObjectRelationType.Get = function Get(value, serviceCaller) {
+                    if (typeof value === "undefined") { value = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("ObjectRelationType/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        value: value
+                    }, true);
+                };
+                return ObjectRelationType;
+            })();
+            Client.ObjectRelationType = ObjectRelationType;            
             var Metadata = (function () {
                 function Metadata() { }
                 Metadata.Set = function Set(objectGUID, metadataSchemaGUID, languageCode, revisionID, metadataXML, serviceCaller) {

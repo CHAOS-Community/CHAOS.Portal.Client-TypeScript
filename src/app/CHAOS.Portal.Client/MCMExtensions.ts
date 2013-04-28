@@ -57,6 +57,50 @@ module CHAOS.Portal.Client
     	}
     }
 
+	export class FolderType
+	{
+		public static Get(name:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("FolderType/Get", CHAOS.Portal.Client.HttpMethod.Get(), { name: name}, true);
+    	}
+	}
+
+	export class Format
+	{
+		public static Get(name:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Format/Get", CHAOS.Portal.Client.HttpMethod.Get(), { name: name}, true);
+    	}
+	}
+
+	export class FormatType
+	{
+		public static Get(name:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("FormatType/Get", CHAOS.Portal.Client.HttpMethod.Get(), { name: name}, true);
+    	}
+	}
+
+	export class Language
+	{
+		public static Get(name:string = null, languageCode:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Language/Get", CHAOS.Portal.Client.HttpMethod.Get(), { name: name, languageCode:languageCode}, true);
+    	}
+	}
+
 	export class Object
 	{
 		public static Create(guid:string, objectTypeID:number, folderID:number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
@@ -92,6 +136,17 @@ module CHAOS.Portal.Client
 
 			return serviceCaller.CallService("Object/SetPublishSettings", CHAOS.Portal.Client.HttpMethod.Post(), {objectGUID: objectGUID, accessPointGUID: accessPointGUID, startDate: startDate, endDate: endDate}, true);
 		}
+	}
+
+	export class ObjectRelationType 
+	{
+		public static Get(value:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+    	{
+			if(serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("ObjectRelationType/Get", CHAOS.Portal.Client.HttpMethod.Get(), { value: value}, true);
+    	}
 	}
 
 	export class Metadata
