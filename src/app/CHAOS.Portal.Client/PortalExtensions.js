@@ -160,6 +160,31 @@ var CHAOS;
                 return View;
             })();
             Client.View = View;            
+            var ClientSettings = (function () {
+                function ClientSettings() { }
+                ClientSettings.Get = function Get(guid, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("ClientSettings/Get", Client.HttpMethod.Get(), {
+                        guid: guid
+                    }, true);
+                };
+                ClientSettings.Set = function Set(guid, name, settings, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("ClientSettings/Set", Client.HttpMethod.Post(), {
+                        guid: guid,
+                        name: name,
+                        settings: settings
+                    }, true);
+                };
+                return ClientSettings;
+            })();
+            Client.ClientSettings = ClientSettings;            
             function Initialize(servicePath, clientGUID, autoCreateSession) {
                 if (typeof clientGUID === "undefined") { clientGUID = null; }
                 if (typeof autoCreateSession === "undefined") { autoCreateSession = true; }

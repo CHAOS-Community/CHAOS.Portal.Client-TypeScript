@@ -132,6 +132,25 @@ module CHAOS.Portal.Client
     	}
     }
 
+	export class ClientSettings
+	{
+		public static Get(guid:string, serviceCaller: IServiceCaller = null):ICallState
+		{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("ClientSettings/Get", HttpMethod.Get(), {guid: guid}, true);
+		}
+
+		public static Set(guid:string, name:string, settings:string, serviceCaller: IServiceCaller = null):ICallState
+		{
+			if(serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("ClientSettings/Set", HttpMethod.Post(), {guid: guid, name: name, settings: settings}, true);
+		}
+	}
+
 	export function Initialize(servicePath:string, clientGUID:string = null, autoCreateSession:bool = true):IPortalClient
     {
 		var client = new PortalClient(servicePath, clientGUID);

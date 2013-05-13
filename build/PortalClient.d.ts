@@ -107,6 +107,10 @@ module CHAOS.Portal.Client {
         static Get(view: string, query?: string, sort?: string, pageIndex?: number, pageSize?: number, serviceCaller?: IServiceCaller): ICallState;
         static List(serviceCaller?: IServiceCaller): ICallState;
     }
+    class ClientSettings {
+        static Get(guid: string, serviceCaller?: IServiceCaller): ICallState;
+        static Set(guid: string, name: string, settings: string, serviceCaller?: IServiceCaller): ICallState;
+    }
     function Initialize(servicePath: string, clientGUID?: string, autoCreateSession?: bool): IPortalClient;
     class ServiceCallerService {
         private static _defaultCaller;
