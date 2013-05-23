@@ -71,31 +71,71 @@ var CHAOS;
             Client.SecureCookie = SecureCookie;            
             var User = (function () {
                 function User() { }
-                User.Get = function Get(serviceCaller) {
+                User.Create = function Create(guid, email, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    return serviceCaller.CallService("User/Get", Client.HttpMethod.Get(), null, true);
+                    return serviceCaller.CallService("User/Create", Client.HttpMethod.Post(), {
+                        guid: guid,
+                        email: email
+                    }, true);
+                };
+                User.Update = function Update(guid, email, permissons, serviceCaller) {
+                    if (typeof permissons === "undefined") { permissons = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("User/Update", Client.HttpMethod.Post(), {
+                        guid: guid,
+                        email: email,
+                        permissons: permissons
+                    }, true);
+                };
+                User.Delete = function Delete(guid, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("User/Delete", Client.HttpMethod.Get(), {
+                        guid: guid
+                    }, true);
+                };
+                User.Get = function Get(guid, groupGuid, serviceCaller) {
+                    if (typeof groupGuid === "undefined") { groupGuid = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("User/Get", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        groupGuid: groupGuid
+                    }, true);
                 };
                 User.GetCurrent = function GetCurrent(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    return serviceCaller.CallService("View/GetCurrent", Client.HttpMethod.Get(), null, true);
+                    return serviceCaller.CallService("User/GetCurrent", Client.HttpMethod.Get(), null, true);
                 };
                 return User;
             })();
             Client.User = User;            
             var Group = (function () {
                 function Group() { }
-                Group.Get = function Get(serviceCaller) {
+                Group.Get = function Get(guid, userGuid, serviceCaller) {
+                    if (typeof guid === "undefined") { guid = null; }
+                    if (typeof userGuid === "undefined") { userGuid = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    return serviceCaller.CallService("Group/Get", Client.HttpMethod.Get(), null, true);
+                    return serviceCaller.CallService("Group/Get", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        userGuid: userGuid
+                    }, true);
                 };
                 Group.Create = function Create(name, systemPermission, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
@@ -126,6 +166,38 @@ var CHAOS;
                     }
                     return serviceCaller.CallService("Group/Delete", Client.HttpMethod.Get(), {
                         guid: guid
+                    }, true);
+                };
+                Group.AddUser = function AddUser(guid, userGuid, permissions, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/AddUser", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        userGuid: userGuid,
+                        permissions: permissions
+                    }, true);
+                };
+                Group.RemoveUser = function RemoveUser(guid, userGuid, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/RemoveUser", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        userGuid: userGuid
+                    }, true);
+                };
+                Group.UpdateUserPermissions = function UpdateUserPermissions(guid, userGuid, permissions, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/UpdateUserPermissions", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        userGuid: userGuid,
+                        permissions: permissions
                     }, true);
                 };
                 return Group;

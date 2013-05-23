@@ -38,7 +38,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.3.1";
+                    return "2.4.0";
                 };
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
@@ -304,31 +304,71 @@ var CHAOS;
             Client.SecureCookie = SecureCookie;            
             var User = (function () {
                 function User() { }
-                User.Get = function Get(serviceCaller) {
+                User.Create = function Create(guid, email, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    return serviceCaller.CallService("User/Get", Client.HttpMethod.Get(), null, true);
+                    return serviceCaller.CallService("User/Create", Client.HttpMethod.Post(), {
+                        guid: guid,
+                        email: email
+                    }, true);
+                };
+                User.Update = function Update(guid, email, permissons, serviceCaller) {
+                    if (typeof permissons === "undefined") { permissons = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("User/Update", Client.HttpMethod.Post(), {
+                        guid: guid,
+                        email: email,
+                        permissons: permissons
+                    }, true);
+                };
+                User.Delete = function Delete(guid, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("User/Delete", Client.HttpMethod.Get(), {
+                        guid: guid
+                    }, true);
+                };
+                User.Get = function Get(guid, groupGuid, serviceCaller) {
+                    if (typeof groupGuid === "undefined") { groupGuid = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("User/Get", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        groupGuid: groupGuid
+                    }, true);
                 };
                 User.GetCurrent = function GetCurrent(serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    return serviceCaller.CallService("View/GetCurrent", Client.HttpMethod.Get(), null, true);
+                    return serviceCaller.CallService("User/GetCurrent", Client.HttpMethod.Get(), null, true);
                 };
                 return User;
             })();
             Client.User = User;            
             var Group = (function () {
                 function Group() { }
-                Group.Get = function Get(serviceCaller) {
+                Group.Get = function Get(guid, userGuid, serviceCaller) {
+                    if (typeof guid === "undefined") { guid = null; }
+                    if (typeof userGuid === "undefined") { userGuid = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
                     }
-                    return serviceCaller.CallService("Group/Get", Client.HttpMethod.Get(), null, true);
+                    return serviceCaller.CallService("Group/Get", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        userGuid: userGuid
+                    }, true);
                 };
                 Group.Create = function Create(name, systemPermission, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
@@ -359,6 +399,38 @@ var CHAOS;
                     }
                     return serviceCaller.CallService("Group/Delete", Client.HttpMethod.Get(), {
                         guid: guid
+                    }, true);
+                };
+                Group.AddUser = function AddUser(guid, userGuid, permissions, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/AddUser", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        userGuid: userGuid,
+                        permissions: permissions
+                    }, true);
+                };
+                Group.RemoveUser = function RemoveUser(guid, userGuid, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/RemoveUser", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        userGuid: userGuid
+                    }, true);
+                };
+                Group.UpdateUserPermissions = function UpdateUserPermissions(guid, userGuid, permissions, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("Group/UpdateUserPermissions", Client.HttpMethod.Get(), {
+                        guid: guid,
+                        userGuid: userGuid,
+                        permissions: permissions
                     }, true);
                 };
                 return Group;
@@ -604,52 +676,24 @@ var CHAOS;
                         folderID: folderID
                     }, true);
                 };
-                Object.Get = function Get(query, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
-                    if (typeof query === "undefined") { query = null; }
-                    if (typeof sort === "undefined") { sort = null; }
-                    if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
-                    if (typeof pageIndex === "undefined") { pageIndex = 0; }
-                    if (typeof pageSize === "undefined") { pageSize = 10; }
+                Object.Get = function Get(objectGuids, includeMetadata, includeFiles, includeObjectRelations, includeFolders, includeAccessPoints, serviceCaller) {
                     if (typeof includeMetadata === "undefined") { includeMetadata = false; }
                     if (typeof includeFiles === "undefined") { includeFiles = false; }
                     if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
+                    if (typeof includeFolders === "undefined") { includeFolders = false; }
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
                     }
                     return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), {
-                        query: query,
-                        sort: sort,
-                        accessPointGUID: accessPointGUID,
-                        pageIndex: pageIndex,
-                        pageSize: pageSize,
+                        objectGuids: objectGuids.join(),
                         includeMetadata: includeMetadata,
                         includeFiles: includeFiles,
-                        includeObjectRelations: includeObjectRelations
-                    }, accessPointGUID == null);
-                };
-                Object.GetByFolderID = function GetByFolderID(folderID, includeChildFolders, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
-                    if (typeof includeChildFolders === "undefined") { includeChildFolders = true; }
-                    if (typeof sort === "undefined") { sort = null; }
-                    if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
-                    if (typeof pageIndex === "undefined") { pageIndex = 0; }
-                    if (typeof pageSize === "undefined") { pageSize = 10; }
-                    if (typeof includeMetadata === "undefined") { includeMetadata = false; }
-                    if (typeof includeFiles === "undefined") { includeFiles = false; }
-                    if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
-                    if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    return Object.Get((includeChildFolders ? "(FolderTree:" : "(FolderID:") + folderID + ")", sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
-                };
-                Object.GetByObjectGUID = function GetByObjectGUID(objectGUID, accessPointGUID, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
-                    if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
-                    if (typeof includeMetadata === "undefined") { includeMetadata = false; }
-                    if (typeof includeFiles === "undefined") { includeFiles = false; }
-                    if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
-                    if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    return Object.Get("(GUID:" + objectGUID + ")", null, accessPointGUID, 0, 1, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
+                        includeObjectRelations: includeObjectRelations,
+                        includeFolders: includeFolders,
+                        includeAccessPoints: includeAccessPoints
+                    }, true);
                 };
                 Object.SetPublishSettings = function SetPublishSettings(objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }

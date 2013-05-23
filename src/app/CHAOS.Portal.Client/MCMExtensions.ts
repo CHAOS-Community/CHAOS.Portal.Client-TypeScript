@@ -111,22 +111,12 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("Object/Create", CHAOS.Portal.Client.HttpMethod.Post(), {guid: guid, objectTypeID: objectTypeID, folderID: folderID}, true);
 		}
 
-		public static Get(query:string = null, sort:string = null, accessPointGUID:string = null, pageIndex:number = 0, pageSize:number = 10, includeMetadata:bool = false, includeFiles:bool = false, includeObjectRelations:bool = false, includeAccessPoints:bool = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(objectGuids:string[], includeMetadata:bool = false, includeFiles:bool = false, includeObjectRelations:bool = false, includeFolders:bool = false, includeAccessPoints:bool = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
 		{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), {query: query, sort: sort, accessPointGUID: accessPointGUID, pageIndex: pageIndex, pageSize: pageSize, includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations}, accessPointGUID == null);
-		}
-
-		public static GetByFolderID(folderID:number, includeChildFolders:bool = true, sort: string = null, accessPointGUID: string = null, pageIndex: number = 0, pageSize: number = 10, includeMetadata: bool = false, includeFiles: bool = false, includeObjectRelations: bool = false, includeAccessPoints: bool = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
-		{
-			return Get((includeChildFolders ? "(FolderTree:" : "(FolderID:") + folderID + ")", sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
-		}
-
-		public static GetByObjectGUID(objectGUID:string, accessPointGUID: string = null, includeMetadata: bool = false, includeFiles: bool = false, includeObjectRelations: bool = false, includeAccessPoints: bool = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
-		{
-			return Get("(GUID:" + objectGUID + ")", null, accessPointGUID, 0, 1, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
+			return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), { objectGuids: objectGuids.join(), includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints }, true );
 		}
 
 		public static SetPublishSettings(objectGUID:string, accessPointGUID:string, startDate:Date, endDate:Date, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState

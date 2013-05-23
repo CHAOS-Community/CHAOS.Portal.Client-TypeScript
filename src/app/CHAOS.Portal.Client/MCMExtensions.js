@@ -153,52 +153,24 @@ var CHAOS;
                         folderID: folderID
                     }, true);
                 };
-                Object.Get = function Get(query, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
-                    if (typeof query === "undefined") { query = null; }
-                    if (typeof sort === "undefined") { sort = null; }
-                    if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
-                    if (typeof pageIndex === "undefined") { pageIndex = 0; }
-                    if (typeof pageSize === "undefined") { pageSize = 10; }
+                Object.Get = function Get(objectGuids, includeMetadata, includeFiles, includeObjectRelations, includeFolders, includeAccessPoints, serviceCaller) {
                     if (typeof includeMetadata === "undefined") { includeMetadata = false; }
                     if (typeof includeFiles === "undefined") { includeFiles = false; }
                     if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
+                    if (typeof includeFolders === "undefined") { includeFolders = false; }
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
                     }
                     return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), {
-                        query: query,
-                        sort: sort,
-                        accessPointGUID: accessPointGUID,
-                        pageIndex: pageIndex,
-                        pageSize: pageSize,
+                        objectGuids: objectGuids.join(),
                         includeMetadata: includeMetadata,
                         includeFiles: includeFiles,
-                        includeObjectRelations: includeObjectRelations
-                    }, accessPointGUID == null);
-                };
-                Object.GetByFolderID = function GetByFolderID(folderID, includeChildFolders, sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
-                    if (typeof includeChildFolders === "undefined") { includeChildFolders = true; }
-                    if (typeof sort === "undefined") { sort = null; }
-                    if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
-                    if (typeof pageIndex === "undefined") { pageIndex = 0; }
-                    if (typeof pageSize === "undefined") { pageSize = 10; }
-                    if (typeof includeMetadata === "undefined") { includeMetadata = false; }
-                    if (typeof includeFiles === "undefined") { includeFiles = false; }
-                    if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
-                    if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    return Object.Get((includeChildFolders ? "(FolderTree:" : "(FolderID:") + folderID + ")", sort, accessPointGUID, pageIndex, pageSize, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
-                };
-                Object.GetByObjectGUID = function GetByObjectGUID(objectGUID, accessPointGUID, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller) {
-                    if (typeof accessPointGUID === "undefined") { accessPointGUID = null; }
-                    if (typeof includeMetadata === "undefined") { includeMetadata = false; }
-                    if (typeof includeFiles === "undefined") { includeFiles = false; }
-                    if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
-                    if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    return Object.Get("(GUID:" + objectGUID + ")", null, accessPointGUID, 0, 1, includeMetadata, includeFiles, includeObjectRelations, includeAccessPoints, serviceCaller);
+                        includeObjectRelations: includeObjectRelations,
+                        includeFolders: includeFolders,
+                        includeAccessPoints: includeAccessPoints
+                    }, true);
                 };
                 Object.SetPublishSettings = function SetPublishSettings(objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }

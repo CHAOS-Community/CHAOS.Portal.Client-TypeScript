@@ -94,14 +94,20 @@ module CHAOS.Portal.Client {
         static Login(guid: string, passwordGuid: string, serviceCaller?: IServiceCaller): ICallState;
     }
     class User {
-        static Get(serviceCaller?: IServiceCaller): ICallState;
+        static Create(guid: string, email: string, serviceCaller?: IServiceCaller): ICallState;
+        static Update(guid: string, email: string, permissons?: number, serviceCaller?: IServiceCaller): ICallState;
+        static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState;
+        static Get(guid: string, groupGuid?: string, serviceCaller?: IServiceCaller): ICallState;
         static GetCurrent(serviceCaller?: IServiceCaller): ICallState;
     }
     class Group {
-        static Get(serviceCaller?: IServiceCaller): ICallState;
+        static Get(guid?: string, userGuid?: string, serviceCaller?: IServiceCaller): ICallState;
         static Create(name: string, systemPermission: number, serviceCaller?: IServiceCaller): ICallState;
         static Update(guid: string, newName: string, newSystemPermission?: number, serviceCaller?: IServiceCaller): ICallState;
         static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState;
+        static AddUser(guid: string, userGuid: string, permissions: number, serviceCaller?: IServiceCaller): ICallState;
+        static RemoveUser(guid: string, userGuid: string, serviceCaller?: IServiceCaller): ICallState;
+        static UpdateUserPermissions(guid: string, userGuid: string, permissions: number, serviceCaller?: IServiceCaller): ICallState;
     }
     class View {
         static Get(view: string, query?: string, sort?: string, pageIndex?: number, pageSize?: number, serviceCaller?: IServiceCaller): ICallState;
@@ -143,9 +149,7 @@ module CHAOS.Portal.Client {
     }
     class Object {
         static Create(guid: string, objectTypeID: number, folderID: number, serviceCaller?: IServiceCaller): ICallState;
-        static Get(query?: string, sort?: string, accessPointGUID?: string, pageIndex?: number, pageSize?: number, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): ICallState;
-        static GetByFolderID(folderID: number, includeChildFolders?: bool, sort?: string, accessPointGUID?: string, pageIndex?: number, pageSize?: number, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): ICallState;
-        static GetByObjectGUID(objectGUID: string, accessPointGUID?: string, includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): ICallState;
+        static Get(objectGuids: string[], includeMetadata?: bool, includeFiles?: bool, includeObjectRelations?: bool, includeFolders?: bool, includeAccessPoints?: bool, serviceCaller?: IServiceCaller): ICallState;
         static SetPublishSettings(objectGUID: string, accessPointGUID: string, startDate: Date, endDate: Date, serviceCaller?: IServiceCaller): ICallState;
     }
     class ObjectRelationType {
