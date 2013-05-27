@@ -85,7 +85,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("User/Delete", HttpMethod.Get(), {guid: guid}, true);
 		}
 
-		public static Get(guid:string, groupGuid:string = null, serviceCaller: IServiceCaller = null):ICallState
+		public static Get(guid:string = null, groupGuid:string = null, serviceCaller: IServiceCaller = null):ICallState
 		{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();

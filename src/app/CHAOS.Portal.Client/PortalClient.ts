@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.4.0"; }
+		public static GetClientVersion():string { return "2.4.1"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -26,7 +26,7 @@ module CHAOS.Portal.Client
 			if(typeof servicePath === "undefined")
 				throw "Parameter servicePath must be set";
 
-			if(servicePath.substr(-1) != "/")
+			if(servicePath.substr(servicePath.length -1, 1) != "/")
 				servicePath += "/";
 
 			this._servicePath = servicePath;
@@ -119,9 +119,6 @@ module CHAOS.Portal.Client
 			this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 			this._callback = callback;
 
-			if (callback != null)
-				this._request.onreadystatechange = ()=> this.RequestStateChange();
-
 			var data = this.CreateQueryString(parameters);
 
 			if (httpMethod == HttpMethod.Get())
@@ -130,12 +127,36 @@ module CHAOS.Portal.Client
 				data = null;
 			}
 
-			this._request.open(httpMethod, path, true);
+			if ("withCredentials" in this._request)
+			{
+				if (callback != null)
+					this._request.onreadystatechange = ()=> this.RequestStateChange();
 
-			if (httpMethod == HttpMethod.Post())
-				this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+				this._request.open(httpMethod, path, true);
 
-			this._request.send(data);
+				if (httpMethod == HttpMethod.Post())
+					this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+
+				this._request.send(data);
+			}
+			else if (window["XDomainRequest"]) //For IE 8/9
+			{
+				this._request = new XDomainRequest();
+
+				if (callback != null)
+				{
+					this._request.onload = () => this.ParseResponse(this._request.responseText);
+					this._request.onerror = this._request.ontimeout = () => this.ReportError();
+				}
+
+				this._request.open(httpMethod, path);
+				this._request.send(data);
+
+				if (callback != null && this._request.responseText != "")
+					setTimeout(() => this.ParseResponse(this._request.responseText), 1); // Delay cached response so callbacks can be attached
+			}
+			else
+				throw "Browser does not supper AJAX requests";
     	}
 
     	private RequestStateChange(): void
@@ -144,17 +165,25 @@ module CHAOS.Portal.Client
 				return;
 						
 			if (this._request.status == 200)
-			{
-				var response = JSON && JSON.parse(this._request.responseText) || eval(this._request.responseText);
-
-				if(response.Error != null && response.Error.Fullname == null)
-					response.Error = null;
-
-				this._callback(response);
-			}
+				this.ParseResponse(this._request.responseText);
 			else
-				this._callback({Header: null, Result: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
+				this.ReportError();
     	}
+
+		private ParseResponse(response:string):void
+		{
+			var response = JSON && JSON.parse(this._request.responseText) || eval(this._request.responseText);
+
+			if(response.Error != null && response.Error.Fullname == null)
+				response.Error = null;
+
+			this._callback(response);
+		}
+
+		private ReportError():void
+		{
+			this._callback({Header: null, Result: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
+		}
 
 		private CreateQueryString(parameters: { [index:string]:any; }): string
 		{ 

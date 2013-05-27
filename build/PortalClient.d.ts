@@ -97,7 +97,7 @@ module CHAOS.Portal.Client {
         static Create(guid: string, email: string, serviceCaller?: IServiceCaller): ICallState;
         static Update(guid: string, email: string, permissons?: number, serviceCaller?: IServiceCaller): ICallState;
         static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState;
-        static Get(guid: string, groupGuid?: string, serviceCaller?: IServiceCaller): ICallState;
+        static Get(guid?: string, groupGuid?: string, serviceCaller?: IServiceCaller): ICallState;
         static GetCurrent(serviceCaller?: IServiceCaller): ICallState;
     }
     class Group {

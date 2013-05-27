@@ -9,7 +9,7 @@ var CHAOS;
                     if(typeof servicePath === "undefined") {
                         throw "Parameter servicePath must be set";
                     }
-                    if(servicePath.substr(-1) != "/") {
+                    if(servicePath.substr(servicePath.length - 1, 1) != "/") {
                         servicePath += "/";
                     }
                     this._servicePath = servicePath;
@@ -18,7 +18,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.4.0";
+                    return "2.4.1";
                 };
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
@@ -118,44 +118,71 @@ var CHAOS;
                     parameters["userHTTPStatusCodes"] = "False";
                     this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
                     this._callback = callback;
-                    if(callback != null) {
-                        this._request.onreadystatechange = function () {
-                            return _this.RequestStateChange();
-                        };
-                    }
                     var data = this.CreateQueryString(parameters);
                     if(httpMethod == Client.HttpMethod.Get()) {
                         path += "?" + data;
                         data = null;
                     }
-                    this._request.open(httpMethod, path, true);
-                    if(httpMethod == Client.HttpMethod.Post()) {
-                        this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    if("withCredentials" in this._request) {
+                        if(callback != null) {
+                            this._request.onreadystatechange = function () {
+                                return _this.RequestStateChange();
+                            };
+                        }
+                        this._request.open(httpMethod, path, true);
+                        if(httpMethod == Client.HttpMethod.Post()) {
+                            this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                        }
+                        this._request.send(data);
+                    } else if(window["XDomainRequest"]) {
+                        this._request = new XDomainRequest();
+                        if(callback != null) {
+                            this._request.onload = function () {
+                                return _this.ParseResponse(_this._request.responseText);
+                            };
+                            this._request.onerror = this._request.ontimeout = function () {
+                                return _this.ReportError();
+                            };
+                        }
+                        this._request.open(httpMethod, path);
+                        this._request.send(data);
+                        if(callback != null && this._request.responseText != "") {
+                            setTimeout(function () {
+                                return _this.ParseResponse(_this._request.responseText);
+                            }, 1);
+                        }
+                    } else {
+                        throw "Browser does not supper AJAX requests";
                     }
-                    this._request.send(data);
                 };
                 ServiceCall.prototype.RequestStateChange = function () {
                     if(this._request.readyState != 4) {
                         return;
                     }
                     if(this._request.status == 200) {
-                        var response = JSON && JSON.parse(this._request.responseText) || eval(this._request.responseText);
-                        if(response.Error != null && response.Error.Fullname == null) {
-                            response.Error = null;
-                        }
-                        this._callback(response);
+                        this.ParseResponse(this._request.responseText);
                     } else {
-                        this._callback({
-                            Header: null,
-                            Result: null,
-                            Error: {
-                                Fullname: "ServiceError",
-                                Message: "Service call failed",
-                                Stacktrace: null,
-                                InnerException: null
-                            }
-                        });
+                        this.ReportError();
                     }
+                };
+                ServiceCall.prototype.ParseResponse = function (response) {
+                    var response = JSON && JSON.parse(this._request.responseText) || eval(this._request.responseText);
+                    if(response.Error != null && response.Error.Fullname == null) {
+                        response.Error = null;
+                    }
+                    this._callback(response);
+                };
+                ServiceCall.prototype.ReportError = function () {
+                    this._callback({
+                        Header: null,
+                        Result: null,
+                        Error: {
+                            Fullname: "ServiceError",
+                            Message: "Service call failed",
+                            Stacktrace: null,
+                            InnerException: null
+                        }
+                    });
                 };
                 ServiceCall.prototype.CreateQueryString = function (parameters) {
                     var result = "";

@@ -103,6 +103,7 @@ var CHAOS;
                     }, true);
                 };
                 User.Get = function Get(guid, groupGuid, serviceCaller) {
+                    if (typeof guid === "undefined") { guid = null; }
                     if (typeof groupGuid === "undefined") { groupGuid = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if(serviceCaller == null) {
