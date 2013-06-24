@@ -38,7 +38,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.4.1";
+                    return "2.4.2";
                 };
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
@@ -64,17 +64,33 @@ var CHAOS;
                 PortalClient.prototype.CallService = function (path, httpMethod, parameters, requiresSession) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
+                    if(requiresSession) {
+                        parameters = this.AddSessionToParameters(parameters);
+                    }
+                    return new CallState().Call(this.GetPathToExtension(path), httpMethod, parameters);
+                };
+                PortalClient.prototype.GetServiceCallUri = function (path, parameters, requiresSession, format) {
+                    if (typeof parameters === "undefined") { parameters = null; }
+                    if (typeof requiresSession === "undefined") { requiresSession = true; }
+                    if (typeof format === "undefined") { format = "json"; }
+                    if(requiresSession) {
+                        parameters = this.AddSessionToParameters(parameters);
+                    }
+                    return this.GetPathToExtension(path) + "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters, format);
+                };
+                PortalClient.prototype.GetPathToExtension = function (path) {
+                    return this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path;
+                };
+                PortalClient.prototype.AddSessionToParameters = function (parameters) {
                     if(parameters == null) {
                         parameters = {
                         };
                     }
-                    if(requiresSession) {
-                        if(!this.HasSession()) {
-                            throw "Session not acquired";
-                        }
-                        parameters["sessionGUID"] = this.GetCurrentSession().Guid;
+                    if(!this.HasSession()) {
+                        throw "Session not acquired";
                     }
-                    return new CallState().Call(this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path, httpMethod, parameters);
+                    parameters["sessionGUID"] = this.GetCurrentSession().Guid;
+                    return parameters;
                 };
                 PortalClient.prototype.UpdateSession = function (session) {
                     this._currentSession = session;
@@ -130,19 +146,13 @@ var CHAOS;
                 ServiceCall.prototype.Call = function (callback, path, httpMethod, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
-                    if(parameters == null) {
-                        parameters = {
-                        };
-                    }
-                    parameters["format"] = "json";
-                    parameters["userHTTPStatusCodes"] = "False";
-                    this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-                    this._callback = callback;
-                    var data = this.CreateQueryString(parameters);
+                    var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
                     if(httpMethod == Client.HttpMethod.Get()) {
                         path += "?" + data;
                         data = null;
                     }
+                    this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+                    this._callback = callback;
                     if("withCredentials" in this._request) {
                         if(callback != null) {
                             this._request.onreadystatechange = function () {
@@ -204,7 +214,17 @@ var CHAOS;
                         }
                     });
                 };
-                ServiceCall.prototype.CreateQueryString = function (parameters) {
+                ServiceCall.CreateDataStringWithPortalParameters = function CreateDataStringWithPortalParameters(parameters, format) {
+                    if (typeof format === "undefined") { format = "json"; }
+                    if(parameters == null) {
+                        parameters = {
+                        };
+                    }
+                    parameters["format"] = format;
+                    parameters["userHTTPStatusCodes"] = "False";
+                    return ServiceCall.CreateDataString(parameters);
+                };
+                ServiceCall.CreateDataString = function CreateDataString(parameters) {
                     var result = "";
                     var first = true;
                     for(var key in parameters) {

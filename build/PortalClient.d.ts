@@ -19,6 +19,9 @@ module CHAOS.Portal.Client {
         CallService(path: string, httpMethod: string, parameters: {
                 [index: string]: any;
             }, requiresSession: bool): ICallState;
+        GetServiceCallUri(path: string, parameters: {
+                [index: string]: any;
+            }, requiresSession: bool, format: string): string;
         UpdateSession(session: ISession): void;
         SetSessionAuthenticated(type: string): void;
     }
@@ -76,6 +79,11 @@ module CHAOS.Portal.Client {
         public CallService(path: string, httpMethod: string, parameters?: {
                 [index: string]: any;
             }, requiresSession?: bool): ICallState;
+        public GetServiceCallUri(path: string, parameters?: {
+                [index: string]: any;
+            }, requiresSession?: bool, format?: string): string;
+        private GetPathToExtension(path);
+        private AddSessionToParameters(parameters);
         public UpdateSession(session: ISession): void;
         public SetSessionAuthenticated(type: string): void;
     }

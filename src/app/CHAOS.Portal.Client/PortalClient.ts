@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.4.1"; }
+		public static GetClientVersion():string { return "2.4.2"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -38,18 +38,36 @@ module CHAOS.Portal.Client
 
 		public CallService(path:string, httpMethod:string, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState
 		{
-			if (parameters == null)
-				parameters = {};
+		    if (requiresSession)
+		        parameters = this.AddSessionToParameters(parameters);
 
-			if(requiresSession)
-			{
-				if(!this.HasSession())
-					throw "Session not acquired";
+			return new CallState().Call(this.GetPathToExtension(path), httpMethod, parameters);
+		}
 
-				parameters["sessionGUID"] = this.GetCurrentSession().Guid;
-			}
+		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: bool = true, format:string = "json"): string
+		{
+		    if (requiresSession)
+		        parameters = this.AddSessionToParameters(parameters);
 
-			return new CallState().Call(this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path, httpMethod, parameters);
+		    return this.GetPathToExtension(path) + "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters, format);
+		}
+
+		private GetPathToExtension(path: string): string
+		{
+		    return this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path;
+		}
+
+		private AddSessionToParameters(parameters: { [index: string]: any; }): { [index: string]: any; }
+		{
+		    if (parameters == null)
+		        parameters = {};
+
+		    if (!this.HasSession())
+		        throw "Session not acquired";
+
+		    parameters["sessionGUID"] = this.GetCurrentSession().Guid;
+
+		    return parameters;
 		}
 
 		public UpdateSession(session: ISession): void
@@ -108,24 +126,18 @@ module CHAOS.Portal.Client
     	private _request: any;
     	private _callback: (response: IPortalResponse) => void;
 
-    	public Call(callback:(response: IPortalResponse) => void, path:string, httpMethod:string, parameters:{ [index:string]:any; } = null)
+    	public Call(callback:(response: IPortalResponse) => void, path:string, httpMethod:string, parameters:{ [index:string]:any; } = null):void
     	{
-			if (parameters == null)
-				parameters = {};
-
-			parameters["format"] = "json";
-			parameters["userHTTPStatusCodes"] = "False";
-
-			this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-			this._callback = callback;
-
-			var data = this.CreateQueryString(parameters);
+    	    var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
 			if (httpMethod == HttpMethod.Get())
 			{
 				path += "?" + data;
 				data = null;
 			}
+
+			this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+			this._callback = callback;
 
 			if ("withCredentials" in this._request)
 			{
@@ -185,7 +197,18 @@ module CHAOS.Portal.Client
 			this._callback({Header: null, Result: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
 		}
 
-		private CreateQueryString(parameters: { [index:string]:any; }): string
+		public static CreateDataStringWithPortalParameters(parameters: { [index: string]: any; }, format:string = "json"): string
+		{
+		    if (parameters == null)
+		        parameters = {};
+
+		    parameters["format"] = format;
+		    parameters["userHTTPStatusCodes"] = "False";
+
+		    return CreateDataString(parameters);
+		}
+
+		public static CreateDataString(parameters: { [index:string]:any; }): string
 		{ 
 			var result: string = "";
 			var first:bool = true;
