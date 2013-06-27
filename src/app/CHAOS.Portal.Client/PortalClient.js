@@ -6,23 +6,25 @@ var CHAOS;
                 function PortalClient(servicePath, clientGuid) {
                     if (typeof clientGuid === "undefined") { clientGuid = null; }
                     this._authenticationType = null;
-                    if(typeof servicePath === "undefined") {
+                    if (typeof servicePath === "undefined")
                         throw "Parameter servicePath must be set";
-                    }
-                    if(servicePath.substr(servicePath.length - 1, 1) != "/") {
+
+                    if (servicePath.substr(servicePath.length - 1, 1) != "/")
                         servicePath += "/";
-                    }
+
                     this._servicePath = servicePath;
                     this.ClientGuid = clientGuid;
+
                     this._sessionAcquired = new Event(this);
                     this._sessionAuthenticated = new Event(this);
                 }
-                PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.4.3";
+                PortalClient.GetClientVersion = function () {
+                    return "2.5.0";
                 };
-                PortalClient.GetProtocolVersion = function GetProtocolVersion() {
+                PortalClient.GetProtocolVersion = function () {
                     return 6;
                 };
+
                 PortalClient.prototype.GetServicePath = function () {
                     return this._servicePath;
                 };
@@ -41,112 +43,131 @@ var CHAOS;
                 PortalClient.prototype.SessionAuthenticated = function () {
                     return this._sessionAuthenticated;
                 };
+
                 PortalClient.prototype.CallService = function (path, httpMethod, parameters, requiresSession) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
-                    if(requiresSession) {
+                    if (requiresSession)
                         parameters = this.AddSessionToParameters(parameters);
-                    }
+
                     return new CallState().Call(this.GetPathToExtension(path), httpMethod, parameters);
                 };
+
                 PortalClient.prototype.GetServiceCallUri = function (path, parameters, requiresSession, format) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
                     if (typeof format === "undefined") { format = "json"; }
-                    if(requiresSession) {
+                    if (requiresSession)
                         parameters = this.AddSessionToParameters(parameters);
-                    }
+
                     return this.GetPathToExtension(path) + "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters, format);
                 };
+
                 PortalClient.prototype.GetPathToExtension = function (path) {
                     return this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path;
                 };
+
                 PortalClient.prototype.AddSessionToParameters = function (parameters) {
-                    if(parameters == null) {
-                        parameters = {
-                        };
-                    }
-                    if(!this.HasSession()) {
+                    if (parameters == null)
+                        parameters = {};
+
+                    if (!this.HasSession())
                         throw "Session not acquired";
-                    }
+
                     parameters["sessionGUID"] = this.GetCurrentSession().Guid;
+
                     return parameters;
                 };
+
                 PortalClient.prototype.UpdateSession = function (session) {
                     this._currentSession = session;
+
                     this._sessionAcquired.Raise(session);
                 };
+
                 PortalClient.prototype.SetSessionAuthenticated = function (type) {
                     this._authenticationType = type;
+
                     this._sessionAuthenticated.Raise(type);
                 };
                 return PortalClient;
             })();
-            Client.PortalClient = PortalClient;            
+            Client.PortalClient = PortalClient;
+
             var CallState = (function () {
-                function CallState() { }
+                function CallState() {
+                }
                 CallState.prototype.Call = function (path, httpMethod, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
                     this._completed = new Event(this);
                     this._call = new ServiceCall();
+
                     this._call.Call(function (response) {
                         return _this._completed.Raise(response);
                     }, path, httpMethod, parameters);
+
                     return this;
                 };
+
                 CallState.prototype.WithCallback = function (callback, context) {
                     if (typeof context === "undefined") { context = null; }
-                    if(context == null) {
-                        this._completed.Add(callback);
-                    } else {
+                    if (context == null)
+                        this._completed.Add(callback); else
                         this._completed.Add(function (response) {
                             return callback.call(context, response);
                         });
-                    }
+
                     return this;
                 };
+
                 CallState.prototype.WithCallbackAndToken = function (callback, token, context) {
                     if (typeof context === "undefined") { context = null; }
-                    if(context == null) {
+                    if (context == null)
                         this._completed.Add(function (response) {
                             return callback(response, token);
-                        });
-                    } else {
+                        }); else
                         this._completed.Add(function (response) {
                             return callback.call(context, response, token);
                         });
-                    }
+
                     return this;
                 };
                 return CallState;
-            })();            
+            })();
+
             var ServiceCall = (function () {
-                function ServiceCall() { }
+                function ServiceCall() {
+                }
                 ServiceCall.prototype.Call = function (callback, path, httpMethod, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
                     var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
-                    if(httpMethod == Client.HttpMethod.Get()) {
+
+                    if (httpMethod == Client.HttpMethod.Get()) {
                         path += "?" + data;
                         data = null;
                     }
+
                     this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
                     this._callback = callback;
-                    if("withCredentials" in this._request) {
-                        if(callback != null) {
+
+                    if ("withCredentials" in this._request) {
+                        if (callback != null)
                             this._request.onreadystatechange = function () {
                                 return _this.RequestStateChange();
                             };
-                        }
+
                         this._request.open(httpMethod, path, true);
-                        if(httpMethod == Client.HttpMethod.Post()) {
+
+                        if (httpMethod == Client.HttpMethod.Post())
                             this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                        }
+
                         this._request.send(data);
-                    } else if(window["XDomainRequest"]) {
+                    } else if (window["XDomainRequest"]) {
                         this._request = new XDomainRequest();
-                        if(callback != null) {
+
+                        if (callback != null) {
                             this._request.onload = function () {
                                 return _this.ParseResponse(_this._request.responseText);
                             };
@@ -154,105 +175,103 @@ var CHAOS;
                                 return _this.ReportError();
                             };
                         }
+
                         this._request.open(httpMethod, path);
                         this._request.send(data);
-                        if(callback != null && this._request.responseText != "") {
+
+                        if (callback != null && this._request.responseText != "")
                             setTimeout(function () {
                                 return _this.ParseResponse(_this._request.responseText);
                             }, 1);
-                        }
-                    } else {
+                    } else
                         throw "Browser does not supper AJAX requests";
-                    }
                 };
+
                 ServiceCall.prototype.RequestStateChange = function () {
-                    if(this._request.readyState != 4) {
+                    if (this._request.readyState != 4)
                         return;
-                    }
-                    if(this._request.status == 200) {
-                        this.ParseResponse(this._request.responseText);
-                    } else {
+
+                    if (this._request.status == 200)
+                        this.ParseResponse(this._request.responseText); else
                         this.ReportError();
-                    }
                 };
-                ServiceCall.prototype.ParseResponse = function (response) {
-                    var response = JSON && JSON.parse(this._request.responseText) || eval(this._request.responseText);
-                    if(response.Error != null && response.Error.Fullname == null) {
+
+                ServiceCall.prototype.ParseResponse = function (responseText) {
+                    var response = JSON && JSON.parse(responseText) || eval(responseText);
+
+                    if (response.Error != null && response.Error.Fullname == null)
                         response.Error = null;
-                    }
+
                     this._callback(response);
                 };
+
                 ServiceCall.prototype.ReportError = function () {
-                    this._callback({
-                        Header: null,
-                        Result: null,
-                        Error: {
-                            Fullname: "ServiceError",
-                            Message: "Service call failed",
-                            Stacktrace: null,
-                            InnerException: null
-                        }
-                    });
+                    this._callback({ Header: null, Result: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
                 };
-                ServiceCall.CreateDataStringWithPortalParameters = function CreateDataStringWithPortalParameters(parameters, format) {
+
+                ServiceCall.CreateDataStringWithPortalParameters = function (parameters, format) {
                     if (typeof format === "undefined") { format = "json"; }
-                    if(parameters == null) {
-                        parameters = {
-                        };
-                    }
+                    if (parameters == null)
+                        parameters = {};
+
                     parameters["format"] = format;
                     parameters["userHTTPStatusCodes"] = "False";
+
                     return ServiceCall.CreateDataString(parameters);
                 };
-                ServiceCall.CreateDataString = function CreateDataString(parameters) {
+
+                ServiceCall.CreateDataString = function (parameters) {
                     var result = "";
                     var first = true;
-                    for(var key in parameters) {
-                        if(parameters[key] == null || typeof parameters[key] === 'undefined') {
+                    for (var key in parameters) {
+                        if (parameters[key] == null || typeof parameters[key] === 'undefined')
                             continue;
-                        }
+
                         result += (first ? "" : "&") + key + "=" + encodeURIComponent(parameters[key]);
-                        if(first) {
+
+                        if (first)
                             first = false;
-                        }
                     }
+
                     return result;
                 };
                 return ServiceCall;
-            })();            
+            })();
+
             var Event = (function () {
                 function Event(sender) {
                     this.sender = sender;
                     this._handlers = [];
-                    if(typeof sender === "undefined") {
+                    if (typeof sender === "undefined")
                         throw "Parameter sender must be set";
-                    }
+
                     this._sender = sender;
                 }
                 Event.prototype.Add = function (handler) {
-                    if(handler == undefined || handler == null) {
+                    if (handler == undefined || handler == null)
                         throw "handler must be defined";
-                    }
+
                     this._handlers.push(handler);
                 };
+
                 Event.prototype.Remove = function (handler) {
-                    if(handler == undefined || handler == null) {
+                    if (handler == undefined || handler == null)
                         throw "handler must be defined";
-                    }
-                    for(var i = 0; i < this._handlers.length; i++) {
-                        if(this._handlers[i] === handler) {
+
+                    for (var i = 0; i < this._handlers.length; i++) {
+                        if (this._handlers[i] === handler) {
                             this._handlers.splice(i, 1);
                             return;
                         }
                     }
                 };
+
                 Event.prototype.Raise = function (data) {
-                    for(var i = 0; i < this._handlers.length; i++) {
+                    for (var i = 0; i < this._handlers.length; i++)
                         this._handlers[i].call(this._sender, data);
-                    }
                 };
                 return Event;
-            })();            
+            })();
         })(Portal.Client || (Portal.Client = {}));
         var Client = Portal.Client;
     })(CHAOS.Portal || (CHAOS.Portal = {}));

@@ -13,7 +13,7 @@ client.SessionAcquired().Add(session =>
 	CHAOS.Portal.Client.View.List().WithCallback(response => ShowResults("Views", response, item => item.Name));
 });
 
-function ShowResults(elementName: string, response: CHAOS.Portal.Client.IPortalResponse, resultParser:(any) => string):void
+function ShowResults(elementName: string, response: CHAOS.Portal.Client.IPortalResponse<any>, resultParser:(any) => string):void
 {
 	var element = document.getElementById(elementName);
 

@@ -22,24 +22,24 @@ module CHAOS.Portal.Client
 
 	export interface IServiceCaller
 	{
-	    CallService(path: string, httpMethod: string, parameters: { [index: string]: any; }, requiresSession: bool): ICallState;
+	    CallService<T>(path: string, httpMethod: string, parameters: { [index: string]: any; }, requiresSession: bool): ICallState<T>;
 	    GetServiceCallUri(path: string, parameters: { [index: string]: any; }, requiresSession: bool, format: string): string;
 		UpdateSession(session: ISession): void;
 		SetSessionAuthenticated(type: string): void;
 	}
 
-	export interface ICallState
+	export interface ICallState<T>
 	{
-		WithCallback(callback:(response: IPortalResponse) => void):ICallState;
-		WithCallback(callback:(response: IPortalResponse) => void, context:any):ICallState;
-		WithCallbackAndToken(callback: (response: IPortalResponse, token: any) => void, token:any): ICallState;
-		WithCallbackAndToken(callback: (response: IPortalResponse, token: any) => void, token:any, context: any): ICallState;
+		WithCallback(callback:(response: IPortalResponse<T>) => void):ICallState;
+        WithCallback(callback: (response: IPortalResponse<T>) => void, context:any):ICallState;
+        WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token:any): ICallState;
+        WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token:any, context: any): ICallState;
 	}
 
-	export interface IPortalResponse
+	export interface IPortalResponse<T>
 	{
 		Header: IHeader;
-		Result: IPortalResult;
+		Result: IPortalResult<T>;
 		Error: IError;
 	}
 
@@ -48,11 +48,11 @@ module CHAOS.Portal.Client
 		Duration: number;
 	}
 
-	export interface IPortalResult
+	export interface IPortalResult<T>
 	{
 		Count: number;
 		TotalCount: number;
-		Results: any[];
+		Results: T[];
 	}
 
 	export interface IError

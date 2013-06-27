@@ -5,7 +5,7 @@ module CHAOS.Portal.Client
 {
 	export class MetadataSchema
     {
-    	public static Get(metadataSchemaGUID:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(metadataSchemaGUID: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -13,7 +13,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get(), { metadataSchemaGUID: metadataSchemaGUID }, true);
     	}
 
-		public static Create(name:string, schemaXml:string, guid:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Create(name: string, schemaXml: string, guid: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
            if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -21,7 +21,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("MetadataSchema/Create", CHAOS.Portal.Client.HttpMethod.Post(), { name: name, schemaXml: schemaXml, guid: guid }, true);
 		}
 
-		public static Update(name:string, schemaXml:string, guid:string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Update(name: string, schemaXml: string, guid: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
            if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -29,7 +29,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("MetadataSchema/Update", CHAOS.Portal.Client.HttpMethod.Post(), { name: name, schemaXml: schemaXml, guid: guid }, true);
 		}
 
-		public static Delete(guid:string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Delete(guid: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
            if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -37,7 +37,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("MetadataSchema/Delete", CHAOS.Portal.Client.HttpMethod.Get(), { guid: guid }, true);
 		}
 
-		public static HasPermissionToMetadataSchema(guid:string, MetadataSchemaPermission:number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static HasPermissionToMetadataSchema(guid: string, MetadataSchemaPermission: number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
            if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -48,7 +48,7 @@ module CHAOS.Portal.Client
 
 	export class Folder
     {
-    	public static Get(id:number = null, folderTypeID:number = null, parentID:number = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(id: number = null, folderTypeID: number = null, parentID: number = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -59,7 +59,7 @@ module CHAOS.Portal.Client
 
 	export class FolderType
 	{
-		public static Get(name:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(name: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -70,7 +70,7 @@ module CHAOS.Portal.Client
 
 	export class Format
 	{
-		public static Get(name:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(name: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -81,7 +81,7 @@ module CHAOS.Portal.Client
 
 	export class FormatType
 	{
-		public static Get(name:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(name: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -92,7 +92,7 @@ module CHAOS.Portal.Client
 
 	export class Language
 	{
-		public static Get(name:string = null, languageCode:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(name: string = null, languageCode: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -103,7 +103,7 @@ module CHAOS.Portal.Client
 
 	export class Object
 	{
-		public static Create(guid:string, objectTypeID:number, folderID:number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Create(guid: string, objectTypeID: number, folderID: number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -111,7 +111,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("Object/Create", CHAOS.Portal.Client.HttpMethod.Post(), {guid: guid, objectTypeID: objectTypeID, folderID: folderID}, true);
 		}
 
-		public static Get(objectGuids:string[], includeMetadata:bool = false, includeFiles:bool = false, includeObjectRelations:bool = false, includeFolders:bool = false, includeAccessPoints:bool = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(objectGuids: string[], includeMetadata: bool = false, includeFiles: bool = false, includeObjectRelations: bool = false, includeFolders: bool = false, includeAccessPoints: bool = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -119,7 +119,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), { objectGuids: objectGuids.join(), includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints }, true );
 		}
 
-		public static SetPublishSettings(objectGUID:string, accessPointGUID:string, startDate:Date, endDate:Date, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static SetPublishSettings(objectGUID: string, accessPointGUID: string, startDate: Date, endDate: Date, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -130,7 +130,7 @@ module CHAOS.Portal.Client
 
 	export class ObjectRelationType 
 	{
-		public static Get(value:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(value: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -141,7 +141,7 @@ module CHAOS.Portal.Client
 
 	export class Metadata
 	{
-		public static Set(objectGUID:string, metadataSchemaGUID:string, languageCode:string, revisionID:number, metadataXML:string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Set(objectGUID: string, metadataSchemaGUID: string, languageCode: string, revisionID: number, metadataXML: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -152,7 +152,7 @@ module CHAOS.Portal.Client
 
 	export class ObjectType
 	{
-		public static Get(serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Get(serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -160,7 +160,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("ObjectType/Get", CHAOS.Portal.Client.HttpMethod.Get(), null, true);
     	}
 
-		public static Set(name:string, id:number = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Set(name: string, id: number = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -168,7 +168,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("ObjectType/Set", CHAOS.Portal.Client.HttpMethod.Get(), { id: id, name: name }, true);
     	}
 
-		public static Delete(id:number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null):ICallState
+		public static Delete(id: number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -179,7 +179,7 @@ module CHAOS.Portal.Client
 
 	export class UserManagement
 	{
-	    public static GetUserFolder(userGuid: string = null, createIfMissing:bool = true, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState
+		public static GetUserFolder(userGuid: string = null, createIfMissing: bool = true, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 	    {
 	        if (serviceCaller == null)
 	            serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -190,7 +190,7 @@ module CHAOS.Portal.Client
 
 	export class UserProfile
 	{
-	    public static Get(metadataSchemaGuid: string, userGuid:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState
+		public static Get(metadataSchemaGuid: string, userGuid: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 	    {
 	        if (serviceCaller == null)
 	            serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -198,7 +198,7 @@ module CHAOS.Portal.Client
 	        return serviceCaller.CallService("UserProfile/Get", CHAOS.Portal.Client.HttpMethod.Get(), {metadataSchemaGuid: metadataSchemaGuid, userGuid: userGuid }, true);
 	    }
 
-	    public static Set(metadataSchemaGuid: string, metadata: string, userGuid: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState
+		public static Set(metadataSchemaGuid: string, metadata: string, userGuid: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 	    {
 	        if (serviceCaller == null)
 	            serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();

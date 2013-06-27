@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.4.3"; }
+		public static GetClientVersion():string { return "2.5.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -85,48 +85,48 @@ module CHAOS.Portal.Client
 		}
     }
 
-	class CallState implements ICallState
+	class CallState<T> implements ICallState<T>
     {
 		private _completed:Event;
-    	private _call:ServiceCall;
+		private _call: ServiceCall<T>;
 
-    	public Call(path: string, httpMethod: string, parameters: { [index: string]: any; } = null): ICallState
+    	public Call<T>(path: string, httpMethod: string, parameters: { [index: string]: any; } = null): ICallState<T>
     	{
     		this._completed = new Event(this);
 			this._call = new ServiceCall();
 
-			this._call.Call((response: IPortalResponse) => this._completed.Raise(response), path, httpMethod, parameters);
+			this._call.Call((response: IPortalResponse<T>) => this._completed.Raise(response), path, httpMethod, parameters);
 
     		return this;
     	}
 
-    	public WithCallback(callback: (response: IPortalResponse) => void, context:any = null): ICallState
+    	public WithCallback<T>(callback: (response: IPortalResponse<T>) => void, context:any = null): ICallState<T>
     	{
 			if(context == null)
 				this._completed.Add(callback);
 			else
-				this._completed.Add((response: IPortalResponse) => callback.call(context, response));
+				this._completed.Add((response: IPortalResponse<T>) => callback.call(context, response));
 			
 			return this;
     	}
 
-    	public WithCallbackAndToken(callback: (response: IPortalResponse, token: any) => void, token:any, context: any = null): ICallState
+		public WithCallbackAndToken<T>(callback: (response: IPortalResponse<T>, token: any) => void , token: any, context: any = null): ICallState<T>
     	{
 			if(context == null)
-				this._completed.Add((response: IPortalResponse) => callback(response, token));
+				this._completed.Add((response: IPortalResponse<T>) => callback(response, token));
 			else
-				this._completed.Add((response: IPortalResponse) => callback.call(context, response, token));
+				this._completed.Add((response: IPortalResponse<T>) => callback.call(context, response, token));
 			
 			return this;
     	}
     }
 
-    class ServiceCall
+	class ServiceCall<T>
     {
     	private _request: any;
-    	private _callback: (response: IPortalResponse) => void;
+		private _callback: (response: IPortalResponse<T>) => void;
 
-    	public Call(callback:(response: IPortalResponse) => void, path:string, httpMethod:string, parameters:{ [index:string]:any; } = null):void
+		public Call(callback: (response: IPortalResponse<T>) => void, path:string, httpMethod:string, parameters:{ [index:string]:any; } = null):void
     	{
     	    var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
@@ -182,9 +182,9 @@ module CHAOS.Portal.Client
 				this.ReportError();
     	}
 
-		private ParseResponse(response:string):void
+		private ParseResponse(responseText:string):void
 		{
-			var response = JSON && JSON.parse(this._request.responseText) || eval(this._request.responseText);
+            var response = JSON && JSON.parse(responseText) || eval(responseText);
 
 			if(response.Error != null && response.Error.Fullname == null)
 				response.Error = null;
@@ -205,7 +205,7 @@ module CHAOS.Portal.Client
 		    parameters["format"] = format;
 		    parameters["userHTTPStatusCodes"] = "False";
 
-		    return CreateDataString(parameters);
+            return ServiceCall.CreateDataString(parameters);
 		}
 
 		public static CreateDataString(parameters: { [index:string]:any; }): string
