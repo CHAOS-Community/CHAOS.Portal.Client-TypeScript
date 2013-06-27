@@ -38,7 +38,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function GetClientVersion() {
-                    return "2.4.2";
+                    return "2.4.3";
                 };
                 PortalClient.GetProtocolVersion = function GetProtocolVersion() {
                     return 6;
@@ -823,6 +823,51 @@ var CHAOS;
                 return ObjectType;
             })();
             Client.ObjectType = ObjectType;            
+            var UserManagement = (function () {
+                function UserManagement() { }
+                UserManagement.GetUserFolder = function GetUserFolder(userGuid, createIfMissing, serviceCaller) {
+                    if (typeof userGuid === "undefined") { userGuid = null; }
+                    if (typeof createIfMissing === "undefined") { createIfMissing = true; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("UserManagement/GetUserFolder", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        userGuid: userGuid,
+                        createIfMissing: createIfMissing
+                    }, true);
+                };
+                return UserManagement;
+            })();
+            Client.UserManagement = UserManagement;            
+            var UserProfile = (function () {
+                function UserProfile() { }
+                UserProfile.Get = function Get(metadataSchemaGuid, userGuid, serviceCaller) {
+                    if (typeof userGuid === "undefined") { userGuid = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("UserProfile/Get", CHAOS.Portal.Client.HttpMethod.Get(), {
+                        metadataSchemaGuid: metadataSchemaGuid,
+                        userGuid: userGuid
+                    }, true);
+                };
+                UserProfile.Set = function Set(metadataSchemaGuid, metadata, userGuid, serviceCaller) {
+                    if (typeof userGuid === "undefined") { userGuid = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if(serviceCaller == null) {
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                    }
+                    return serviceCaller.CallService("UserProfile/Set", CHAOS.Portal.Client.HttpMethod.Post(), {
+                        metadataSchemaGuid: metadataSchemaGuid,
+                        metadata: metadata,
+                        userGuid: userGuid
+                    }, true);
+                };
+                return UserProfile;
+            })();
+            Client.UserProfile = UserProfile;            
         })(Portal.Client || (Portal.Client = {}));
         var Client = Portal.Client;
     })(CHAOS.Portal || (CHAOS.Portal = {}));

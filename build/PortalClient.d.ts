@@ -171,6 +171,13 @@ module CHAOS.Portal.Client {
         static Set(name: string, id?: number, serviceCaller?: IServiceCaller): ICallState;
         static Delete(id: number, serviceCaller?: IServiceCaller): ICallState;
     }
+    class UserManagement {
+        static GetUserFolder(userGuid?: string, createIfMissing?: bool, serviceCaller?: IServiceCaller): ICallState;
+    }
+    class UserProfile {
+        static Get(metadataSchemaGuid: string, userGuid?: string, serviceCaller?: IServiceCaller): ICallState;
+        static Set(metadataSchemaGuid: string, metadata: string, userGuid?: string, serviceCaller?: IServiceCaller): ICallState;
+    }
 }
 module CHAOS.Portal.Client {
     class SecureCookieHelper {

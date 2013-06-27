@@ -26,3 +26,4 @@ function ShowResults(elementName, response, resultParser) {
         return;
     }
 }
+//@ sourceMappingURL=Basic.js.map

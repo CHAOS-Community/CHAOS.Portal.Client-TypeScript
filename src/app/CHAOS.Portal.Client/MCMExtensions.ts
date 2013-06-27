@@ -176,4 +176,34 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("ObjectType/Delete", CHAOS.Portal.Client.HttpMethod.Get(), { id: id }, true);
     	}
 	}
+
+	export class UserManagement
+	{
+	    public static GetUserFolder(userGuid: string = null, createIfMissing:bool = true, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState
+	    {
+	        if (serviceCaller == null)
+	            serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+	        return serviceCaller.CallService("UserManagement/GetUserFolder", CHAOS.Portal.Client.HttpMethod.Get(), { userGuid: userGuid, createIfMissing: createIfMissing }, true);
+	    }
+	}
+
+	export class UserProfile
+	{
+	    public static Get(metadataSchemaGuid: string, userGuid:string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState
+	    {
+	        if (serviceCaller == null)
+	            serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+	        return serviceCaller.CallService("UserProfile/Get", CHAOS.Portal.Client.HttpMethod.Get(), {metadataSchemaGuid: metadataSchemaGuid, userGuid: userGuid }, true);
+	    }
+
+	    public static Set(metadataSchemaGuid: string, metadata: string, userGuid: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState
+	    {
+	        if (serviceCaller == null)
+	            serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+	        return serviceCaller.CallService("UserProfile/Set", CHAOS.Portal.Client.HttpMethod.Post(), { metadataSchemaGuid: metadataSchemaGuid, metadata: metadata, userGuid: userGuid }, true);
+	    }
+	}
 }
