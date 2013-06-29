@@ -36,7 +36,7 @@ module CHAOS.Portal.Client
 			this._sessionAuthenticated = new Event(this);
 		}
 
-		public CallService(path:string, httpMethod:string, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState
+		public CallService<T>(path:string, httpMethod:string, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState<T>
 		{
 		    if (requiresSession)
 		        parameters = this.AddSessionToParameters(parameters);

@@ -76,7 +76,7 @@ declare module CHAOS.Portal.Client {
         public SessionAuthenticated(): Client.IEvent;
         public ClientGuid: string;
         constructor(servicePath: string, clientGuid?: string);
-        public CallService(path: string, httpMethod: string, parameters?: {
+        public CallService<T>(path: string, httpMethod: string, parameters?: {
             [index: string]: any;
         }, requiresSession?: boolean): Client.ICallState<T>;
         public GetServiceCallUri(path: string, parameters?: {
