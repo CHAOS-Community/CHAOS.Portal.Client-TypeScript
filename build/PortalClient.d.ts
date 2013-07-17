@@ -16,7 +16,7 @@ declare module CHAOS.Portal.Client {
         FullName: string;
     }
     interface IServiceCaller {
-        CallService<T>(path: string, httpMethod: string, parameters: {
+        CallService<T>(path: string, method: HttpMethod, parameters: {
             [index: string]: any;
         }, requiresSession: boolean): ICallState<T>;
         GetServiceCallUri(path: string, parameters: {
@@ -54,9 +54,9 @@ declare module CHAOS.Portal.Client {
         Add(handler: (any: any) => void): void;
         Remove(handler: (any: any) => void): void;
     }
-    class HttpMethod {
-        static Get(): string;
-        static Post(): string;
+    enum HttpMethod {
+        Get,
+        Post,
     }
 }
 declare module CHAOS.Portal.Client {
@@ -76,7 +76,7 @@ declare module CHAOS.Portal.Client {
         public SessionAuthenticated(): Client.IEvent;
         public ClientGuid: string;
         constructor(servicePath: string, clientGuid?: string);
-        public CallService<T>(path: string, httpMethod: string, parameters?: {
+        public CallService<T>(path: string, method: Client.HttpMethod, parameters?: {
             [index: string]: any;
         }, requiresSession?: boolean): Client.ICallState<T>;
         public GetServiceCallUri(path: string, parameters?: {
@@ -90,7 +90,7 @@ declare module CHAOS.Portal.Client {
 }
 declare module CHAOS.Portal.Client {
     class Session {
-        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<ISession>;
+        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
     }
     class EmailPassword {
         static AuthenticationType(): string;

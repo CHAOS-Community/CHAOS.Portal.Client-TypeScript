@@ -2,7 +2,8 @@
 /// <reference path="../../app/CHAOS.Portal.Client/PortalExtensions.ts"/>
 /// <reference path="../../app/CHAOS.Portal.Client/MCMExtensions.ts"/>
 
-var client = CHAOS.Portal.Client.Initialize(""); //throw "Insert api path";
+throw "Insert api path";
+var client = CHAOS.Portal.Client.Initialize("");
 
 client.SessionAcquired().Add(session =>
 {

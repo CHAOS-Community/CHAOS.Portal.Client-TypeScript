@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.5.0";
+                    return "2.5.1";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -44,13 +44,13 @@ var CHAOS;
                     return this._sessionAuthenticated;
                 };
 
-                PortalClient.prototype.CallService = function (path, httpMethod, parameters, requiresSession) {
+                PortalClient.prototype.CallService = function (path, method, parameters, requiresSession) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
                     if (requiresSession)
                         parameters = this.AddSessionToParameters(parameters);
 
-                    return new CallState().Call(this.GetPathToExtension(path), httpMethod, parameters);
+                    return new CallState().Call(this.GetPathToExtension(path), method, parameters);
                 };
 
                 PortalClient.prototype.GetServiceCallUri = function (path, parameters, requiresSession, format) {
@@ -97,7 +97,7 @@ var CHAOS;
             var CallState = (function () {
                 function CallState() {
                 }
-                CallState.prototype.Call = function (path, httpMethod, parameters) {
+                CallState.prototype.Call = function (path, method, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
                     this._completed = new Event(this);
@@ -105,7 +105,7 @@ var CHAOS;
 
                     this._call.Call(function (response) {
                         return _this._completed.Raise(response);
-                    }, path, httpMethod, parameters);
+                    }, path, method, parameters);
 
                     return this;
                 };
@@ -139,12 +139,12 @@ var CHAOS;
             var ServiceCall = (function () {
                 function ServiceCall() {
                 }
-                ServiceCall.prototype.Call = function (callback, path, httpMethod, parameters) {
+                ServiceCall.prototype.Call = function (callback, path, method, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
                     var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
-                    if (httpMethod == Client.HttpMethod.Get()) {
+                    if (method == Client.HttpMethod.Get) {
                         path += "?" + data;
                         data = null;
                     }
@@ -158,9 +158,9 @@ var CHAOS;
                                 return _this.RequestStateChange();
                             };
 
-                        this._request.open(httpMethod, path, true);
+                        this._request.open(method == Client.HttpMethod.Get ? "Get" : "Post", path, true);
 
-                        if (httpMethod == Client.HttpMethod.Post())
+                        if (method == Client.HttpMethod.Post)
                             this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
                         this._request.send(data);
@@ -176,7 +176,7 @@ var CHAOS;
                             };
                         }
 
-                        this._request.open(httpMethod, path);
+                        this._request.open(method == Client.HttpMethod.Get ? "Get" : "Post", path);
                         this._request.send(data);
 
                         if (callback != null && this._request.responseText != "")

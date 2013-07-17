@@ -11,7 +11,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get(), { metadataSchemaGUID: metadataSchemaGUID }, true);
+                    return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get, { metadataSchemaGUID: metadataSchemaGUID }, true);
                 };
 
                 MetadataSchema.Create = function (name, schemaXml, guid, serviceCaller) {
@@ -20,7 +20,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("MetadataSchema/Create", CHAOS.Portal.Client.HttpMethod.Post(), { name: name, schemaXml: schemaXml, guid: guid }, true);
+                    return serviceCaller.CallService("MetadataSchema/Create", CHAOS.Portal.Client.HttpMethod.Post, { name: name, schemaXml: schemaXml, guid: guid }, true);
                 };
 
                 MetadataSchema.Update = function (name, schemaXml, guid, serviceCaller) {
@@ -28,7 +28,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("MetadataSchema/Update", CHAOS.Portal.Client.HttpMethod.Post(), { name: name, schemaXml: schemaXml, guid: guid }, true);
+                    return serviceCaller.CallService("MetadataSchema/Update", CHAOS.Portal.Client.HttpMethod.Post, { name: name, schemaXml: schemaXml, guid: guid }, true);
                 };
 
                 MetadataSchema.Delete = function (guid, serviceCaller) {
@@ -36,7 +36,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("MetadataSchema/Delete", CHAOS.Portal.Client.HttpMethod.Get(), { guid: guid }, true);
+                    return serviceCaller.CallService("MetadataSchema/Delete", CHAOS.Portal.Client.HttpMethod.Get, { guid: guid }, true);
                 };
 
                 MetadataSchema.HasPermissionToMetadataSchema = function (guid, MetadataSchemaPermission, serviceCaller) {
@@ -44,7 +44,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("MetadataSchema/HasPermissionToMetadataSchema", CHAOS.Portal.Client.HttpMethod.Get(), { guid: guid, MetadataSchemaPermission: MetadataSchemaPermission }, true);
+                    return serviceCaller.CallService("MetadataSchema/HasPermissionToMetadataSchema", CHAOS.Portal.Client.HttpMethod.Get, { guid: guid, MetadataSchemaPermission: MetadataSchemaPermission }, true);
                 };
                 return MetadataSchema;
             })();
@@ -61,7 +61,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Folder/Get", CHAOS.Portal.Client.HttpMethod.Get(), { id: id, folderTypeID: folderTypeID, parentID: parentID }, true);
+                    return serviceCaller.CallService("Folder/Get", CHAOS.Portal.Client.HttpMethod.Get, { id: id, folderTypeID: folderTypeID, parentID: parentID }, true);
                 };
                 return Folder;
             })();
@@ -76,7 +76,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("FolderType/Get", CHAOS.Portal.Client.HttpMethod.Get(), { name: name }, true);
+                    return serviceCaller.CallService("FolderType/Get", CHAOS.Portal.Client.HttpMethod.Get, { name: name }, true);
                 };
                 return FolderType;
             })();
@@ -91,7 +91,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Format/Get", CHAOS.Portal.Client.HttpMethod.Get(), { name: name }, true);
+                    return serviceCaller.CallService("Format/Get", CHAOS.Portal.Client.HttpMethod.Get, { name: name }, true);
                 };
                 return Format;
             })();
@@ -106,7 +106,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("FormatType/Get", CHAOS.Portal.Client.HttpMethod.Get(), { name: name }, true);
+                    return serviceCaller.CallService("FormatType/Get", CHAOS.Portal.Client.HttpMethod.Get, { name: name }, true);
                 };
                 return FormatType;
             })();
@@ -122,7 +122,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Language/Get", CHAOS.Portal.Client.HttpMethod.Get(), { name: name, languageCode: languageCode }, true);
+                    return serviceCaller.CallService("Language/Get", CHAOS.Portal.Client.HttpMethod.Get, { name: name, languageCode: languageCode }, true);
                 };
                 return Language;
             })();
@@ -136,7 +136,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Object/Create", CHAOS.Portal.Client.HttpMethod.Post(), { guid: guid, objectTypeID: objectTypeID, folderID: folderID }, true);
+                    return serviceCaller.CallService("Object/Create", CHAOS.Portal.Client.HttpMethod.Post, { guid: guid, objectTypeID: objectTypeID, folderID: folderID }, true);
                 };
 
                 Object.Get = function (objectGuids, includeMetadata, includeFiles, includeObjectRelations, includeFolders, includeAccessPoints, serviceCaller) {
@@ -149,7 +149,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post(), { objectGuids: objectGuids.join(), includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints }, true);
+                    return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post, { objectGuids: objectGuids.join(), includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints }, true);
                 };
 
                 Object.SetPublishSettings = function (objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
@@ -157,7 +157,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Object/SetPublishSettings", CHAOS.Portal.Client.HttpMethod.Post(), { objectGUID: objectGUID, accessPointGUID: accessPointGUID, startDate: startDate, endDate: endDate }, true);
+                    return serviceCaller.CallService("Object/SetPublishSettings", CHAOS.Portal.Client.HttpMethod.Post, { objectGUID: objectGUID, accessPointGUID: accessPointGUID, startDate: startDate, endDate: endDate }, true);
                 };
                 return Object;
             })();
@@ -172,7 +172,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("ObjectRelationType/Get", CHAOS.Portal.Client.HttpMethod.Get(), { value: value }, true);
+                    return serviceCaller.CallService("ObjectRelationType/Get", CHAOS.Portal.Client.HttpMethod.Get, { value: value }, true);
                 };
                 return ObjectRelationType;
             })();
@@ -186,7 +186,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post(), { objectGUID: objectGUID, metadataSchemaGUID: metadataSchemaGUID, languageCode: languageCode, revisionID: revisionID, metadataXML: metadataXML }, true);
+                    return serviceCaller.CallService("Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post, { objectGUID: objectGUID, metadataSchemaGUID: metadataSchemaGUID, languageCode: languageCode, revisionID: revisionID, metadataXML: metadataXML }, true);
                 };
                 return Metadata;
             })();
@@ -200,7 +200,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("ObjectType/Get", CHAOS.Portal.Client.HttpMethod.Get(), null, true);
+                    return serviceCaller.CallService("ObjectType/Get", CHAOS.Portal.Client.HttpMethod.Get, null, true);
                 };
 
                 ObjectType.Set = function (name, id, serviceCaller) {
@@ -209,7 +209,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("ObjectType/Set", CHAOS.Portal.Client.HttpMethod.Get(), { id: id, name: name }, true);
+                    return serviceCaller.CallService("ObjectType/Set", CHAOS.Portal.Client.HttpMethod.Get, { id: id, name: name }, true);
                 };
 
                 ObjectType.Delete = function (id, serviceCaller) {
@@ -217,7 +217,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("ObjectType/Delete", CHAOS.Portal.Client.HttpMethod.Get(), { id: id }, true);
+                    return serviceCaller.CallService("ObjectType/Delete", CHAOS.Portal.Client.HttpMethod.Get, { id: id }, true);
                 };
                 return ObjectType;
             })();
@@ -233,7 +233,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("UserManagement/GetUserFolder", CHAOS.Portal.Client.HttpMethod.Get(), { userGuid: userGuid, createIfMissing: createIfMissing }, true);
+                    return serviceCaller.CallService("UserManagement/GetUserFolder", CHAOS.Portal.Client.HttpMethod.Get, { userGuid: userGuid, createIfMissing: createIfMissing }, true);
                 };
                 return UserManagement;
             })();
@@ -248,7 +248,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("UserProfile/Get", CHAOS.Portal.Client.HttpMethod.Get(), { metadataSchemaGuid: metadataSchemaGuid, userGuid: userGuid }, true);
+                    return serviceCaller.CallService("UserProfile/Get", CHAOS.Portal.Client.HttpMethod.Get, { metadataSchemaGuid: metadataSchemaGuid, userGuid: userGuid }, true);
                 };
 
                 UserProfile.Set = function (metadataSchemaGuid, metadata, userGuid, serviceCaller) {
@@ -257,7 +257,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("UserProfile/Set", CHAOS.Portal.Client.HttpMethod.Post(), { metadataSchemaGuid: metadataSchemaGuid, metadata: metadata, userGuid: userGuid }, true);
+                    return serviceCaller.CallService("UserProfile/Set", CHAOS.Portal.Client.HttpMethod.Post, { metadataSchemaGuid: metadataSchemaGuid, metadata: metadata, userGuid: userGuid }, true);
                 };
                 return UserProfile;
             })();

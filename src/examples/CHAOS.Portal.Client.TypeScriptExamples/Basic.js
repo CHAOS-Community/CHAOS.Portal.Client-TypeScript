@@ -1,3 +1,4 @@
+throw "Insert api path";
 var client = CHAOS.Portal.Client.Initialize("");
 
 client.SessionAcquired().Add(function (session) {

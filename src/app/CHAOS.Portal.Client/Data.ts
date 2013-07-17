@@ -4,8 +4,8 @@ module CHAOS.Portal.Client
 	{
 		GetServicePath(): string;
 		GetCurrentSession(): ISession;
-		HasSession(): bool;
-		IsAuthenticated(): bool;
+		HasSession(): boolean;
+		IsAuthenticated(): boolean;
 		SessionAcquired(): IEvent;
 		SessionAuthenticated(): IEvent;
 		ClientGuid: string;
@@ -22,7 +22,7 @@ module CHAOS.Portal.Client
 
 	export interface IServiceCaller
 	{
-	    CallService<T>(path: string, httpMethod: string, parameters: { [index: string]: any; }, requiresSession: bool): ICallState<T>;
+	    CallService<T>(path: string, method: HttpMethod, parameters: { [index: string]: any; }, requiresSession: bool): ICallState<T>;
 	    GetServiceCallUri(path: string, parameters: { [index: string]: any; }, requiresSession: bool, format: string): string;
 		UpdateSession(session: ISession): void;
 		SetSessionAuthenticated(type: string): void;
@@ -69,9 +69,9 @@ module CHAOS.Portal.Client
 		Remove(handler: (any) => void ): void;
 	}
 
-	export class HttpMethod
+	export enum HttpMethod
 	{
-		public static Get():string { return "GET"; }
-		public static Post():string { return "POST"; }
+		Get,
+		Post
 	}
 }

@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.5.0"; }
+		public static GetClientVersion():string { return "2.5.1"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -36,12 +36,12 @@ module CHAOS.Portal.Client
 			this._sessionAuthenticated = new Event(this);
 		}
 
-		public CallService<T>(path:string, httpMethod:string, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState<T>
+		public CallService<T>(path:string, method:HttpMethod, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState<T>
 		{
 		    if (requiresSession)
 		        parameters = this.AddSessionToParameters(parameters);
 
-			return new CallState().Call(this.GetPathToExtension(path), httpMethod, parameters);
+			return new CallState().Call(this.GetPathToExtension(path), method, parameters);
 		}
 
 		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: bool = true, format:string = "json"): string
@@ -90,12 +90,12 @@ module CHAOS.Portal.Client
 		private _completed:Event;
 		private _call: ServiceCall<T>;
 
-    	public Call<T>(path: string, httpMethod: string, parameters: { [index: string]: any; } = null): ICallState<T>
+		public Call<T>(path: string, method: HttpMethod, parameters: { [index: string]: any; } = null): ICallState<T>
     	{
     		this._completed = new Event(this);
 			this._call = new ServiceCall();
 
-			this._call.Call((response: IPortalResponse<T>) => this._completed.Raise(response), path, httpMethod, parameters);
+			this._call.Call((response: IPortalResponse<T>) => this._completed.Raise(response), path, method, parameters);
 
     		return this;
     	}
@@ -126,11 +126,11 @@ module CHAOS.Portal.Client
     	private _request: any;
 		private _callback: (response: IPortalResponse<T>) => void;
 
-		public Call(callback: (response: IPortalResponse<T>) => void, path:string, httpMethod:string, parameters:{ [index:string]:any; } = null):void
+		public Call(callback: (response: IPortalResponse<T>) => void , path: string, method: HttpMethod, parameters:{ [index:string]:any; } = null):void
     	{
     	    var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
-			if (httpMethod == HttpMethod.Get())
+			if (method == HttpMethod.Get)
 			{
 				path += "?" + data;
 				data = null;
@@ -144,9 +144,9 @@ module CHAOS.Portal.Client
 				if (callback != null)
 					this._request.onreadystatechange = ()=> this.RequestStateChange();
 
-				this._request.open(httpMethod, path, true);
+				this._request.open(method == HttpMethod.Get ? "Get" : "Post", path, true);
 
-				if (httpMethod == HttpMethod.Post())
+				if (method == HttpMethod.Post)
 					this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 
 				this._request.send(data);
@@ -161,7 +161,7 @@ module CHAOS.Portal.Client
 					this._request.onerror = this._request.ontimeout = () => this.ReportError();
 				}
 
-				this._request.open(httpMethod, path);
+				this._request.open(method == HttpMethod.Get ? "Get" : "Post", path);
 				this._request.send(data);
 
 				if (callback != null && this._request.responseText != "")

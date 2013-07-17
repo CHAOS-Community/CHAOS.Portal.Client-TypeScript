@@ -9,7 +9,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<ISession>("Session/Create", HttpMethod.Get(), null, false).WithCallback(response =>
+			return serviceCaller.CallService<ISession>("Session/Create", HttpMethod.Get, null, false).WithCallback(response =>
 			{
 				if(response.Error == null)
 					serviceCaller.UpdateSession(response.Result.Results[0]);
@@ -26,7 +26,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("EmailPassword/Login", HttpMethod.Get(), { email: email, password: password }, true).WithCallback(response =>
+			return serviceCaller.CallService<any>("EmailPassword/Login", HttpMethod.Get, { email: email, password: password }, true).WithCallback(response =>
 			{
 				if(response.Error == null)
                     serviceCaller.SetSessionAuthenticated(EmailPassword.AuthenticationType());
@@ -43,7 +43,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("SecureCookie/Create", HttpMethod.Get(), null, true);
+			return serviceCaller.CallService<any>("SecureCookie/Create", HttpMethod.Get, null, true);
 		}
 
 		public static Login(guid: string, passwordGuid: string, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -51,7 +51,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("SecureCookie/Login", HttpMethod.Get(), { guid: guid, passwordGuid: passwordGuid }, true).WithCallback(response =>
+			return serviceCaller.CallService<any>("SecureCookie/Login", HttpMethod.Get, { guid: guid, passwordGuid: passwordGuid }, true).WithCallback(response =>
 			{
 				if(response.Error == null)
                     serviceCaller.SetSessionAuthenticated(SecureCookie.AuthenticationType());
@@ -66,7 +66,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("User/Create", HttpMethod.Post(), {guid: guid, email: email}, true);
+			return serviceCaller.CallService<any>("User/Create", HttpMethod.Post, {guid: guid, email: email}, true);
 		}
 
 		public static Update(guid: string, email: string, permissons: number = null, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -74,7 +74,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("User/Update", HttpMethod.Post(), {guid: guid, email: email, permissons: permissons}, true);
+			return serviceCaller.CallService<any>("User/Update", HttpMethod.Post, {guid: guid, email: email, permissons: permissons}, true);
 		}
 
 		public static Delete(guid: string, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -82,7 +82,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("User/Delete", HttpMethod.Get(), {guid: guid}, true);
+			return serviceCaller.CallService<any>("User/Delete", HttpMethod.Get, {guid: guid}, true);
 		}
 
 		public static Get(guid: string = null, groupGuid: string = null, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -90,7 +90,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("User/Get", HttpMethod.Get(), { guid: guid, groupGuid: groupGuid }, true);
+			return serviceCaller.CallService<any>("User/Get", HttpMethod.Get, { guid: guid, groupGuid: groupGuid }, true);
 		}
 
 		public static GetCurrent(serviceCaller: IServiceCaller = null): ICallState<any>
@@ -98,7 +98,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("User/GetCurrent", HttpMethod.Get(), null, true);
+			return serviceCaller.CallService<any>("User/GetCurrent", HttpMethod.Get, null, true);
 		}
 	}
 
@@ -109,7 +109,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("Group/Get", HttpMethod.Get(), { guid: guid, userGuid: userGuid }, true);
+			return serviceCaller.CallService<any>("Group/Get", HttpMethod.Get, { guid: guid, userGuid: userGuid }, true);
 		}
 
 		public static Create(name: string, systemPermission: number, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -117,7 +117,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("Group/Create", HttpMethod.Get(), {name:name, systemPermission : systemPermission }, true);
+			return serviceCaller.CallService<any>("Group/Create", HttpMethod.Get, {name:name, systemPermission : systemPermission }, true);
 		}
 
 		public static Update(guid: string, newName: string, newSystemPermission: number = null, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -125,7 +125,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("Group/Update", HttpMethod.Get(), {guid: guid, newName:newName, newSystemPermission : newSystemPermission }, true);
+			return serviceCaller.CallService<any>("Group/Update", HttpMethod.Get, {guid: guid, newName:newName, newSystemPermission : newSystemPermission }, true);
 		}
 
 		public static Delete(guid: string, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -133,7 +133,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("Group/Delete", HttpMethod.Get(), {guid:guid}, true);
+			return serviceCaller.CallService<any>("Group/Delete", HttpMethod.Get, {guid:guid}, true);
 		}
 
 		public static AddUser(guid: string, userGuid: string, permissions: number, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -141,7 +141,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("Group/AddUser", HttpMethod.Get(), { guid: guid, userGuid: userGuid, permissions: permissions }, true);
+			return serviceCaller.CallService<any>("Group/AddUser", HttpMethod.Get, { guid: guid, userGuid: userGuid, permissions: permissions }, true);
 		}
 
 		public static RemoveUser(guid: string, userGuid: string, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -149,7 +149,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("Group/RemoveUser", HttpMethod.Get(), { guid: guid, userGuid: userGuid }, true);
+			return serviceCaller.CallService<any>("Group/RemoveUser", HttpMethod.Get, { guid: guid, userGuid: userGuid }, true);
 		}
 
 		public static UpdateUserPermissions(guid: string, userGuid: string, permissions: number, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -157,7 +157,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("Group/UpdateUserPermissions", HttpMethod.Get(), { guid: guid, userGuid: userGuid, permissions: permissions }, true);
+			return serviceCaller.CallService<any>("Group/UpdateUserPermissions", HttpMethod.Get, { guid: guid, userGuid: userGuid, permissions: permissions }, true);
 		}
 	}
 
@@ -168,7 +168,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("View/Get", HttpMethod.Get(), {view: view, query: query, sort: sort, pageIndex: pageIndex, pageSize: pageSize}, true);
+			return serviceCaller.CallService<any>("View/Get", HttpMethod.Get, {view: view, query: query, sort: sort, pageIndex: pageIndex, pageSize: pageSize}, true);
     	}
 
 		public static List(serviceCaller: IServiceCaller = null): ICallState<any>
@@ -176,7 +176,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("View/List", HttpMethod.Get(), null, true);
+			return serviceCaller.CallService<any>("View/List", HttpMethod.Get, null, true);
     	}
     }
 
@@ -187,7 +187,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("ClientSettings/Get", HttpMethod.Get(), {guid: guid}, true);
+			return serviceCaller.CallService<any>("ClientSettings/Get", HttpMethod.Get, {guid: guid}, true);
 		}
 
 		public static Set(guid: string, name: string, settings: string, serviceCaller: IServiceCaller = null): ICallState<any>
@@ -195,7 +195,7 @@ module CHAOS.Portal.Client
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("ClientSettings/Set", HttpMethod.Post(), {guid: guid, name: name, settings: settings}, true);
+			return serviceCaller.CallService<any>("ClientSettings/Set", HttpMethod.Post, {guid: guid, name: name, settings: settings}, true);
 		}
 	}
 
