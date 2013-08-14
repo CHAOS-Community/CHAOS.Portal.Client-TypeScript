@@ -34,7 +34,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.6.0";
+                    return "2.6.2";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -221,7 +221,7 @@ var CHAOS;
                 };
 
                 ServiceCall.prototype.ReportError = function () {
-                    this._callback({ Header: null, Result: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
+                    this._callback({ Header: null, Body: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
                 };
 
                 ServiceCall.CreateDataStringWithPortalParameters = function (parameters, format) {
@@ -306,7 +306,7 @@ var CHAOS;
 
                     return serviceCaller.CallService("Session/Create", Client.HttpMethod.Get, null, false).WithCallback(function (response) {
                         if (response.Error == null)
-                            serviceCaller.UpdateSession(response.Result.Results[0]);
+                            serviceCaller.UpdateSession(response.Body.Results[0]);
                     });
                 };
                 return Session;
@@ -855,7 +855,7 @@ var CHAOS;
 
                     Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
                         if (response.Error == null) {
-                            _this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
+                            _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                             if (callback != null)
                                 callback(true);
                         } else if (callback != null)
@@ -868,7 +868,7 @@ var CHAOS;
                     var _this = this;
                     Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if (response.Error == null)
-                            _this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
+                            _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                     });
                 };
 

@@ -25,7 +25,7 @@ module CHAOS.Portal.Client
 			SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(response => {
 				if (response.Error == null)
 				{
-					this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, this.COOKIE_LIFE_TIME_DAYS);
+					this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, this.COOKIE_LIFE_TIME_DAYS);
 					if(callback != null) callback(true);
 				}
 				else
@@ -38,7 +38,7 @@ module CHAOS.Portal.Client
 			SecureCookie.Create(serviceCaller).WithCallback(response =>
 			{
 				if(response.Error == null)
-					this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, this.COOKIE_LIFE_TIME_DAYS);
+					this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, this.COOKIE_LIFE_TIME_DAYS);
 			});
 		}
 

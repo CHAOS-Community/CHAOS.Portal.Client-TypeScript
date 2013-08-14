@@ -12,7 +12,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService<ISession>("Session/Create", HttpMethod.Get, null, false).WithCallback(response =>
 			{
 				if(response.Error == null)
-					serviceCaller.UpdateSession(response.Result.Results[0]);
+					serviceCaller.UpdateSession(response.Body.Results[0]);
 			});
     	}
     }

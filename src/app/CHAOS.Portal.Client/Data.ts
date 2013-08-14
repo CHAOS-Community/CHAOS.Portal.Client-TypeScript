@@ -39,7 +39,7 @@ module CHAOS.Portal.Client
 	export interface IPortalResponse<T>
 	{
 		Header: IHeader;
-		Result: IPortalResult<T>;
+		Body: IPortalResult<T>;
 		Error: IError;
 	}
 

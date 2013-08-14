@@ -33,7 +33,7 @@ declare module CHAOS.Portal.Client {
     }
     interface IPortalResponse<T> {
         Header: IHeader;
-        Result: IPortalResult<T>;
+        Body: IPortalResult<T>;
         Error: IError;
     }
     interface IHeader {

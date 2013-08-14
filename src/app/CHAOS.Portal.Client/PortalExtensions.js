@@ -12,7 +12,7 @@ var CHAOS;
 
                     return serviceCaller.CallService("Session/Create", Client.HttpMethod.Get, null, false).WithCallback(function (response) {
                         if (response.Error == null)
-                            serviceCaller.UpdateSession(response.Result.Results[0]);
+                            serviceCaller.UpdateSession(response.Body.Results[0]);
                     });
                 };
                 return Session;

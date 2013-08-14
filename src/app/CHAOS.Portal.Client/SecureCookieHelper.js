@@ -23,7 +23,7 @@ var CHAOS;
 
                     Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
                         if (response.Error == null) {
-                            _this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
+                            _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                             if (callback != null)
                                 callback(true);
                         } else if (callback != null)
@@ -36,7 +36,7 @@ var CHAOS;
                     var _this = this;
                     Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if (response.Error == null)
-                            _this.SetCookie(response.Result.Results[0].Guid, response.Result.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
+                            _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                     });
                 };
 

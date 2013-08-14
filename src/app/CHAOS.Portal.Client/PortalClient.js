@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.6.0";
+                    return "2.6.2";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -206,7 +206,7 @@ var CHAOS;
                 };
 
                 ServiceCall.prototype.ReportError = function () {
-                    this._callback({ Header: null, Result: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
+                    this._callback({ Header: null, Body: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
                 };
 
                 ServiceCall.CreateDataStringWithPortalParameters = function (parameters, format) {

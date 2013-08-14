@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.6.0"; }
+		public static GetClientVersion():string { return "2.6.2"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -194,7 +194,7 @@ module CHAOS.Portal.Client
 
 		private ReportError():void
 		{
-			this._callback({Header: null, Result: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
+			this._callback({Header: null, Body: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
 		}
 
 		public static CreateDataStringWithPortalParameters(parameters: { [index: string]: any; }, format:string = "json2"): string
