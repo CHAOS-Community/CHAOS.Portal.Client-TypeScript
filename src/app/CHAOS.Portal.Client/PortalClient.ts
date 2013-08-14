@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.5.1"; }
+		public static GetClientVersion():string { return "2.6.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -44,7 +44,7 @@ module CHAOS.Portal.Client
 			return new CallState().Call(this.GetPathToExtension(path), method, parameters);
 		}
 
-		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: bool = true, format:string = "json"): string
+		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: bool = true, format:string = "json2"): string
 		{
 		    if (requiresSession)
 		        parameters = this.AddSessionToParameters(parameters);
@@ -197,7 +197,7 @@ module CHAOS.Portal.Client
 			this._callback({Header: null, Result: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
 		}
 
-		public static CreateDataStringWithPortalParameters(parameters: { [index: string]: any; }, format:string = "json"): string
+		public static CreateDataStringWithPortalParameters(parameters: { [index: string]: any; }, format:string = "json2"): string
 		{
 		    if (parameters == null)
 		        parameters = {};

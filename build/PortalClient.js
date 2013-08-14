@@ -34,7 +34,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.5.1";
+                    return "2.6.0";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -71,7 +71,7 @@ var CHAOS;
                 PortalClient.prototype.GetServiceCallUri = function (path, parameters, requiresSession, format) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
-                    if (typeof format === "undefined") { format = "json"; }
+                    if (typeof format === "undefined") { format = "json2"; }
                     if (requiresSession)
                         parameters = this.AddSessionToParameters(parameters);
 
@@ -225,7 +225,7 @@ var CHAOS;
                 };
 
                 ServiceCall.CreateDataStringWithPortalParameters = function (parameters, format) {
-                    if (typeof format === "undefined") { format = "json"; }
+                    if (typeof format === "undefined") { format = "json2"; }
                     if (parameters == null)
                         parameters = {};
 
