@@ -7,12 +7,12 @@ module CHAOS.Portal.Client
 	{
 		private static COOKIE_LIFE_TIME_DAYS:number = 90;
 
-		public static DoesCookieExist(): bool
+		public static DoesCookieExist(): boolean
 		{
 			return this.GetCookie() != null;
 		}
 
-		public static Login(callback:(success:bool) => void = null, serviceCaller:CHAOS.Portal.Client.IServiceCaller = null):void
+		public static Login(callback:(success:boolean) => void = null, serviceCaller:CHAOS.Portal.Client.IServiceCaller = null):void
 		{ 
 			var login = this.GetCookie();
 

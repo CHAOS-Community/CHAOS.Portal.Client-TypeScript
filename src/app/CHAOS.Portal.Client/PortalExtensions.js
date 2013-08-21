@@ -1,6 +1,8 @@
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
+        /// <reference path="Data.ts" />
+        /// <reference path="PortalClient.ts"/>
         (function (Client) {
             var Session = (function () {
                 function Session() {

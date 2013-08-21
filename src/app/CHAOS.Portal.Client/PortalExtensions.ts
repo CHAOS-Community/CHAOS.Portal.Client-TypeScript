@@ -242,7 +242,7 @@ module CHAOS.Portal.Client
 		}
 	}
 
-	export function Initialize(servicePath:string, clientGUID:string = null, autoCreateSession:bool = true):IPortalClient
+	export function Initialize(servicePath:string, clientGUID:string = null, autoCreateSession:boolean = true):IPortalClient
     {
 		var client = new PortalClient(servicePath, clientGUID);
 

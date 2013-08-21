@@ -4,7 +4,6 @@ var CHAOS;
         (function (Client) {
             (function (HttpMethod) {
                 HttpMethod[HttpMethod["Get"] = 0] = "Get";
-
                 HttpMethod[HttpMethod["Post"] = 1] = "Post";
             })(Client.HttpMethod || (Client.HttpMethod = {}));
             var HttpMethod = Client.HttpMethod;

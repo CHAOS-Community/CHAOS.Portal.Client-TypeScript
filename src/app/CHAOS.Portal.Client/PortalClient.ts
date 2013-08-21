@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.6.3"; }
+		public static GetClientVersion():string { return "2.6.4"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -15,8 +15,8 @@ module CHAOS.Portal.Client
 
 		public GetServicePath():string { return this._servicePath; }
 		public GetCurrentSession(): ISession { return this._currentSession; }
-		public HasSession(): bool { return this.GetCurrentSession() != null; }
-		public IsAuthenticated(): bool { return this._authenticationType != null; }
+		public HasSession(): boolean { return this.GetCurrentSession() != null; }
+		public IsAuthenticated(): boolean { return this._authenticationType != null; }
 		public SessionAcquired():IEvent { return this._sessionAcquired; }
 		public SessionAuthenticated():IEvent { return this._sessionAuthenticated; }
 		public ClientGuid:string;
@@ -36,7 +36,7 @@ module CHAOS.Portal.Client
 			this._sessionAuthenticated = new Event(this);
 		}
 
-		public CallService<T>(path:string, method:HttpMethod = HttpMethod.Get, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState<T>
+		public CallService<T>(path:string, method:HttpMethod = HttpMethod.Get, parameters:{ [index:string]:any; } = null, requiresSession:boolean = true):ICallState<T>
 		{
 		    if (requiresSession)
 		        parameters = this.AddSessionToParameters(parameters);
@@ -44,7 +44,7 @@ module CHAOS.Portal.Client
 			return new CallState().Call(this.GetPathToExtension(path), method, parameters);
 		}
 
-		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: bool = true, format:string = "json2"): string
+		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: boolean = true, format:string = "json2"): string
 		{
 		    if (requiresSession)
 		        parameters = this.AddSessionToParameters(parameters);
@@ -222,7 +222,7 @@ module CHAOS.Portal.Client
 		public static CreateDataString(parameters: { [index:string]:any; }): string
 		{ 
 			var result: string = "";
-			var first:bool = true;
+			var first:boolean = true;
 			for(var key in parameters)
 			{
 				if(parameters[key] == null || typeof parameters[key] === 'undefined')

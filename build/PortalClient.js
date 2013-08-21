@@ -4,7 +4,6 @@ var CHAOS;
         (function (Client) {
             (function (HttpMethod) {
                 HttpMethod[HttpMethod["Get"] = 0] = "Get";
-
                 HttpMethod[HttpMethod["Post"] = 1] = "Post";
             })(Client.HttpMethod || (Client.HttpMethod = {}));
             var HttpMethod = Client.HttpMethod;
@@ -16,6 +15,7 @@ var CHAOS;
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
+        /// <reference path="Data.ts"/>
         (function (Client) {
             var PortalClient = (function () {
                 function PortalClient(servicePath, clientGuid) {
@@ -34,7 +34,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.6.3";
+                    return "2.6.4";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -139,7 +139,8 @@ var CHAOS;
                 CallState.prototype.WithCallback = function (callback, context) {
                     if (typeof context === "undefined") { context = null; }
                     if (context == null)
-                        this._completed.Add(callback); else
+                        this._completed.Add(callback);
+else
                         this._completed.Add(function (response) {
                             return callback.call(context, response);
                         });
@@ -152,7 +153,8 @@ var CHAOS;
                     if (context == null)
                         this._completed.Add(function (response) {
                             return callback(response, token);
-                        }); else
+                        });
+else
                         this._completed.Add(function (response) {
                             return callback.call(context, response, token);
                         });
@@ -218,7 +220,8 @@ var CHAOS;
                         return;
 
                     if (this._request.status == 200)
-                        this.ParseResponse(this._request.responseText); else
+                        this.ParseResponse(this._request.responseText);
+else
                         this.ReportError();
                 };
 
@@ -306,6 +309,8 @@ var CHAOS;
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
+        /// <reference path="Data.ts" />
+        /// <reference path="PortalClient.ts"/>
         (function (Client) {
             var Session = (function () {
                 function Session() {
@@ -612,6 +617,8 @@ var CHAOS;
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
+        /// <reference path="PortalClient.ts"/>
+        /// <reference path="PortalExtensions.ts"/>
         (function (Client) {
             var MetadataSchema = (function () {
                 function MetadataSchema() {
@@ -881,6 +888,8 @@ var CHAOS;
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
+        /// <reference path="PortalClient.ts"/>
+        /// <reference path="PortalExtensions.ts"/>
         (function (Client) {
             var SecureCookieHelper = (function () {
                 function SecureCookieHelper() {

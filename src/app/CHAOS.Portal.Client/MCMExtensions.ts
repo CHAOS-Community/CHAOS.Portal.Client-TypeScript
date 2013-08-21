@@ -111,7 +111,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("Object/Create", CHAOS.Portal.Client.HttpMethod.Post, {guid: guid, objectTypeID: objectTypeID, folderID: folderID}, true);
 		}
 
-		public static Get(objectGuids: string[], includeMetadata: bool = false, includeFiles: bool = false, includeObjectRelations: bool = false, includeFolders: bool = false, includeAccessPoints: bool = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		public static Get(objectGuids: string[], includeMetadata: boolean = false, includeFiles: boolean = false, includeObjectRelations: boolean = false, includeFolders: boolean = false, includeAccessPoints: boolean = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -179,7 +179,7 @@ module CHAOS.Portal.Client
 
 	export class UserManagement
 	{
-		public static GetUserFolder(userGuid: string = null, createIfMissing: bool = true, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		public static GetUserFolder(userGuid: string = null, createIfMissing: boolean = true, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 	    {
 	        if (serviceCaller == null)
 	            serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();

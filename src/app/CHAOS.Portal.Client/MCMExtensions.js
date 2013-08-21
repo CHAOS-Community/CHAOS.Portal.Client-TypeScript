@@ -1,6 +1,8 @@
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
+        /// <reference path="PortalClient.ts"/>
+        /// <reference path="PortalExtensions.ts"/>
         (function (Client) {
             var MetadataSchema = (function () {
                 function MetadataSchema() {
