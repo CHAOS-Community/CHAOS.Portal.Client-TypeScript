@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.6.2"; }
+		public static GetClientVersion():string { return "2.6.3"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -36,7 +36,7 @@ module CHAOS.Portal.Client
 			this._sessionAuthenticated = new Event(this);
 		}
 
-		public CallService<T>(path:string, method:HttpMethod, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState<T>
+		public CallService<T>(path:string, method:HttpMethod = HttpMethod.Get, parameters:{ [index:string]:any; } = null, requiresSession:bool = true):ICallState<T>
 		{
 		    if (requiresSession)
 		        parameters = this.AddSessionToParameters(parameters);
@@ -72,16 +72,27 @@ module CHAOS.Portal.Client
 
 		public UpdateSession(session: ISession): void
 		{
+			var hadSession = this._currentSession != null;
+
 			this._currentSession = session;
 
-			this._sessionAcquired.Raise(session);
+			if (!hadSession && session != null)
+				this._sessionAcquired.Raise(session);
 		}
 
-		public SetSessionAuthenticated(type: string): void
+		public SetSessionAuthenticated(type: string, userGuid: string, sessionDateModified: number): void
 		{
 			this._authenticationType = type;
 
-			this._sessionAuthenticated.Raise(type);
+			if (type != null)
+			{
+				if (userGuid != null)
+					this._currentSession.UserGuid = userGuid;
+				if (sessionDateModified != null)
+					this._currentSession.DateModified = sessionDateModified;
+
+				this._sessionAuthenticated.Raise(type);
+			}
 		}
     }
 

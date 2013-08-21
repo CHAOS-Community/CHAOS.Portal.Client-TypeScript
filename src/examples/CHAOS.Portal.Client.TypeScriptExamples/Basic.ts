@@ -22,7 +22,7 @@ function ShowResults(elementName: string, response: CHAOS.Portal.Client.IPortalR
 	{
 		element.textContent = "";
 
-		response.Result.Results.forEach(result => 
+		response.Body.Results.forEach(result => 
 		{
 			var e = document.createElement("div");
 			e.textContent  = resultParser(result);

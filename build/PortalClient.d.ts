@@ -16,14 +16,14 @@ declare module CHAOS.Portal.Client {
         FullName: string;
     }
     interface IServiceCaller {
-        CallService<T>(path: string, method: HttpMethod, parameters: {
+        CallService<T>(path: string, method?: HttpMethod, parameters?: {
             [index: string]: any;
-        }, requiresSession: boolean): ICallState<T>;
+        }, requiresSession?: boolean): ICallState<T>;
         GetServiceCallUri(path: string, parameters: {
             [index: string]: any;
         }, requiresSession: boolean, format: string): string;
         UpdateSession(session: ISession): void;
-        SetSessionAuthenticated(type: string): void;
+        SetSessionAuthenticated(type: string, userGuid: string, sessionDateModified: number): void;
     }
     interface ICallState<T> {
         WithCallback(callback: (response: IPortalResponse<T>) => void): ICallState<T>;
@@ -76,7 +76,7 @@ declare module CHAOS.Portal.Client {
         public SessionAuthenticated(): Client.IEvent;
         public ClientGuid: string;
         constructor(servicePath: string, clientGuid?: string);
-        public CallService<T>(path: string, method: Client.HttpMethod, parameters?: {
+        public CallService<T>(path: string, method?: Client.HttpMethod, parameters?: {
             [index: string]: any;
         }, requiresSession?: boolean): Client.ICallState<T>;
         public GetServiceCallUri(path: string, parameters?: {
@@ -85,12 +85,15 @@ declare module CHAOS.Portal.Client {
         private GetPathToExtension(path);
         private AddSessionToParameters(parameters);
         public UpdateSession(session: Client.ISession): void;
-        public SetSessionAuthenticated(type: string): void;
+        public SetSessionAuthenticated(type: string, userGuid: string, sessionDateModified: number): void;
     }
 }
 declare module CHAOS.Portal.Client {
     class Session {
         static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Update(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Delete(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
     }
     class EmailPassword {
         static AuthenticationType(): string;

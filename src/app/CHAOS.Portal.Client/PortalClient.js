@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.6.2";
+                    return "2.6.3";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -45,6 +45,7 @@ var CHAOS;
                 };
 
                 PortalClient.prototype.CallService = function (path, method, parameters, requiresSession) {
+                    if (typeof method === "undefined") { method = Client.HttpMethod.Get; }
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
                     if (requiresSession)
@@ -80,15 +81,25 @@ var CHAOS;
                 };
 
                 PortalClient.prototype.UpdateSession = function (session) {
+                    var hadSession = this._currentSession != null;
+
                     this._currentSession = session;
 
-                    this._sessionAcquired.Raise(session);
+                    if (!hadSession && session != null)
+                        this._sessionAcquired.Raise(session);
                 };
 
-                PortalClient.prototype.SetSessionAuthenticated = function (type) {
+                PortalClient.prototype.SetSessionAuthenticated = function (type, userGuid, sessionDateModified) {
                     this._authenticationType = type;
 
-                    this._sessionAuthenticated.Raise(type);
+                    if (type != null) {
+                        if (userGuid != null)
+                            this._currentSession.UserGuid = userGuid;
+                        if (sessionDateModified != null)
+                            this._currentSession.DateModified = sessionDateModified;
+
+                        this._sessionAuthenticated.Raise(type);
+                    }
                 };
                 return PortalClient;
             })();

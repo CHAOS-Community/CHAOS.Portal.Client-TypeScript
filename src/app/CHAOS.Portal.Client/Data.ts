@@ -22,10 +22,10 @@ module CHAOS.Portal.Client
 
 	export interface IServiceCaller
 	{
-	    CallService<T>(path: string, method: HttpMethod, parameters: { [index: string]: any; }, requiresSession: bool): ICallState<T>;
+	    CallService<T>(path: string, method?: HttpMethod, parameters?: { [index: string]: any; }, requiresSession?: bool): ICallState<T>;
 	    GetServiceCallUri(path: string, parameters: { [index: string]: any; }, requiresSession: bool, format: string): string;
 		UpdateSession(session: ISession): void;
-		SetSessionAuthenticated(type: string): void;
+		SetSessionAuthenticated(type: string, userGuid:string, sessionDateModified:number): void;
 	}
 
 	export interface ICallState<T>

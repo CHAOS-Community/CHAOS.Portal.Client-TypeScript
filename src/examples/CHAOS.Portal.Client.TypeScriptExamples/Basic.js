@@ -23,7 +23,7 @@ function ShowResults(elementName, response, resultParser) {
     if (response.Error == null) {
         element.textContent = "";
 
-        response.Result.Results.forEach(function (result) {
+        response.Body.Results.forEach(function (result) {
             var e = document.createElement("div");
             e.textContent = resultParser(result);
             element.appendChild(e);
