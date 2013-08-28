@@ -73,6 +73,14 @@ var CHAOS;
                             serviceCaller.SetSessionAuthenticated(EmailPassword.AuthenticationType(), response.Body.Results[0].Guid, response.Body.Results[0].SessionDateModified);
                     });
                 };
+
+                EmailPassword.SetPassword = function (userGuid, newPassword, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("EmailPassword/SetPassword", Client.HttpMethod.Get, { userGuid: userGuid, newPassword: newPassword });
+                };
                 return EmailPassword;
             })();
             Client.EmailPassword = EmailPassword;

@@ -71,7 +71,15 @@ module CHAOS.Portal.Client
 				if (response.Error == null)
 					serviceCaller.SetSessionAuthenticated(EmailPassword.AuthenticationType(), response.Body.Results[0].Guid, response.Body.Results[0].SessionDateModified);
 			});
-    	}
+		}
+
+		public static SetPassword(userGuid: string, newPassword: string, serviceCaller: IServiceCaller = null): ICallState<any>
+		{
+			if (serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService<any>("EmailPassword/SetPassword", HttpMethod.Get, { userGuid: userGuid, newPassword: newPassword });
+		}
     }
 
 	export class SecureCookie
