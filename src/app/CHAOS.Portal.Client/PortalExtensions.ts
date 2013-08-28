@@ -206,12 +206,12 @@ module CHAOS.Portal.Client
 
 	export class View
     {
-		public static Get(view: string, query: string = null, sort: string = null, pageIndex: number = 0, pageSize: number = 10, serviceCaller: IServiceCaller = null): ICallState<any>
+		public static Get(view: string, query: string = null, sort: string = null, filter:string = null, pageIndex: number = 0, pageSize: number = 10, serviceCaller: IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("View/Get", HttpMethod.Get, {view: view, query: query, sort: sort, pageIndex: pageIndex, pageSize: pageSize});
+			return serviceCaller.CallService<any>("View/Get", HttpMethod.Get, { view: view, query: query, sort: sort, filter: filter, pageIndex: pageIndex, pageSize: pageSize});
     	}
 
 		public static List(serviceCaller: IServiceCaller = null): ICallState<any>

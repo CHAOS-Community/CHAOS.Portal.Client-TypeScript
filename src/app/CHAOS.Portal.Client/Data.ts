@@ -30,10 +30,10 @@ module CHAOS.Portal.Client
 
 	export interface ICallState<T>
 	{
-		WithCallback(callback:(response: IPortalResponse<T>) => void):ICallState;
-        WithCallback(callback: (response: IPortalResponse<T>) => void, context:any):ICallState;
-        WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token:any): ICallState;
-        WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token:any, context: any): ICallState;
+		WithCallback(callback:(response: IPortalResponse<T>) => void):ICallState<T>;
+        WithCallback(callback: (response: IPortalResponse<T>) => void, context:any):ICallState<T>;
+        WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token:any): ICallState<T>;
+        WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token:any, context: any): ICallState<T>;
 	}
 
 	export interface IPortalResponse<T>

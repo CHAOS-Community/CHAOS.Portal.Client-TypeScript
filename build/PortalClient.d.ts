@@ -121,7 +121,7 @@ declare module CHAOS.Portal.Client {
         static UpdateUserPermissions(guid: string, userGuid: string, permissions: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
     class View {
-        static Get(view: string, query?: string, sort?: string, pageIndex?: number, pageSize?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(view: string, query?: string, sort?: string, filter?: string, pageIndex?: number, pageSize?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static List(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
     class ClientSettings {
@@ -176,6 +176,7 @@ declare module CHAOS.Portal.Client {
     }
     class UserManagement {
         static GetUserFolder(userGuid?: string, createIfMissing?: boolean, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static GetUserObject(userGuid?: string, createIfMissing?: boolean, includeMetata?: boolean, includeFiles?: boolean, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
     class UserProfile {
         static Get(metadataSchemaGuid: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;

@@ -225,16 +225,17 @@ var CHAOS;
             var View = (function () {
                 function View() {
                 }
-                View.Get = function (view, query, sort, pageIndex, pageSize, serviceCaller) {
+                View.Get = function (view, query, sort, filter, pageIndex, pageSize, serviceCaller) {
                     if (typeof query === "undefined") { query = null; }
                     if (typeof sort === "undefined") { sort = null; }
+                    if (typeof filter === "undefined") { filter = null; }
                     if (typeof pageIndex === "undefined") { pageIndex = 0; }
                     if (typeof pageSize === "undefined") { pageSize = 10; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("View/Get", Client.HttpMethod.Get, { view: view, query: query, sort: sort, pageIndex: pageIndex, pageSize: pageSize });
+                    return serviceCaller.CallService("View/Get", Client.HttpMethod.Get, { view: view, query: query, sort: sort, filter: filter, pageIndex: pageIndex, pageSize: pageSize });
                 };
 
                 View.List = function (serviceCaller) {
@@ -306,3 +307,4 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
+//# sourceMappingURL=PortalExtensions.js.map

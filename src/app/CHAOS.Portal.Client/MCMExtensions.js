@@ -237,6 +237,18 @@ var CHAOS;
 
                     return serviceCaller.CallService("UserManagement/GetUserFolder", CHAOS.Portal.Client.HttpMethod.Get, { userGuid: userGuid, createIfMissing: createIfMissing }, true);
                 };
+
+                UserManagement.GetUserObject = function (userGuid, createIfMissing, includeMetata, includeFiles, serviceCaller) {
+                    if (typeof userGuid === "undefined") { userGuid = null; }
+                    if (typeof createIfMissing === "undefined") { createIfMissing = true; }
+                    if (typeof includeMetata === "undefined") { includeMetata = false; }
+                    if (typeof includeFiles === "undefined") { includeFiles = false; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("UserManagement/GetUserObject", CHAOS.Portal.Client.HttpMethod.Get, { userGuid: userGuid, createIfMissing: createIfMissing, includeMetata: includeMetata, includeFiles: includeFiles }, true);
+                };
                 return UserManagement;
             })();
             Client.UserManagement = UserManagement;
@@ -269,3 +281,4 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
+//# sourceMappingURL=MCMExtensions.js.map

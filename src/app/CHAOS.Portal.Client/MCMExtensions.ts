@@ -180,12 +180,20 @@ module CHAOS.Portal.Client
 	export class UserManagement
 	{
 		public static GetUserFolder(userGuid: string = null, createIfMissing: boolean = true, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		{
+			if (serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("UserManagement/GetUserFolder", CHAOS.Portal.Client.HttpMethod.Get, { userGuid: userGuid, createIfMissing: createIfMissing }, true);
+		}
+
+		public static GetUserObject(userGuid: string = null, createIfMissing: boolean = true, includeMetata: boolean = false, includeFiles: boolean = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 	    {
 	        if (serviceCaller == null)
 	            serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-	        return serviceCaller.CallService("UserManagement/GetUserFolder", CHAOS.Portal.Client.HttpMethod.Get, { userGuid: userGuid, createIfMissing: createIfMissing }, true);
-	    }
+			return serviceCaller.CallService("UserManagement/GetUserObject", CHAOS.Portal.Client.HttpMethod.Get, { userGuid: userGuid, createIfMissing: createIfMissing, includeMetata: includeMetata, includeFiles: includeFiles }, true);
+		}
 	}
 
 	export class UserProfile
