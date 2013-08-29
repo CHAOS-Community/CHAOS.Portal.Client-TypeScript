@@ -632,13 +632,13 @@ var CHAOS;
             var MetadataSchema = (function () {
                 function MetadataSchema() {
                 }
-                MetadataSchema.Get = function (metadataSchemaGUID, serviceCaller) {
-                    if (typeof metadataSchemaGUID === "undefined") { metadataSchemaGUID = null; }
+                MetadataSchema.Get = function (guid, serviceCaller) {
+                    if (typeof guid === "undefined") { guid = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get, { metadataSchemaGUID: metadataSchemaGUID }, true);
+                    return serviceCaller.CallService("MetadataSchema/Get", CHAOS.Portal.Client.HttpMethod.Get, { guid: guid }, true);
                 };
 
                 MetadataSchema.Create = function (name, schemaXml, guid, serviceCaller) {
@@ -666,12 +666,12 @@ var CHAOS;
                     return serviceCaller.CallService("MetadataSchema/Delete", CHAOS.Portal.Client.HttpMethod.Get, { guid: guid }, true);
                 };
 
-                MetadataSchema.HasPermissionToMetadataSchema = function (guid, MetadataSchemaPermission, serviceCaller) {
+                MetadataSchema.HasPermissionToMetadataSchema = function (guid, permission, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("MetadataSchema/HasPermissionToMetadataSchema", CHAOS.Portal.Client.HttpMethod.Get, { guid: guid, MetadataSchemaPermission: MetadataSchemaPermission }, true);
+                    return serviceCaller.CallService("MetadataSchema/HasPermissionToMetadataSchema", CHAOS.Portal.Client.HttpMethod.Get, { guid: guid, permission: permission }, true);
                 };
                 return MetadataSchema;
             })();
@@ -680,15 +680,60 @@ var CHAOS;
             var Folder = (function () {
                 function Folder() {
                 }
-                Folder.Get = function (id, folderTypeID, parentID, serviceCaller) {
-                    if (typeof id === "undefined") { id = null; }
-                    if (typeof folderTypeID === "undefined") { folderTypeID = null; }
-                    if (typeof parentID === "undefined") { parentID = null; }
+                Folder.GetPermission = function (folderID, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Folder/Get", CHAOS.Portal.Client.HttpMethod.Get, { id: id, folderTypeID: folderTypeID, parentID: parentID }, true);
+                    return serviceCaller.CallService("Folder/GetPermission", CHAOS.Portal.Client.HttpMethod.Get, { folderID: folderID }, true);
+                };
+
+                Folder.SetPermission = function (userGuid, groupGuid, folderID, permission, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Folder/SetPermission", CHAOS.Portal.Client.HttpMethod.Get, { userGuid: userGuid, groupGuid: groupGuid, folderID: folderID, permission: permission }, true);
+                };
+
+                Folder.Get = function (id, folderTypeID, parentID, permission, serviceCaller) {
+                    if (typeof id === "undefined") { id = null; }
+                    if (typeof folderTypeID === "undefined") { folderTypeID = null; }
+                    if (typeof parentID === "undefined") { parentID = null; }
+                    if (typeof permission === "undefined") { permission = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Folder/Get", CHAOS.Portal.Client.HttpMethod.Get, { id: id, folderTypeID: folderTypeID, parentID: parentID, permission: permission }, true);
+                };
+
+                Folder.Delete = function (id, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Folder/Delete", CHAOS.Portal.Client.HttpMethod.Get, { id: id }, true);
+                };
+
+                Folder.Update = function (id, newTitle, newParentID, newFolderTypeID, serviceCaller) {
+                    if (typeof newParentID === "undefined") { newParentID = null; }
+                    if (typeof newFolderTypeID === "undefined") { newFolderTypeID = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Folder/Update", CHAOS.Portal.Client.HttpMethod.Get, { id: id, newTitle: newTitle, newFolderTypeID: newFolderTypeID, newParentID: newParentID }, true);
+                };
+
+                Folder.Create = function (subscriptionGuid, title, parentID, folderTypeID, serviceCaller) {
+                    if (typeof parentID === "undefined") { parentID = null; }
+                    if (typeof folderTypeID === "undefined") { folderTypeID = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Folder/Create", CHAOS.Portal.Client.HttpMethod.Get, { subscriptionGuid: subscriptionGuid, title: title, parentID: parentID, folderTypeID: folderTypeID }, true);
                 };
                 return Folder;
             })();

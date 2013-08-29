@@ -138,14 +138,19 @@ declare module CHAOS.Portal.Client {
 }
 declare module CHAOS.Portal.Client {
     class MetadataSchema {
-        static Get(metadataSchemaGUID?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(guid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static Create(name: string, schemaXml: string, guid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static Update(name: string, schemaXml: string, guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static Delete(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static HasPermissionToMetadataSchema(guid: string, MetadataSchemaPermission: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static HasPermissionToMetadataSchema(guid: string, permission: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
     class Folder {
-        static Get(id?: number, folderTypeID?: number, parentID?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static GetPermission(folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static SetPermission(userGuid: string, groupGuid: string, folderID: number, permission: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(id?: number, folderTypeID?: number, parentID?: number, permission?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Delete(id: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Update(id: number, newTitle: string, newParentID?: number, newFolderTypeID?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Create(subscriptionGuid: string, title: string, parentID?: number, folderTypeID?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
     class FolderType {
         static Get(name?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
