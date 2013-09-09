@@ -166,7 +166,7 @@ declare module CHAOS.Portal.Client {
     }
     class Object {
         static Create(guid: string, objectTypeID: number, folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Get(objectGuids: string[], includeMetadata?: boolean, includeFiles?: boolean, includeObjectRelations?: boolean, includeFolders?: boolean, includeAccessPoints?: boolean, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(objectGuids: string[], accessPointGuid?: string, includeMetadata?: boolean, includeFiles?: boolean, includeObjectRelations?: boolean, includeFolders?: boolean, includeAccessPoints?: boolean, pageSize?: number, pageIndex?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static SetPublishSettings(objectGUID: string, accessPointGUID: string, startDate: Date, endDate: Date, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
     class ObjectRelationType {

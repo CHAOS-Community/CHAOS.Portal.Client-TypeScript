@@ -151,12 +151,12 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("Object/Create", CHAOS.Portal.Client.HttpMethod.Post, {guid: guid, objectTypeID: objectTypeID, folderID: folderID}, true);
 		}
 
-		public static Get(objectGuids: string[], includeMetadata: boolean = false, includeFiles: boolean = false, includeObjectRelations: boolean = false, includeFolders: boolean = false, includeAccessPoints: boolean = false, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		public static Get(objectGuids: string[], accessPointGuid:string = null, includeMetadata: boolean = false, includeFiles: boolean = false, includeObjectRelations: boolean = false, includeFolders: boolean = false, includeAccessPoints: boolean = false, pageSize:number = 10, pageIndex = 0, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post, { objectGuids: objectGuids.join(), includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints }, true );
+			return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post, { objectGuids: objectGuids.join(), accessPointGuid: accessPointGuid, includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints, pageSize: pageSize, pageIndex: pageIndex }, true );
 		}
 
 		public static SetPublishSettings(objectGUID: string, accessPointGUID: string, startDate: Date, endDate: Date, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>

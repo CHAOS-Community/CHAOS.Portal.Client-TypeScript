@@ -34,7 +34,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.6.6";
+                    return "2.6.7";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -811,17 +811,20 @@ var CHAOS;
                     return serviceCaller.CallService("Object/Create", CHAOS.Portal.Client.HttpMethod.Post, { guid: guid, objectTypeID: objectTypeID, folderID: folderID }, true);
                 };
 
-                Object.Get = function (objectGuids, includeMetadata, includeFiles, includeObjectRelations, includeFolders, includeAccessPoints, serviceCaller) {
+                Object.Get = function (objectGuids, accessPointGuid, includeMetadata, includeFiles, includeObjectRelations, includeFolders, includeAccessPoints, pageSize, pageIndex, serviceCaller) {
+                    if (typeof accessPointGuid === "undefined") { accessPointGuid = null; }
                     if (typeof includeMetadata === "undefined") { includeMetadata = false; }
                     if (typeof includeFiles === "undefined") { includeFiles = false; }
                     if (typeof includeObjectRelations === "undefined") { includeObjectRelations = false; }
                     if (typeof includeFolders === "undefined") { includeFolders = false; }
                     if (typeof includeAccessPoints === "undefined") { includeAccessPoints = false; }
+                    if (typeof pageSize === "undefined") { pageSize = 10; }
+                    if (typeof pageIndex === "undefined") { pageIndex = 0; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post, { objectGuids: objectGuids.join(), includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints }, true);
+                    return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Post, { objectGuids: objectGuids.join(), accessPointGuid: accessPointGuid, includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints, pageSize: pageSize, pageIndex: pageIndex }, true);
                 };
 
                 Object.SetPublishSettings = function (objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
