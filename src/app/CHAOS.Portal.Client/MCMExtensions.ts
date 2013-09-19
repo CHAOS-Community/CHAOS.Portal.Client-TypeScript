@@ -181,12 +181,12 @@ module CHAOS.Portal.Client
 
 	export class Metadata
 	{
-		public static Set(objectGUID: string, metadataSchemaGUID: string, languageCode: string, revisionID: number, metadataXML: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		public static Set(objectGuid: string, metadataSchemaGuid: string, languageCode: string, revisionID: number, metadataXml: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
     	{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService("Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post, { objectGUID: objectGUID, metadataSchemaGUID: metadataSchemaGUID, languageCode: languageCode, revisionID: revisionID, metadataXML: metadataXML }, true);
+			return serviceCaller.CallService("Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post, { objectGuid: objectGuid, metadataSchemaGuid: metadataSchemaGuid, languageCode: languageCode, revisionID: revisionID, metadataXml: metadataXml }, true);
     	}
 	}
 

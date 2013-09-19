@@ -173,7 +173,7 @@ declare module CHAOS.Portal.Client {
         static Get(value?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
     class Metadata {
-        static Set(objectGUID: string, metadataSchemaGUID: string, languageCode: string, revisionID: number, metadataXML: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Set(objectGuid: string, metadataSchemaGuid: string, languageCode: string, revisionID: number, metadataXml: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
     class ObjectType {
         static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;

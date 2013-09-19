@@ -231,12 +231,12 @@ var CHAOS;
             var Metadata = (function () {
                 function Metadata() {
                 }
-                Metadata.Set = function (objectGUID, metadataSchemaGUID, languageCode, revisionID, metadataXML, serviceCaller) {
+                Metadata.Set = function (objectGuid, metadataSchemaGuid, languageCode, revisionID, metadataXml, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post, { objectGUID: objectGUID, metadataSchemaGUID: metadataSchemaGUID, languageCode: languageCode, revisionID: revisionID, metadataXML: metadataXML }, true);
+                    return serviceCaller.CallService("Metadata/Set", CHAOS.Portal.Client.HttpMethod.Post, { objectGuid: objectGuid, metadataSchemaGuid: metadataSchemaGuid, languageCode: languageCode, revisionID: revisionID, metadataXml: metadataXml }, true);
                 };
                 return Metadata;
             })();
