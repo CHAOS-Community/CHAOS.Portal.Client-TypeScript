@@ -169,6 +169,10 @@ declare module CHAOS.Portal.Client {
         static Get(objectGuids: string[], accessPointGuid?: string, includeMetadata?: boolean, includeFiles?: boolean, includeObjectRelations?: boolean, includeFolders?: boolean, includeAccessPoints?: boolean, pageSize?: number, pageIndex?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static SetPublishSettings(objectGUID: string, accessPointGUID: string, startDate: Date, endDate: Date, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
+    class ObjectRelation {
+        static Set(object1Guid: string, object2Guid: string, objectRelationTypeID: number, sequence?: number, metadataGuid?: string, metadataSchemaGuid?: string, languageCode?: string, metadataXml?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Delete(object1Guid: string, object2Guid: string, objectRelationTypeID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
     class ObjectRelationType {
         static Get(value?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }

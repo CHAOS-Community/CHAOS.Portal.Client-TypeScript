@@ -213,6 +213,33 @@ var CHAOS;
             })();
             Client.Object = Object;
 
+            var ObjectRelation = (function () {
+                function ObjectRelation() {
+                }
+                ObjectRelation.Set = function (object1Guid, object2Guid, objectRelationTypeID, sequence, metadataGuid, metadataSchemaGuid, languageCode, metadataXml, serviceCaller) {
+                    if (typeof sequence === "undefined") { sequence = null; }
+                    if (typeof metadataGuid === "undefined") { metadataGuid = null; }
+                    if (typeof metadataSchemaGuid === "undefined") { metadataSchemaGuid = null; }
+                    if (typeof languageCode === "undefined") { languageCode = null; }
+                    if (typeof metadataXml === "undefined") { metadataXml = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("ObjectRelation/Set", CHAOS.Portal.Client.HttpMethod.Post, { object1Guid: object1Guid, object2Guid: object2Guid, objectRelationTypeID: objectRelationTypeID, sequence: sequence, metadataGuid: metadataGuid, metadataSchemaGuid: metadataSchemaGuid, languageCode: languageCode, metadataXml: metadataXml }, true);
+                };
+
+                ObjectRelation.Delete = function (object1Guid, object2Guid, objectRelationTypeID, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("ObjectRelation/Delete", CHAOS.Portal.Client.HttpMethod.Get, { object1Guid: object1Guid, object2Guid: object2Guid, objectRelationTypeID: objectRelationTypeID }, true);
+                };
+                return ObjectRelation;
+            })();
+            Client.ObjectRelation = ObjectRelation;
+
             var ObjectRelationType = (function () {
                 function ObjectRelationType() {
                 }

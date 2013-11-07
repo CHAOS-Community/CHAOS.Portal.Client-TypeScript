@@ -168,6 +168,25 @@ module CHAOS.Portal.Client
 		}
 	}
 
+	export class ObjectRelation
+	{
+		public static Set(object1Guid: string, object2Guid: string, objectRelationTypeID: number, sequence: number = null, metadataGuid: string = null, metadataSchemaGuid: string = null, languageCode: string = null, metadataXml : string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		{
+			if (serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("ObjectRelation/Set", CHAOS.Portal.Client.HttpMethod.Post, { object1Guid: object1Guid, object2Guid: object2Guid, objectRelationTypeID: objectRelationTypeID, sequence: sequence, metadataGuid: metadataGuid, metadataSchemaGuid: metadataSchemaGuid, languageCode: languageCode, metadataXml: metadataXml }, true);
+		}
+
+		public static Delete(object1Guid: string, object2Guid: string, objectRelationTypeID: number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		{
+			if (serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("ObjectRelation/Delete", CHAOS.Portal.Client.HttpMethod.Get, { object1Guid: object1Guid, object2Guid: object2Guid, objectRelationTypeID: objectRelationTypeID }, true);
+		}
+	}
+
 	export class ObjectRelationType 
 	{
 		public static Get(value: string = null, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
