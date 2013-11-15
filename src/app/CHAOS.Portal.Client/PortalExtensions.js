@@ -56,66 +56,6 @@ var CHAOS;
             })();
             Client.Session = Session;
 
-            var EmailPassword = (function () {
-                function EmailPassword() {
-                }
-                EmailPassword.AuthenticationType = function () {
-                    return "EmailPassword";
-                };
-
-                EmailPassword.Login = function (email, password, serviceCaller) {
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    if (serviceCaller == null)
-                        serviceCaller = ServiceCallerService.GetDefaultCaller();
-
-                    return serviceCaller.CallService("EmailPassword/Login", Client.HttpMethod.Get, { email: email, password: password }).WithCallback(function (response) {
-                        if (response.Error == null)
-                            serviceCaller.SetSessionAuthenticated(EmailPassword.AuthenticationType(), response.Body.Results[0].Guid, response.Body.Results[0].SessionDateModified);
-                    });
-                };
-
-                EmailPassword.SetPassword = function (userGuid, newPassword, serviceCaller) {
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    if (serviceCaller == null)
-                        serviceCaller = ServiceCallerService.GetDefaultCaller();
-
-                    return serviceCaller.CallService("EmailPassword/SetPassword", Client.HttpMethod.Get, { userGuid: userGuid, newPassword: newPassword });
-                };
-                return EmailPassword;
-            })();
-            Client.EmailPassword = EmailPassword;
-
-            var SecureCookie = (function () {
-                function SecureCookie() {
-                }
-                SecureCookie.AuthenticationType = function () {
-                    return "SecureCookie";
-                };
-
-                SecureCookie.Create = function (serviceCaller) {
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    if (serviceCaller == null)
-                        serviceCaller = ServiceCallerService.GetDefaultCaller();
-
-                    return serviceCaller.CallService("SecureCookie/Create");
-                };
-
-                SecureCookie.Login = function (guid, passwordGuid, serviceCaller) {
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    if (serviceCaller == null)
-                        serviceCaller = ServiceCallerService.GetDefaultCaller();
-
-                    return serviceCaller.CallService("SecureCookie/Login", Client.HttpMethod.Get, { guid: guid, passwordGuid: passwordGuid }).WithCallback(function (response) {
-                        if (response.Error == null) {
-                            serviceCaller.SetSessionAuthenticated(SecureCookie.AuthenticationType(), null, null);
-                            Session.Get(serviceCaller);
-                        }
-                    });
-                };
-                return SecureCookie;
-            })();
-            Client.SecureCookie = SecureCookie;
-
             var User = (function () {
                 function User() {
                 }

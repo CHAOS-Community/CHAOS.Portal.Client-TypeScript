@@ -89,12 +89,6 @@ declare module CHAOS.Portal.Client {
     }
 }
 declare module CHAOS.Portal.Client {
-    class Session {
-        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Update(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Delete(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-    }
     class EmailPassword {
         static AuthenticationType(): string;
         static Login(email: string, password: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
@@ -104,6 +98,26 @@ declare module CHAOS.Portal.Client {
         static AuthenticationType(): string;
         static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static Login(guid: string, passwordGuid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
+    class AuthKey {
+        static AuthenticationType(): string;
+        static Create(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
+        static Login(token: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
+        static Delete(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
+    }
+    interface IAuthKey {
+        Name: string;
+        Token: string;
+        UserGuid: string;
+    }
+}
+declare module CHAOS.Portal.Client {
+    class Session {
+        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Update(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Delete(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
     }
     class User {
         static Create(guid: string, email: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
