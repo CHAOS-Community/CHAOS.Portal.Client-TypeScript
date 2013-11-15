@@ -71,12 +71,12 @@ var CHAOS;
                     return "AuthKey";
                 };
 
-                AuthKey.Create = function (name, serviceCaller) {
+                AuthKey.Create = function (name, token, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("AuthKey/Create", Client.HttpMethod.Get, { name: name });
+                    return serviceCaller.CallService("AuthKey/Create", Client.HttpMethod.Get, { name: name, token: token });
                 };
 
                 AuthKey.Login = function (token, serviceCaller) {

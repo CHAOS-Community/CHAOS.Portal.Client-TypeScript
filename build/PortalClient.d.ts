@@ -101,7 +101,7 @@ declare module CHAOS.Portal.Client {
     }
     class AuthKey {
         static AuthenticationType(): string;
-        static Create(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
+        static Create(name: string, token: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
         static Login(token: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
         static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
         static Delete(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
