@@ -60,12 +60,12 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "AuthKey"; }
 
-		public static Create(name: string, token:string, serviceCaller: IServiceCaller = null): ICallState<IAuthKey>
+		public static Create(name: string, serviceCaller: IServiceCaller = null): ICallState<IAuthKey>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("AuthKey/Create", HttpMethod.Get, {name:name, token:token});
+			return serviceCaller.CallService<any>("AuthKey/Create", HttpMethod.Get, {name:name});
 		}
 
 		public static Login(token: string, serviceCaller: IServiceCaller = null): ICallState<ISession>
