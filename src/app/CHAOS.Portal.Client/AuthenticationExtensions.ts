@@ -56,6 +56,26 @@ module CHAOS.Portal.Client
 		}
 	}
 
+	export class Facebook
+	{
+		public static AuthenticationType(): string { return "Facebook"; }
+
+		public static Login(signedRequest: string, serviceCaller: IServiceCaller = null): ICallState<ISession>
+		{
+			if (serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService<ISession>("Facebook/Login", HttpMethod.Get, { signedRequest: signedRequest }).WithCallback(response =>
+			{
+				if (response.Error == null)
+				{
+					serviceCaller.SetSessionAuthenticated(Facebook.AuthenticationType(), response.Body.Results[0].UserGuid, null);
+					Session.Get(serviceCaller); //Make sure cached session is updated
+				}
+			});
+		}
+	}
+
 	export class AuthKey
 	{
 		public static AuthenticationType(): string { return "AuthKey"; }

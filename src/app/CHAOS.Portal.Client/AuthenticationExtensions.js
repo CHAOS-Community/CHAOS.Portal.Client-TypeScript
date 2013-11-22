@@ -64,6 +64,29 @@ var CHAOS;
             })();
             Client.SecureCookie = SecureCookie;
 
+            var Facebook = (function () {
+                function Facebook() {
+                }
+                Facebook.AuthenticationType = function () {
+                    return "Facebook";
+                };
+
+                Facebook.Login = function (signedRequest, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Facebook/Login", Client.HttpMethod.Get, { signedRequest: signedRequest }).WithCallback(function (response) {
+                        if (response.Error == null) {
+                            serviceCaller.SetSessionAuthenticated(Facebook.AuthenticationType(), response.Body.Results[0].UserGuid, null);
+                            Client.Session.Get(serviceCaller);
+                        }
+                    });
+                };
+                return Facebook;
+            })();
+            Client.Facebook = Facebook;
+
             var AuthKey = (function () {
                 function AuthKey() {
                 }
