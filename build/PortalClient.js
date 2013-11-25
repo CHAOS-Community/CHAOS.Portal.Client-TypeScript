@@ -379,12 +379,12 @@ var CHAOS;
                     return "Facebook";
                 };
 
-                Facebook.Login = function (signedRequest, serviceCaller) {
+                Facebook.Login = function (signedRequest, userAccessToken, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Facebook/Login", Client.HttpMethod.Get, { signedRequest: signedRequest }).WithCallback(function (response) {
+                    return serviceCaller.CallService("Facebook/Login", Client.HttpMethod.Get, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(function (response) {
                         if (response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(Facebook.AuthenticationType(), response.Body.Results[0].UserGuid, null);
                             Client.Session.Get(serviceCaller);

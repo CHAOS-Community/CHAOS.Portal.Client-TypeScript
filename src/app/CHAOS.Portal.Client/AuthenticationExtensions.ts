@@ -60,12 +60,12 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "Facebook"; }
 
-		public static Login(signedRequest: string, serviceCaller: IServiceCaller = null): ICallState<ISession>
+		public static Login(signedRequest: string, userAccessToken:string, serviceCaller: IServiceCaller = null): ICallState<ISession>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<ISession>("Facebook/Login", HttpMethod.Get, { signedRequest: signedRequest }).WithCallback(response =>
+			return serviceCaller.CallService<ISession>("Facebook/Login", HttpMethod.Get, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(response =>
 			{
 				if (response.Error == null)
 				{

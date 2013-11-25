@@ -101,7 +101,7 @@ declare module CHAOS.Portal.Client {
     }
     class Facebook {
         static AuthenticationType(): string;
-        static Login(signedRequest: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Login(signedRequest: string, userAccessToken: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
     }
     class AuthKey {
         static AuthenticationType(): string;
