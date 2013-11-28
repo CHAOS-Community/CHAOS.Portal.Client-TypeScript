@@ -12,7 +12,7 @@ module CHAOS.Portal.Client
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("EmailPassword/Login", HttpMethod.Get, { email: email, password: password }).WithCallback(response =>
+			return serviceCaller.CallService<any>("EmailPassword/Login", HttpMethod.Post, { email: email, password: password }).WithCallback(response =>
 			{
 				if (response.Error == null)
 					serviceCaller.SetSessionAuthenticated(EmailPassword.AuthenticationType(), response.Body.Results[0].Guid, response.Body.Results[0].SessionDateModified);
@@ -24,7 +24,7 @@ module CHAOS.Portal.Client
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("EmailPassword/SetPassword", HttpMethod.Get, { userGuid: userGuid, newPassword: newPassword });
+			return serviceCaller.CallService<any>("EmailPassword/SetPassword", HttpMethod.Post, { userGuid: userGuid, newPassword: newPassword });
 		}
 	}
 
@@ -45,7 +45,7 @@ module CHAOS.Portal.Client
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<any>("SecureCookie/Login", HttpMethod.Get, { guid: guid, passwordGuid: passwordGuid }).WithCallback(response =>
+			return serviceCaller.CallService<any>("SecureCookie/Login", HttpMethod.Post, { guid: guid, passwordGuid: passwordGuid }).WithCallback(response =>
 			{
 				if (response.Error == null)
 				{
@@ -65,7 +65,7 @@ module CHAOS.Portal.Client
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<ISession>("Facebook/Login", HttpMethod.Get, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(response =>
+			return serviceCaller.CallService<ISession>("Facebook/Login", HttpMethod.Post, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(response =>
 			{
 				if (response.Error == null)
 				{
@@ -93,7 +93,7 @@ module CHAOS.Portal.Client
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<ISession>("AuthKey/Login", HttpMethod.Get, { token: token }).WithCallback(response =>
+			return serviceCaller.CallService<ISession>("AuthKey/Login", HttpMethod.Post, { token: token }).WithCallback(response =>
 			{
 				if (response.Error == null)
 				{

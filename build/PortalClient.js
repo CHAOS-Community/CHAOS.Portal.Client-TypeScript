@@ -34,7 +34,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.7.0";
+                    return "2.7.1";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -324,7 +324,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("EmailPassword/Login", Client.HttpMethod.Get, { email: email, password: password }).WithCallback(function (response) {
+                    return serviceCaller.CallService("EmailPassword/Login", Client.HttpMethod.Post, { email: email, password: password }).WithCallback(function (response) {
                         if (response.Error == null)
                             serviceCaller.SetSessionAuthenticated(EmailPassword.AuthenticationType(), response.Body.Results[0].Guid, response.Body.Results[0].SessionDateModified);
                     });
@@ -335,7 +335,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("EmailPassword/SetPassword", Client.HttpMethod.Get, { userGuid: userGuid, newPassword: newPassword });
+                    return serviceCaller.CallService("EmailPassword/SetPassword", Client.HttpMethod.Post, { userGuid: userGuid, newPassword: newPassword });
                 };
                 return EmailPassword;
             })();
@@ -361,7 +361,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("SecureCookie/Login", Client.HttpMethod.Get, { guid: guid, passwordGuid: passwordGuid }).WithCallback(function (response) {
+                    return serviceCaller.CallService("SecureCookie/Login", Client.HttpMethod.Post, { guid: guid, passwordGuid: passwordGuid }).WithCallback(function (response) {
                         if (response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(SecureCookie.AuthenticationType(), null, null);
                             Client.Session.Get(serviceCaller);
@@ -384,7 +384,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Facebook/Login", Client.HttpMethod.Get, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(function (response) {
+                    return serviceCaller.CallService("Facebook/Login", Client.HttpMethod.Post, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(function (response) {
                         if (response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(Facebook.AuthenticationType(), response.Body.Results[0].UserGuid, null);
                             Client.Session.Get(serviceCaller);
@@ -415,7 +415,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("AuthKey/Login", Client.HttpMethod.Get, { token: token }).WithCallback(function (response) {
+                    return serviceCaller.CallService("AuthKey/Login", Client.HttpMethod.Post, { token: token }).WithCallback(function (response) {
                         if (response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(AuthKey.AuthenticationType(), response.Body.Results[0].UserGuid, null);
                             Client.Session.Get(serviceCaller);
