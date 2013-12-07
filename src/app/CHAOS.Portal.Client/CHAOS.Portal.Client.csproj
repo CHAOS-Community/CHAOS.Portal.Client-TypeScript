@@ -35,6 +35,7 @@
       <DependentUpon>PortalClient.ts</DependentUpon>
     </Content>
     <TypeScriptCompile Include="PortalClient.ts" />
+    <TypeScriptCompile Include="WayfExtensions.ts" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="PortalExtensions.ts" />

@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.7.1"; }
+		public static GetClientVersion():string { return "2.8.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -24,7 +24,7 @@ module CHAOS.Portal.Client
 		constructor(servicePath:string, clientGuid:string = null)
 		{
 			if(typeof servicePath === "undefined")
-				throw "Parameter servicePath must be set";
+				throw new Error("Parameter servicePath must be set");
 
 			if(servicePath.substr(servicePath.length -1, 1) != "/")
 				servicePath += "/";
@@ -63,7 +63,7 @@ module CHAOS.Portal.Client
 		        parameters = {};
 
 		    if (!this.HasSession())
-		        throw "Session not acquired";
+		        throw new Error("Session not acquired");
 
 		    parameters["sessionGUID"] = this.GetCurrentSession().Guid;
 
@@ -80,7 +80,7 @@ module CHAOS.Portal.Client
 				this._sessionAcquired.Raise(session);
 		}
 
-		public SetSessionAuthenticated(type: string, userGuid: string, sessionDateModified: number): void
+		public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void
 		{
 			this._authenticationType = type;
 
@@ -179,7 +179,7 @@ module CHAOS.Portal.Client
 					setTimeout(() => this.ParseResponse(this._request.responseText), 1); // Delay cached response so callbacks can be attached
 			}
 			else
-				throw "Browser does not supper AJAX requests";
+				throw new Error("Browser does not supper AJAX requests");
     	}
 
     	private RequestStateChange(): void
@@ -222,19 +222,34 @@ module CHAOS.Portal.Client
 		public static CreateDataString(parameters: { [index:string]:any; }): string
 		{ 
 			var result: string = "";
-			var first:boolean = true;
+			var first: boolean = true;
+			var value = null;
 			for(var key in parameters)
 			{
-				if(parameters[key] == null || typeof parameters[key] === 'undefined')
+				value = parameters[key];
+				if (value == null || typeof value === 'undefined')
 					continue;
 
-				result += (first ? "" : "&" ) + key + "=" + encodeURIComponent(parameters[key]);
+				if (Object.prototype.toString.call(value) === '[object Date]')
+					value = ServiceCall.ConvertDate(value);
+
+				result += (first ? "" : "&") + key + "=" + encodeURIComponent(value);
 
 				if (first)
 					first = false;
 			}
 
 			return result;
+		}
+
+		private static ConvertDate(date: Date): string
+		{
+			return ServiceCall.ToTwoDigits(date.getUTCDate()) + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + date.getUTCFullYear() + " " + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds());
+		}
+
+		private static ToTwoDigits(value: number): string
+		{
+			return value < 10 ? "0" + value : value.toString();
 		}
     }
 
@@ -246,7 +261,7 @@ module CHAOS.Portal.Client
     	constructor(private sender: any)
     	{
 			if(typeof sender === "undefined")
-				throw "Parameter sender must be set";
+				throw new Error("Parameter sender must be set");
 
     		this._sender = sender;
     	}
@@ -254,7 +269,7 @@ module CHAOS.Portal.Client
 		public Add(handler:(any) => void):void
 		{
 			if (handler == undefined || handler == null)
-				throw "handler must be defined";
+				throw new Error("handler must be defined");
 
 			this._handlers.push(handler);
 		}
@@ -262,7 +277,7 @@ module CHAOS.Portal.Client
 		public Remove(handler: (any) => void ): void
 		{
 			if (handler == undefined || handler == null)
-				throw "handler must be defined";
+				throw new Error("handler must be defined");
 
 			for (var i = 0; i < this._handlers.length; i++)
 			{

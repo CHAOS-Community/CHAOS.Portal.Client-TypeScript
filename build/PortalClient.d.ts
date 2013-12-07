@@ -22,8 +22,11 @@ declare module CHAOS.Portal.Client {
         GetServiceCallUri(path: string, parameters: {
             [index: string]: any;
         }, requiresSession: boolean, format: string): string;
+        HasSession(): boolean;
+        GetCurrentSession(): ISession;
+        GetServicePath(): string;
         UpdateSession(session: ISession): void;
-        SetSessionAuthenticated(type: string, userGuid: string, sessionDateModified: number): void;
+        SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
     }
     interface ICallState<T> {
         WithCallback(callback: (response: IPortalResponse<T>) => void): ICallState<T>;
@@ -85,7 +88,7 @@ declare module CHAOS.Portal.Client {
         private GetPathToExtension(path);
         private AddSessionToParameters(parameters);
         public UpdateSession(session: Client.ISession): void;
-        public SetSessionAuthenticated(type: string, userGuid: string, sessionDateModified: number): void;
+        public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
     }
 }
 declare module CHAOS.Portal.Client {
@@ -220,5 +223,11 @@ declare module CHAOS.Portal.Client {
         static Clear(): void;
         private static GetCookie();
         private static SetCookie(guid, passwordGuid, expireInDays);
+    }
+}
+declare module CHAOS.Portal.Client {
+    class Wayf {
+        static AuthenticationType(): string;
+        static Login(wayfServicePath: string, frame: HTMLIFrameElement, callback: (success: boolean) => void, serviceCaller?: Client.IServiceCaller): void;
     }
 }

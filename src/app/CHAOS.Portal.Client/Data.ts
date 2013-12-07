@@ -24,8 +24,11 @@ module CHAOS.Portal.Client
 	{
 	    CallService<T>(path: string, method?: HttpMethod, parameters?: { [index: string]: any; }, requiresSession?: boolean): ICallState<T>;
 		GetServiceCallUri(path: string, parameters: { [index: string]: any; }, requiresSession: boolean, format: string): string;
+		HasSession(): boolean;
+		GetCurrentSession(): ISession;
+		GetServicePath(): string;
 		UpdateSession(session: ISession): void;
-		SetSessionAuthenticated(type: string, userGuid:string, sessionDateModified:number): void;
+		SetSessionAuthenticated(type: string, userGuid?:string, sessionDateModified?:number): void;
 	}
 
 	export interface ICallState<T>

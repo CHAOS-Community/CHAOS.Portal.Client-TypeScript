@@ -8,7 +8,7 @@ var CHAOS;
                     if (typeof clientGuid === "undefined") { clientGuid = null; }
                     this._authenticationType = null;
                     if (typeof servicePath === "undefined")
-                        throw "Parameter servicePath must be set";
+                        throw new Error("Parameter servicePath must be set");
 
                     if (servicePath.substr(servicePath.length - 1, 1) != "/")
                         servicePath += "/";
@@ -20,7 +20,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.7.1";
+                    return "2.8.0";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -74,7 +74,7 @@ var CHAOS;
                         parameters = {};
 
                     if (!this.HasSession())
-                        throw "Session not acquired";
+                        throw new Error("Session not acquired");
 
                     parameters["sessionGUID"] = this.GetCurrentSession().Guid;
 
@@ -198,7 +198,7 @@ else
                                 return _this.ParseResponse(_this._request.responseText);
                             }, 1);
                     } else
-                        throw "Browser does not supper AJAX requests";
+                        throw new Error("Browser does not supper AJAX requests");
                 };
 
                 ServiceCall.prototype.RequestStateChange = function () {
@@ -238,17 +238,30 @@ else
                 ServiceCall.CreateDataString = function (parameters) {
                     var result = "";
                     var first = true;
+                    var value = null;
                     for (var key in parameters) {
-                        if (parameters[key] == null || typeof parameters[key] === 'undefined')
+                        value = parameters[key];
+                        if (value == null || typeof value === 'undefined')
                             continue;
 
-                        result += (first ? "" : "&") + key + "=" + encodeURIComponent(parameters[key]);
+                        if (Client.Object.prototype.toString.call(value) === '[object Date]')
+                            value = ServiceCall.ConvertDate(value);
+
+                        result += (first ? "" : "&") + key + "=" + encodeURIComponent(value);
 
                         if (first)
                             first = false;
                     }
 
                     return result;
+                };
+
+                ServiceCall.ConvertDate = function (date) {
+                    return ServiceCall.ToTwoDigits(date.getUTCDate()) + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + date.getUTCFullYear() + " " + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds());
+                };
+
+                ServiceCall.ToTwoDigits = function (value) {
+                    return value < 10 ? "0" + value : value.toString();
                 };
                 return ServiceCall;
             })();
@@ -258,20 +271,20 @@ else
                     this.sender = sender;
                     this._handlers = [];
                     if (typeof sender === "undefined")
-                        throw "Parameter sender must be set";
+                        throw new Error("Parameter sender must be set");
 
                     this._sender = sender;
                 }
                 Event.prototype.Add = function (handler) {
                     if (handler == undefined || handler == null)
-                        throw "handler must be defined";
+                        throw new Error("handler must be defined");
 
                     this._handlers.push(handler);
                 };
 
                 Event.prototype.Remove = function (handler) {
                     if (handler == undefined || handler == null)
-                        throw "handler must be defined";
+                        throw new Error("handler must be defined");
 
                     for (var i = 0; i < this._handlers.length; i++) {
                         if (this._handlers[i] === handler) {
