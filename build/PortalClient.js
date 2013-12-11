@@ -34,7 +34,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.8.0";
+                    return "2.8.1";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -1178,6 +1178,7 @@ var CHAOS;
 
                 Wayf.Login = function (wayfServicePath, target, callback, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    var _this = this;
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
@@ -1191,10 +1192,21 @@ var CHAOS;
                     if (wayfServicePath.substr(wayfServicePath.length - 1, 1) != "/")
                         wayfServicePath += "/";
 
+                    var reporter = null;
+                    var statusRequester = null;
                     var messageRecieved = function (event) {
-                        window.removeEventListener("message", messageRecieved, false);
+                        if (event.data.indexOf("WayfStatus: ") != 0)
+                            return;
 
-                        var success = event.data == "success";
+                        if (reporter != null)
+                            reporter(event.data.substr(12) == "success");
+                    };
+
+                    reporter = function (success) {
+                        reporter = null;
+                        window.removeEventListener("message", messageRecieved, false);
+                        if (statusRequester != null)
+                            clearInterval(statusRequester);
 
                         if (success)
                             serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
@@ -1204,11 +1216,35 @@ var CHAOS;
                     };
 
                     window.addEventListener("message", messageRecieved, false);
+
                     var location = wayfServicePath + "?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
 
-                    if (target.location !== undefined && target.location.href !== undefined)
+                    if (target.location !== undefined && target.location.href !== undefined) {
+                        if (target.postMessage) {
+                            statusRequester = setInterval(function () {
+                                try  {
+                                    target.postMessage("WayfStatusRequest", "*");
+                                } catch (error) {
+                                    clearInterval(statusRequester);
+                                    statusRequester = null;
+                                }
+                            }, 200);
+                        }
+
+                        var sessionChecker = function () {
+                            return CHAOS.Portal.Client.User.Get(null, null, serviceCaller).WithCallback(function (response) {
+                                if (response.Error == null) {
+                                    if (reporter != null)
+                                        reporter(true);
+                                } else
+                                    setTimeout(sessionChecker, 1000);
+                            }, _this);
+                        };
+
+                        setTimeout(sessionChecker, 2000);
+
                         target.location.href = location;
-else if (target.src !== undefined)
+                    } else if (target.src !== undefined)
                         target.src = location;
 else
                         throw new Error("Unknown target type");

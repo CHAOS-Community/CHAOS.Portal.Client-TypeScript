@@ -16,25 +16,67 @@ module CHAOS.Portal.Client
 			if (wayfServicePath.substr(wayfServicePath.length - 1, 1) != "/")
 				wayfServicePath += "/";
 
+			var reporter = null;
+			var statusRequester = null;
 			var messageRecieved = (event: MessageEvent) =>
 			{
-				window.removeEventListener("message", messageRecieved, false);
+				if (event.data.indexOf("WayfStatus: ") != 0) return;
 
-				var success = event.data == "success";
+				if(reporter != null)
+					reporter(event.data.substr(12) == "success");
+			};
+
+			reporter = (success: boolean) =>
+			{
+				reporter = null;
+				window.removeEventListener("message", messageRecieved, false);
+				if (statusRequester != null) clearInterval(statusRequester);
 
 				if (success)
 					serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
 
-				if(callback != null)
+				if (callback != null)
 					callback(success);
 			};
 
 			window.addEventListener("message", messageRecieved, false);
+
 			var location = wayfServicePath + "?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
 
-			if (target.location !== undefined && target.location.href !== undefined)
+			if (target.location !== undefined && target.location.href !== undefined) //using window
+			{
+				if (target.postMessage)
+				{
+					statusRequester = setInterval(() =>
+					{
+						try
+						{
+							target.postMessage("WayfStatusRequest", "*");
+						}
+						catch (error)
+						{
+							clearInterval(statusRequester); //cross domain not allowed
+							statusRequester = null;
+						}
+					}, 200);
+				}
+
+				var sessionChecker = () => CHAOS.Portal.Client.User.Get(null, null,serviceCaller).WithCallback(response =>
+				{
+					if (response.Error == null)
+					{
+						if (reporter != null)
+							reporter(true);
+					}
+					else
+						setTimeout(sessionChecker, 1000);
+				}, this);
+
+				setTimeout(sessionChecker, 2000);
+
 				target.location.href = location;
-			else if (target.src !== undefined)
+			}
+			else if (target.src !== undefined) //using iframe
 				target.src = location;
 			else
 				throw new Error("Unknown target type");
