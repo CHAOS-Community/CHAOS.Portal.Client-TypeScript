@@ -9,7 +9,7 @@ var CHAOS;
                     return "Wayf";
                 };
 
-                Wayf.Login = function (wayfServicePath, frame, callback, serviceCaller) {
+                Wayf.Login = function (wayfServicePath, target, callback, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
@@ -18,7 +18,7 @@ var CHAOS;
                         throw new Error("Session not acquired");
                     if (wayfServicePath == null || wayfServicePath == "")
                         throw new Error("Parameter wayfServicePath cannot be null or empty");
-                    if (frame == null)
+                    if (target == null)
                         throw new Error("Parameter frame cannot be null");
 
                     if (wayfServicePath.substr(wayfServicePath.length - 1, 1) != "/")
@@ -37,8 +37,14 @@ var CHAOS;
                     };
 
                     window.addEventListener("message", messageRecieved, false);
+                    var location = wayfServicePath + "?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
 
-                    frame.src = wayfServicePath + "?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
+                    if (target.location !== undefined && target.location.href !== undefined)
+                        target.location.href = location;
+else if (target.src !== undefined)
+                        target.src = location;
+else
+                        throw new Error("Unknown target type");
                 };
                 return Wayf;
             })();
