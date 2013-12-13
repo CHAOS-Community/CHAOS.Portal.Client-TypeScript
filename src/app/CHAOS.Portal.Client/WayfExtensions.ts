@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "Wayf"; }
 
-		public static Login(wayfServicePath: string, target: any, callback: (success: boolean) => void, serviceCaller: IServiceCaller = null)
+		public static Login(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl:string = null, serviceCaller: IServiceCaller = null)
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
@@ -41,7 +41,10 @@ module CHAOS.Portal.Client
 
 			window.addEventListener("message", messageRecieved, false);
 
-			var location = wayfServicePath + "?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
+			var location = wayfServicePath + "Login.php?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
+
+			if (callbackUrl != null)
+				location += "&callbackUrl=" + callbackUrl;
 
 			if (target.location !== undefined && target.location.href !== undefined) //using window
 			{

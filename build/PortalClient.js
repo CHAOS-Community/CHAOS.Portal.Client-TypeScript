@@ -34,7 +34,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.8.1";
+                    return "2.8.2";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -1176,7 +1176,8 @@ var CHAOS;
                     return "Wayf";
                 };
 
-                Wayf.Login = function (wayfServicePath, target, callback, serviceCaller) {
+                Wayf.Login = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
+                    if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
                     if (serviceCaller == null)
@@ -1217,7 +1218,10 @@ var CHAOS;
 
                     window.addEventListener("message", messageRecieved, false);
 
-                    var location = wayfServicePath + "?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
+                    var location = wayfServicePath + "Login.php?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
+
+                    if (callbackUrl != null)
+                        location += "&callbackUrl=" + callbackUrl;
 
                     if (target.location !== undefined && target.location.href !== undefined) {
                         if (target.postMessage) {
