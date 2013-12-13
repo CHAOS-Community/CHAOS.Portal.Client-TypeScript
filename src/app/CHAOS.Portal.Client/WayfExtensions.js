@@ -14,7 +14,7 @@ var CHAOS;
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
                     if (serviceCaller == null)
-                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
                     if (!serviceCaller.HasSession())
                         throw new Error("Session not acquired");
@@ -26,8 +26,8 @@ var CHAOS;
                     if (wayfServicePath.substr(wayfServicePath.length - 1, 1) != "/")
                         wayfServicePath += "/";
 
-                    var reporter = null;
-                    var statusRequester = null;
+                    var reporter;
+                    var statusRequesterHandle;
                     var messageRecieved = function (event) {
                         if (event.data.indexOf("WayfStatus: ") != 0)
                             return;
@@ -39,8 +39,8 @@ var CHAOS;
                     reporter = function (success) {
                         reporter = null;
                         window.removeEventListener("message", messageRecieved, false);
-                        if (statusRequester != null)
-                            clearInterval(statusRequester);
+                        if (statusRequesterHandle != null)
+                            clearInterval(statusRequesterHandle);
 
                         if (success)
                             serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
@@ -58,12 +58,12 @@ var CHAOS;
 
                     if (target.location !== undefined && target.location.href !== undefined) {
                         if (target.postMessage) {
-                            statusRequester = setInterval(function () {
+                            statusRequesterHandle = setInterval(function () {
                                 try  {
                                     target.postMessage("WayfStatusRequest", "*");
                                 } catch (error) {
-                                    clearInterval(statusRequester);
-                                    statusRequester = null;
+                                    clearInterval(statusRequesterHandle); //cross domain not allowed
+                                    statusRequesterHandle = null;
                                 }
                             }, 200);
                         }
@@ -83,7 +83,7 @@ var CHAOS;
                         target.location.href = location;
                     } else if (target.src !== undefined)
                         target.src = location;
-else
+                    else
                         throw new Error("Unknown target type");
                 };
                 return Wayf;

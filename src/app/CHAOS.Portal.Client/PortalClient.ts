@@ -1,30 +1,28 @@
-/// <reference path="Data.ts"/>
-
 module CHAOS.Portal.Client 
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.8.2"; }
+		public static GetClientVersion():string { return "2.8.3"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
 		private _currentSession:ISession;
 		private _authenticationType: string = null;
-		private _sessionAcquired:Event;
-		private _sessionAuthenticated:Event;
+		private _sessionAcquired:Event<ISession>;
+		private _sessionAuthenticated:Event<string>;
 
 		public GetServicePath():string { return this._servicePath; }
 		public GetCurrentSession(): ISession { return this._currentSession; }
 		public HasSession(): boolean { return this.GetCurrentSession() != null; }
 		public IsAuthenticated(): boolean { return this._authenticationType != null; }
-		public SessionAcquired():IEvent { return this._sessionAcquired; }
-		public SessionAuthenticated():IEvent { return this._sessionAuthenticated; }
+		public SessionAcquired():IEvent<ISession> { return this._sessionAcquired; }
+		public SessionAuthenticated():IEvent<string> { return this._sessionAuthenticated; }
 		public ClientGuid:string;
 
 		constructor(servicePath:string, clientGuid:string = null)
 		{
-			if(typeof servicePath === "undefined")
-				throw new Error("Parameter servicePath must be set");
+			if (servicePath == null || servicePath == "" || typeof servicePath != "string")
+				throw new Error("Parameter servicePath must be set to a valid path");
 
 			if(servicePath.substr(servicePath.length -1, 1) != "/")
 				servicePath += "/";
@@ -94,16 +92,16 @@ module CHAOS.Portal.Client
 				this._sessionAuthenticated.Raise(type);
 			}
 		}
-    }
+	}
 
 	class CallState<T> implements ICallState<T>
     {
-		private _completed:Event;
+		private _completed:Event<IPortalResponse<T>>;
 		private _call: ServiceCall<T>;
 
-		public Call<T>(path: string, method: HttpMethod, parameters: { [index: string]: any; } = null): ICallState<T>
+		public Call(path: string, method: HttpMethod, parameters: { [index: string]: any; } = null): ICallState<T>
     	{
-    		this._completed = new Event(this);
+			this._completed = new Event<IPortalResponse<T>>(this);
 			this._call = new ServiceCall();
 
 			this._call.Call((response: IPortalResponse<T>) => this._completed.Raise(response), path, method, parameters);
@@ -111,8 +109,8 @@ module CHAOS.Portal.Client
     		return this;
     	}
 
-    	public WithCallback<T>(callback: (response: IPortalResponse<T>) => void, context:any = null): ICallState<T>
-    	{
+		public WithCallback(callback:(response:IPortalResponse<T>)=> void, context:any = null):ICallState<T>
+		{
 			if(context == null)
 				this._completed.Add(callback);
 			else
@@ -121,7 +119,7 @@ module CHAOS.Portal.Client
 			return this;
     	}
 
-		public WithCallbackAndToken<T>(callback: (response: IPortalResponse<T>, token: any) => void , token: any, context: any = null): ICallState<T>
+		public WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void , token: any, context: any = null): ICallState<T>
     	{
 			if(context == null)
 				this._completed.Add((response: IPortalResponse<T>) => callback(response, token));
@@ -158,7 +156,7 @@ module CHAOS.Portal.Client
 				this._request.open(method == HttpMethod.Get ? "Get" : "Post", path, true);
 
 				if (method == HttpMethod.Post)
-					this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+					this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
 				this._request.send(data);
 			}
@@ -223,11 +221,11 @@ module CHAOS.Portal.Client
 		{ 
 			var result: string = "";
 			var first: boolean = true;
-			var value = null;
+			var value:any;
 			for(var key in parameters)
 			{
 				value = parameters[key];
-				if (value == null || typeof value === 'undefined')
+				if (value == null)
 					continue;
 
 				if (Object.prototype.toString.call(value) === '[object Date]')
@@ -253,10 +251,10 @@ module CHAOS.Portal.Client
 		}
     }
 
-	class Event implements IEvent
+	class Event<T> implements IEvent<T>
     {
     	private _sender: any;
-    	private _handlers: { (any):void; }[] = [];
+    	private _handlers:Array<(data:T)=>void> = [];
 
     	constructor(private sender: any)
     	{
@@ -266,17 +264,17 @@ module CHAOS.Portal.Client
     		this._sender = sender;
     	}
 
-		public Add(handler:(any) => void):void
+		public Add(handler: (data: T) => void):void
 		{
-			if (handler == undefined || handler == null)
+			if (handler == null)
 				throw new Error("handler must be defined");
 
 			this._handlers.push(handler);
 		}
 
-		public Remove(handler: (any) => void ): void
+		public Remove(handler: (data: T) => void ): void
 		{
-			if (handler == undefined || handler == null)
+			if (handler == null)
 				throw new Error("handler must be defined");
 
 			for (var i = 0; i < this._handlers.length; i++)
@@ -289,7 +287,7 @@ module CHAOS.Portal.Client
 			}
 		}
 
-		public Raise(data: any): void
+		public Raise(data:T): void
 		{
 			for (var i = 0; i < this._handlers.length; i++)
 				this._handlers[i].call(this._sender, data);

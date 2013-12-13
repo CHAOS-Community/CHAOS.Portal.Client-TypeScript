@@ -1,14 +1,13 @@
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
-        /// <reference path="Data.ts"/>
         (function (Client) {
             var PortalClient = (function () {
                 function PortalClient(servicePath, clientGuid) {
                     if (typeof clientGuid === "undefined") { clientGuid = null; }
                     this._authenticationType = null;
-                    if (typeof servicePath === "undefined")
-                        throw new Error("Parameter servicePath must be set");
+                    if (servicePath == null || servicePath == "" || typeof servicePath != "string")
+                        throw new Error("Parameter servicePath must be set to a valid path");
 
                     if (servicePath.substr(servicePath.length - 1, 1) != "/")
                         servicePath += "/";
@@ -20,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.8.2";
+                    return "2.8.3";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -46,7 +45,7 @@ var CHAOS;
                 };
 
                 PortalClient.prototype.CallService = function (path, method, parameters, requiresSession) {
-                    if (typeof method === "undefined") { method = Client.HttpMethod.Get; }
+                    if (typeof method === "undefined") { method = 0 /* Get */; }
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
                     if (requiresSession)
@@ -126,7 +125,7 @@ var CHAOS;
                     if (typeof context === "undefined") { context = null; }
                     if (context == null)
                         this._completed.Add(callback);
-else
+                    else
                         this._completed.Add(function (response) {
                             return callback.call(context, response);
                         });
@@ -140,7 +139,7 @@ else
                         this._completed.Add(function (response) {
                             return callback(response, token);
                         });
-else
+                    else
                         this._completed.Add(function (response) {
                             return callback.call(context, response, token);
                         });
@@ -158,7 +157,7 @@ else
                     var _this = this;
                     var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
-                    if (method == Client.HttpMethod.Get) {
+                    if (method == 0 /* Get */) {
                         path += "?" + data;
                         data = null;
                     }
@@ -172,9 +171,9 @@ else
                                 return _this.RequestStateChange();
                             };
 
-                        this._request.open(method == Client.HttpMethod.Get ? "Get" : "Post", path, true);
+                        this._request.open(method == 0 /* Get */ ? "Get" : "Post", path, true);
 
-                        if (method == Client.HttpMethod.Post)
+                        if (method == 1 /* Post */)
                             this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
                         this._request.send(data);
@@ -190,13 +189,13 @@ else
                             };
                         }
 
-                        this._request.open(method == Client.HttpMethod.Get ? "Get" : "Post", path);
+                        this._request.open(method == 0 /* Get */ ? "Get" : "Post", path);
                         this._request.send(data);
 
                         if (callback != null && this._request.responseText != "")
                             setTimeout(function () {
                                 return _this.ParseResponse(_this._request.responseText);
-                            }, 1);
+                            }, 1); // Delay cached response so callbacks can be attached
                     } else
                         throw new Error("Browser does not supper AJAX requests");
                 };
@@ -207,7 +206,7 @@ else
 
                     if (this._request.status == 200)
                         this.ParseResponse(this._request.responseText);
-else
+                    else
                         this.ReportError();
                 };
 
@@ -238,13 +237,13 @@ else
                 ServiceCall.CreateDataString = function (parameters) {
                     var result = "";
                     var first = true;
-                    var value = null;
+                    var value;
                     for (var key in parameters) {
                         value = parameters[key];
-                        if (value == null || typeof value === 'undefined')
+                        if (value == null)
                             continue;
 
-                        if (Client.Object.prototype.toString.call(value) === '[object Date]')
+                        if (CHAOS.Portal.Client.Object.prototype.toString.call(value) === '[object Date]')
                             value = ServiceCall.ConvertDate(value);
 
                         result += (first ? "" : "&") + key + "=" + encodeURIComponent(value);
@@ -276,14 +275,14 @@ else
                     this._sender = sender;
                 }
                 Event.prototype.Add = function (handler) {
-                    if (handler == undefined || handler == null)
+                    if (handler == null)
                         throw new Error("handler must be defined");
 
                     this._handlers.push(handler);
                 };
 
                 Event.prototype.Remove = function (handler) {
-                    if (handler == undefined || handler == null)
+                    if (handler == null)
                         throw new Error("handler must be defined");
 
                     for (var i = 0; i < this._handlers.length; i++) {

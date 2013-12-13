@@ -1,11 +1,39 @@
 declare module CHAOS.Portal.Client {
+    class EmailPassword {
+        static AuthenticationType(): string;
+        static Login(email: string, password: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static SetPassword(userGuid: string, newPassword: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
+    class SecureCookie {
+        static AuthenticationType(): string;
+        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Login(guid: string, passwordGuid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
+    class Facebook {
+        static AuthenticationType(): string;
+        static Login(signedRequest: string, userAccessToken: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+    }
+    class AuthKey {
+        static AuthenticationType(): string;
+        static Create(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
+        static Login(token: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
+        static Delete(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
+    }
+    interface IAuthKey {
+        Name: string;
+        Token: string;
+        UserGuid: string;
+    }
+}
+declare module CHAOS.Portal.Client {
     interface IPortalClient {
         GetServicePath(): string;
         GetCurrentSession(): ISession;
         HasSession(): boolean;
         IsAuthenticated(): boolean;
-        SessionAcquired(): IEvent;
-        SessionAuthenticated(): IEvent;
+        SessionAcquired(): IEvent<ISession>;
+        SessionAuthenticated(): IEvent<string>;
         ClientGuid: string;
     }
     interface ISession {
@@ -13,7 +41,6 @@ declare module CHAOS.Portal.Client {
         UserGuid: string;
         DateCreated: number;
         DateModified: number;
-        FullName: string;
     }
     interface IServiceCaller {
         CallService<T>(path: string, method?: HttpMethod, parameters?: {
@@ -53,108 +80,13 @@ declare module CHAOS.Portal.Client {
         Stacktrace: string;
         InnerException: IError;
     }
-    interface IEvent {
-        Add(handler: (any: any) => void): void;
-        Remove(handler: (any: any) => void): void;
+    interface IEvent<T> {
+        Add(handler: (data: T) => void): void;
+        Remove(handler: (data: T) => void): void;
     }
     enum HttpMethod {
-        Get,
-        Post,
-    }
-}
-declare module CHAOS.Portal.Client {
-    class PortalClient implements Client.IPortalClient, Client.IServiceCaller {
-        static GetClientVersion(): string;
-        private static GetProtocolVersion();
-        private _servicePath;
-        private _currentSession;
-        private _authenticationType;
-        private _sessionAcquired;
-        private _sessionAuthenticated;
-        public GetServicePath(): string;
-        public GetCurrentSession(): Client.ISession;
-        public HasSession(): boolean;
-        public IsAuthenticated(): boolean;
-        public SessionAcquired(): Client.IEvent;
-        public SessionAuthenticated(): Client.IEvent;
-        public ClientGuid: string;
-        constructor(servicePath: string, clientGuid?: string);
-        public CallService<T>(path: string, method?: Client.HttpMethod, parameters?: {
-            [index: string]: any;
-        }, requiresSession?: boolean): Client.ICallState<T>;
-        public GetServiceCallUri(path: string, parameters?: {
-            [index: string]: any;
-        }, requiresSession?: boolean, format?: string): string;
-        private GetPathToExtension(path);
-        private AddSessionToParameters(parameters);
-        public UpdateSession(session: Client.ISession): void;
-        public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
-    }
-}
-declare module CHAOS.Portal.Client {
-    class EmailPassword {
-        static AuthenticationType(): string;
-        static Login(email: string, password: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static SetPassword(userGuid: string, newPassword: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-    }
-    class SecureCookie {
-        static AuthenticationType(): string;
-        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Login(guid: string, passwordGuid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-    }
-    class Facebook {
-        static AuthenticationType(): string;
-        static Login(signedRequest: string, userAccessToken: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-    }
-    class AuthKey {
-        static AuthenticationType(): string;
-        static Create(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
-        static Login(token: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
-        static Delete(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
-    }
-    interface IAuthKey {
-        Name: string;
-        Token: string;
-        UserGuid: string;
-    }
-}
-declare module CHAOS.Portal.Client {
-    class Session {
-        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Update(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Delete(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-    }
-    class User {
-        static Create(guid: string, email: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Update(guid: string, email: string, permissons?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Get(guid?: string, groupGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static GetCurrent(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-    }
-    class Group {
-        static Get(guid?: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Create(name: string, systemPermission: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Update(guid: string, newName: string, newSystemPermission?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static AddUser(guid: string, userGuid: string, permissions: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static RemoveUser(guid: string, userGuid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static UpdateUserPermissions(guid: string, userGuid: string, permissions: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-    }
-    class View {
-        static Get(view: string, query?: string, sort?: string, filter?: string, pageIndex?: number, pageSize?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static List(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-    }
-    class ClientSettings {
-        static Get(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Set(guid: string, name: string, settings: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-    }
-    function Initialize(servicePath: string, clientGUID?: string, autoCreateSession?: boolean): IPortalClient;
-    class ServiceCallerService {
-        private static _defaultCaller;
-        static GetDefaultCaller(): Client.IServiceCaller;
-        static SetDefaultCaller(value: Client.IServiceCaller): void;
+        Get = 0,
+        Post = 1,
     }
 }
 declare module CHAOS.Portal.Client {
@@ -212,6 +144,73 @@ declare module CHAOS.Portal.Client {
     class UserProfile {
         static Get(metadataSchemaGuid: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static Set(metadataSchemaGuid: string, metadata: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
+}
+declare module CHAOS.Portal.Client {
+    class PortalClient implements Client.IPortalClient, Client.IServiceCaller {
+        static GetClientVersion(): string;
+        private static GetProtocolVersion();
+        private _servicePath;
+        private _currentSession;
+        private _authenticationType;
+        private _sessionAcquired;
+        private _sessionAuthenticated;
+        public GetServicePath(): string;
+        public GetCurrentSession(): Client.ISession;
+        public HasSession(): boolean;
+        public IsAuthenticated(): boolean;
+        public SessionAcquired(): Client.IEvent<Client.ISession>;
+        public SessionAuthenticated(): Client.IEvent<string>;
+        public ClientGuid: string;
+        constructor(servicePath: string, clientGuid?: string);
+        public CallService<T>(path: string, method?: Client.HttpMethod, parameters?: {
+            [index: string]: any;
+        }, requiresSession?: boolean): Client.ICallState<T>;
+        public GetServiceCallUri(path: string, parameters?: {
+            [index: string]: any;
+        }, requiresSession?: boolean, format?: string): string;
+        private GetPathToExtension(path);
+        private AddSessionToParameters(parameters);
+        public UpdateSession(session: Client.ISession): void;
+        public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
+    }
+}
+declare module CHAOS.Portal.Client {
+    class Session {
+        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Update(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Delete(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+    }
+    class User {
+        static Create(guid: string, email: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Update(guid: string, email: string, permissons?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Delete(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(guid?: string, groupGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static GetCurrent(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
+    class Group {
+        static Get(guid?: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Create(name: string, systemPermission: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Update(guid: string, newName: string, newSystemPermission?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Delete(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static AddUser(guid: string, userGuid: string, permissions: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static RemoveUser(guid: string, userGuid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static UpdateUserPermissions(guid: string, userGuid: string, permissions: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
+    class View {
+        static Get(view: string, query?: string, sort?: string, filter?: string, pageIndex?: number, pageSize?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static List(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
+    class ClientSettings {
+        static Get(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Set(guid: string, name: string, settings: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
+    function Initialize(servicePath: string, clientGUID?: string, autoCreateSession?: boolean): IPortalClient;
+    class ServiceCallerService {
+        private static _defaultCaller;
+        static GetDefaultCaller(): Client.IServiceCaller;
+        static SetDefaultCaller(value: Client.IServiceCaller): void;
     }
 }
 declare module CHAOS.Portal.Client {

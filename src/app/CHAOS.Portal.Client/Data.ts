@@ -6,8 +6,8 @@ module CHAOS.Portal.Client
 		GetCurrentSession(): ISession;
 		HasSession(): boolean;
 		IsAuthenticated(): boolean;
-		SessionAcquired(): IEvent;
-		SessionAuthenticated(): IEvent;
+		SessionAcquired(): IEvent<ISession>;
+		SessionAuthenticated(): IEvent<string>;
 		ClientGuid: string;
 	}
 
@@ -17,7 +17,6 @@ module CHAOS.Portal.Client
 		UserGuid: string;
 		DateCreated: number;
 		DateModified: number;
-		FullName: string;
 	}
 
 	export interface IServiceCaller
@@ -66,10 +65,10 @@ module CHAOS.Portal.Client
 		InnerException: IError;
 	}
 
-	export interface IEvent
+	export interface IEvent<T>
 	{
-		Add(handler: (any) => void ): void;
-		Remove(handler: (any) => void ): void;
+		Add(handler: (data:T) => void ): void;
+		Remove(handler: (data:T) => void ): void;
 	}
 
 	export enum HttpMethod

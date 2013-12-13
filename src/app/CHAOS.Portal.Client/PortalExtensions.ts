@@ -1,6 +1,3 @@
-/// <reference path="Data.ts" />
-/// <reference path="PortalClient.ts"/>
-
 module CHAOS.Portal.Client
 {
 	export class Session

@@ -1,8 +1,6 @@
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
-        /// <reference path="Data.ts" />
-        /// <reference path="PortalClient.ts"/>
         (function (Client) {
             var Session = (function () {
                 function Session() {
@@ -12,7 +10,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Session/Create", Client.HttpMethod.Get, null, false).WithCallback(function (response) {
+                    return serviceCaller.CallService("Session/Create", 0 /* Get */, null, false).WithCallback(function (response) {
                         if (response.Error == null)
                             serviceCaller.UpdateSession(response.Body.Results[0]);
                     });
@@ -64,7 +62,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("User/Create", Client.HttpMethod.Post, { guid: guid, email: email });
+                    return serviceCaller.CallService("User/Create", 1 /* Post */, { guid: guid, email: email });
                 };
 
                 User.Update = function (guid, email, permissons, serviceCaller) {
@@ -73,7 +71,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("User/Update", Client.HttpMethod.Post, { guid: guid, email: email, permissons: permissons }, true);
+                    return serviceCaller.CallService("User/Update", 1 /* Post */, { guid: guid, email: email, permissons: permissons }, true);
                 };
 
                 User.Delete = function (guid, serviceCaller) {
@@ -81,7 +79,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("User/Delete", Client.HttpMethod.Get, { guid: guid });
+                    return serviceCaller.CallService("User/Delete", 0 /* Get */, { guid: guid });
                 };
 
                 User.Get = function (guid, groupGuid, serviceCaller) {
@@ -91,7 +89,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("User/Get", Client.HttpMethod.Get, { guid: guid, groupGuid: groupGuid });
+                    return serviceCaller.CallService("User/Get", 0 /* Get */, { guid: guid, groupGuid: groupGuid });
                 };
 
                 User.GetCurrent = function (serviceCaller) {
@@ -115,7 +113,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Group/Get", Client.HttpMethod.Get, { guid: guid, userGuid: userGuid });
+                    return serviceCaller.CallService("Group/Get", 0 /* Get */, { guid: guid, userGuid: userGuid });
                 };
 
                 Group.Create = function (name, systemPermission, serviceCaller) {
@@ -123,7 +121,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Group/Create", Client.HttpMethod.Get, { name: name, systemPermission: systemPermission });
+                    return serviceCaller.CallService("Group/Create", 0 /* Get */, { name: name, systemPermission: systemPermission });
                 };
 
                 Group.Update = function (guid, newName, newSystemPermission, serviceCaller) {
@@ -132,7 +130,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Group/Update", Client.HttpMethod.Get, { guid: guid, newName: newName, newSystemPermission: newSystemPermission });
+                    return serviceCaller.CallService("Group/Update", 0 /* Get */, { guid: guid, newName: newName, newSystemPermission: newSystemPermission });
                 };
 
                 Group.Delete = function (guid, serviceCaller) {
@@ -140,7 +138,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Group/Delete", Client.HttpMethod.Get, { guid: guid });
+                    return serviceCaller.CallService("Group/Delete", 0 /* Get */, { guid: guid });
                 };
 
                 Group.AddUser = function (guid, userGuid, permissions, serviceCaller) {
@@ -148,7 +146,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Group/AddUser", Client.HttpMethod.Get, { guid: guid, userGuid: userGuid, permissions: permissions });
+                    return serviceCaller.CallService("Group/AddUser", 0 /* Get */, { guid: guid, userGuid: userGuid, permissions: permissions });
                 };
 
                 Group.RemoveUser = function (guid, userGuid, serviceCaller) {
@@ -156,7 +154,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Group/RemoveUser", Client.HttpMethod.Get, { guid: guid, userGuid: userGuid });
+                    return serviceCaller.CallService("Group/RemoveUser", 0 /* Get */, { guid: guid, userGuid: userGuid });
                 };
 
                 Group.UpdateUserPermissions = function (guid, userGuid, permissions, serviceCaller) {
@@ -164,7 +162,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Group/UpdateUserPermissions", Client.HttpMethod.Get, { guid: guid, userGuid: userGuid, permissions: permissions });
+                    return serviceCaller.CallService("Group/UpdateUserPermissions", 0 /* Get */, { guid: guid, userGuid: userGuid, permissions: permissions });
                 };
                 return Group;
             })();
@@ -183,7 +181,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("View/Get", Client.HttpMethod.Get, { view: view, query: query, sort: sort, filter: filter, pageIndex: pageIndex, pageSize: pageSize });
+                    return serviceCaller.CallService("View/Get", 0 /* Get */, { view: view, query: query, sort: sort, filter: filter, pageIndex: pageIndex, pageSize: pageSize });
                 };
 
                 View.List = function (serviceCaller) {
@@ -205,7 +203,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("ClientSettings/Get", Client.HttpMethod.Get, { guid: guid });
+                    return serviceCaller.CallService("ClientSettings/Get", 0 /* Get */, { guid: guid });
                 };
 
                 ClientSettings.Set = function (guid, name, settings, serviceCaller) {
@@ -213,7 +211,7 @@ var CHAOS;
                     if (serviceCaller == null)
                         serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("ClientSettings/Set", Client.HttpMethod.Post, { guid: guid, name: name, settings: settings });
+                    return serviceCaller.CallService("ClientSettings/Set", 1 /* Post */, { guid: guid, name: name, settings: settings });
                 };
                 return ClientSettings;
             })();
@@ -222,7 +220,7 @@ var CHAOS;
             function Initialize(servicePath, clientGUID, autoCreateSession) {
                 if (typeof clientGUID === "undefined") { clientGUID = null; }
                 if (typeof autoCreateSession === "undefined") { autoCreateSession = true; }
-                var client = new Client.PortalClient(servicePath, clientGUID);
+                var client = new CHAOS.Portal.Client.PortalClient(servicePath, clientGUID);
 
                 if (autoCreateSession)
                     Session.Create(client);

@@ -16,21 +16,22 @@ module CHAOS.Portal.Client
 			if (wayfServicePath.substr(wayfServicePath.length - 1, 1) != "/")
 				wayfServicePath += "/";
 
-			var reporter = null;
-			var statusRequester = null;
+			var reporter:(success:boolean)=>void;
+			var statusRequesterHandle:number;
 			var messageRecieved = (event: MessageEvent) =>
 			{
 				if (event.data.indexOf("WayfStatus: ") != 0) return;
 
 				if(reporter != null)
 					reporter(event.data.substr(12) == "success");
+				
 			};
 
 			reporter = (success: boolean) =>
 			{
 				reporter = null;
 				window.removeEventListener("message", messageRecieved, false);
-				if (statusRequester != null) clearInterval(statusRequester);
+				if (statusRequesterHandle != null) clearInterval(statusRequesterHandle);
 
 				if (success)
 					serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
@@ -50,7 +51,7 @@ module CHAOS.Portal.Client
 			{
 				if (target.postMessage)
 				{
-					statusRequester = setInterval(() =>
+					statusRequesterHandle = setInterval(() =>
 					{
 						try
 						{
@@ -58,8 +59,8 @@ module CHAOS.Portal.Client
 						}
 						catch (error)
 						{
-							clearInterval(statusRequester); //cross domain not allowed
-							statusRequester = null;
+							clearInterval(statusRequesterHandle); //cross domain not allowed
+							statusRequesterHandle = null;
 						}
 					}, 200);
 				}

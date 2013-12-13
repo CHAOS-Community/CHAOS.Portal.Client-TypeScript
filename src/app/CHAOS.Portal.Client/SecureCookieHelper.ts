@@ -1,6 +1,3 @@
-/// <reference path="PortalClient.ts"/>
-/// <reference path="PortalExtensions.ts"/>
-
 module CHAOS.Portal.Client
 {
 	export class SecureCookieHelper
@@ -51,7 +48,7 @@ module CHAOS.Portal.Client
 		{
 			var cookie = document.cookie;
 
-			if (cookie == undefined || cookie == null)
+			if (cookie == null)
 				return null;
 
 			var guidRegEx = /SecureCookieGuid\=(.+?)(?:;|$)/;

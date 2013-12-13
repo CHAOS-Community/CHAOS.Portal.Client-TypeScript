@@ -1,8 +1,6 @@
 var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
-        /// <reference path="PortalClient.ts"/>
-        /// <reference path="PortalExtensions.ts"/>
         (function (Client) {
             var SecureCookieHelper = (function () {
                 function SecureCookieHelper() {
@@ -23,7 +21,7 @@ var CHAOS;
                         return;
                     }
 
-                    Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
+                    CHAOS.Portal.Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
                         if (response.Error == null) {
                             _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                             if (callback != null)
@@ -36,7 +34,7 @@ var CHAOS;
                 SecureCookieHelper.Create = function (serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
-                    Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
+                    CHAOS.Portal.Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if (response.Error == null)
                             _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                     });
@@ -49,7 +47,7 @@ var CHAOS;
                 SecureCookieHelper.GetCookie = function () {
                     var cookie = document.cookie;
 
-                    if (cookie == undefined || cookie == null)
+                    if (cookie == null)
                         return null;
 
                     var guidRegEx = /SecureCookieGuid\=(.+?)(?:;|$)/;
