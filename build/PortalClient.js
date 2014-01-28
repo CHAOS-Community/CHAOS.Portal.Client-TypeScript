@@ -352,12 +352,12 @@ var CHAOS;
                     return serviceCaller.CallService("Object/Get", 0 /* Get */, { objectGuids: objectGuids.join(), accessPointGuid: accessPointGuid, includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints, pageSize: pageSize, pageIndex: pageIndex }, true);
                 };
 
-                Object.SetPublishSettings = function (objectGUID, accessPointGUID, startDate, endDate, serviceCaller) {
+                Object.SetPublishSettings = function (objectGuid, accessPointGuid, startDate, endDate, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-                    return serviceCaller.CallService("Object/SetPublishSettings", 0 /* Get */, { objectGUID: objectGUID, accessPointGUID: accessPointGUID, startDate: startDate, endDate: endDate }, true);
+                    return serviceCaller.CallService("Object/SetPublishSettings", 0 /* Get */, { objectGuid: objectGuid, accessPointGuid: accessPointGuid, startDate: startDate, endDate: endDate }, true);
                 };
                 return Object;
             })();

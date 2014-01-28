@@ -156,12 +156,12 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("Object/Get", CHAOS.Portal.Client.HttpMethod.Get, { objectGuids: objectGuids.join(), accessPointGuid: accessPointGuid, includeMetadata: includeMetadata, includeFiles: includeFiles, includeObjectRelations: includeObjectRelations, includeFolders: includeFolders, includeAccessPoints: includeAccessPoints, pageSize: pageSize, pageIndex: pageIndex }, true );
 		}
 
-		public static SetPublishSettings(objectGUID: string, accessPointGUID: string, startDate: Date, endDate: Date, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		public static SetPublishSettings(objectGuid: string, accessPointGuid: string, startDate: Date, endDate: Date, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
 		{
 			if(serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService("Object/SetPublishSettings", CHAOS.Portal.Client.HttpMethod.Get, {objectGUID: objectGUID, accessPointGUID: accessPointGUID, startDate: startDate, endDate: endDate}, true);
+			return serviceCaller.CallService("Object/SetPublishSettings", CHAOS.Portal.Client.HttpMethod.Get, {objectGuid: objectGuid, accessPointGuid: accessPointGuid, startDate: startDate, endDate: endDate}, true);
 		}
 	}
 
