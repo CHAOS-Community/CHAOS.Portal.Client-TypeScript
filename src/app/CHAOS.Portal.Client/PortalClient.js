@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.8.3";
+                    return "2.9.0";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -154,7 +154,46 @@ var CHAOS;
                 }
                 ServiceCall.prototype.Call = function (callback, path, method, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
+                    this._callback = callback;
+
+                    if (window["FormData"])
+                        this.CallWithXMLHttpRequest2Browser(path, method, callback != null, parameters);
+                    else if (window["XMLHttpRequest"])
+                        this.CallWithXMLHttpRequestBrowser(path, method, callback != null, parameters);
+                    else if (window["XDomainRequest"] || window["ActiveXObject"])
+                        this.CallWithOldIEBrowser(path, method, callback != null, parameters);
+                    else
+                        throw new Error("Browser does not supper AJAX requests");
+                };
+
+                ServiceCall.prototype.CallWithXMLHttpRequest2Browser = function (path, method, hasCallback, parameters) {
+                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    this._request = new XMLHttpRequest();
+                    var data = null;
+
+                    if (method == 0 /* Get */)
+                        path += "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters);
+                    else {
+                        parameters = ServiceCall.AddPortalParameters(ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters)));
+                        data = new FormData();
+                        for (var key in parameters)
+                            data.append(key, parameters[key]);
+                    }
+
+                    if (hasCallback)
+                        this._request.onreadystatechange = function () {
+                            return _this.RequestStateChange();
+                        };
+
+                    this._request.open(method == 0 /* Get */ ? "GET" : "POST", path, true);
+                    this._request.send(data);
+                };
+
+                ServiceCall.prototype.CallWithXMLHttpRequestBrowser = function (path, method, hasCallback, parameters) {
+                    if (typeof parameters === "undefined") { parameters = null; }
+                    var _this = this;
+                    this._request = new XMLHttpRequest();
                     var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
                     if (method == 0 /* Get */) {
@@ -162,42 +201,46 @@ var CHAOS;
                         data = null;
                     }
 
-                    this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-                    this._callback = callback;
+                    if (hasCallback)
+                        this._request.onreadystatechange = function () {
+                            return _this.RequestStateChange();
+                        };
 
-                    if ("withCredentials" in this._request) {
-                        if (callback != null)
-                            this._request.onreadystatechange = function () {
-                                return _this.RequestStateChange();
-                            };
+                    this._request.open(method == 0 /* Get */ ? "GET" : "POST", path, true);
 
-                        this._request.open(method == 0 /* Get */ ? "Get" : "Post", path, true);
+                    if (method == 1 /* Post */)
+                        this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-                        if (method == 1 /* Post */)
-                            this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    this._request.send(data);
+                };
 
-                        this._request.send(data);
-                    } else if (window["XDomainRequest"]) {
-                        this._request = new XDomainRequest();
+                ServiceCall.prototype.CallWithOldIEBrowser = function (path, method, hasCallback, parameters) {
+                    if (typeof parameters === "undefined") { parameters = null; }
+                    var _this = this;
+                    this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+                    var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
-                        if (callback != null) {
-                            this._request.onload = function () {
-                                return _this.ParseResponse(_this._request.responseText);
-                            };
-                            this._request.onerror = this._request.ontimeout = function () {
-                                return _this.ReportError();
-                            };
-                        }
+                    if (method == 0 /* Get */) {
+                        path += "?" + data;
+                        data = null;
+                    }
 
-                        this._request.open(method == 0 /* Get */ ? "Get" : "Post", path);
-                        this._request.send(data);
+                    if (hasCallback) {
+                        this._request.onload = function () {
+                            return _this.ParseResponse(_this._request.responseText);
+                        };
+                        this._request.onerror = this._request.ontimeout = function () {
+                            return _this.ReportError();
+                        };
+                    }
 
-                        if (callback != null && this._request.responseText != "")
-                            setTimeout(function () {
-                                return _this.ParseResponse(_this._request.responseText);
-                            }, 1); // Delay cached response so callbacks can be attached
-                    } else
-                        throw new Error("Browser does not supper AJAX requests");
+                    this._request.open(method == 0 /* Get */ ? "Get" : "Post", path);
+                    this._request.send(data);
+
+                    if (hasCallback && this._request.responseText != "")
+                        setTimeout(function () {
+                            return _this.ParseResponse(_this._request.responseText);
+                        }, 1); // Delay cached response so callbacks can be attached
                 };
 
                 ServiceCall.prototype.RequestStateChange = function () {
@@ -225,28 +268,16 @@ var CHAOS;
 
                 ServiceCall.CreateDataStringWithPortalParameters = function (parameters, format) {
                     if (typeof format === "undefined") { format = "json2"; }
-                    if (parameters == null)
-                        parameters = {};
-
-                    parameters["format"] = format;
-                    parameters["userHTTPStatusCodes"] = "False";
-
-                    return ServiceCall.CreateDataString(parameters);
+                    return ServiceCall.CreateDataString(ServiceCall.AddPortalParameters(parameters, format));
                 };
 
                 ServiceCall.CreateDataString = function (parameters) {
+                    parameters = ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters));
+
                     var result = "";
                     var first = true;
-                    var value;
                     for (var key in parameters) {
-                        value = parameters[key];
-                        if (value == null)
-                            continue;
-
-                        if (CHAOS.Portal.Client.Object.prototype.toString.call(value) === '[object Date]')
-                            value = ServiceCall.ConvertDate(value);
-
-                        result += (first ? "" : "&") + key + "=" + encodeURIComponent(value);
+                        result += (first ? "" : "&") + key + "=" + encodeURIComponent(parameters[key]);
 
                         if (first)
                             first = false;
@@ -257,6 +288,42 @@ var CHAOS;
 
                 ServiceCall.ConvertDate = function (date) {
                     return ServiceCall.ToTwoDigits(date.getUTCDate()) + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + date.getUTCFullYear() + " " + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds());
+                    //return date.getUTCFullYear() + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + ServiceCall.ToTwoDigits(date.getUTCDate()) + "T" + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds()) + "Z";
+                };
+
+                ServiceCall.AddPortalParameters = function (parameters, format) {
+                    if (typeof format === "undefined") { format = "json2"; }
+                    if (parameters == null)
+                        parameters = {};
+
+                    parameters["format"] = format;
+                    parameters["userHTTPStatusCodes"] = "False";
+
+                    return parameters;
+                };
+
+                ServiceCall.ConvertDatesToCorrectFormat = function (parameters) {
+                    var value;
+
+                    for (var key in parameters) {
+                        value = parameters[key];
+                        if (CHAOS.Portal.Client.Object.prototype.toString.call(value) === '[object Date]')
+                            parameters[key] = ServiceCall.ConvertDate(value);
+                    }
+
+                    return parameters;
+                };
+
+                ServiceCall.RemoveNullParameters = function (parameters) {
+                    var value;
+
+                    for (var key in parameters) {
+                        value = parameters[key];
+                        if (value == null)
+                            delete parameters[key];
+                    }
+
+                    return parameters;
                 };
 
                 ServiceCall.ToTwoDigits = function (value) {

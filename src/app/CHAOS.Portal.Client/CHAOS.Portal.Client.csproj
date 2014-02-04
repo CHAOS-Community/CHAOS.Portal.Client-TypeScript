@@ -101,9 +101,9 @@
     <TypeScriptSourceMap> --sourcemap</TypeScriptSourceMap>
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
-    <TypeScriptOutFile>PortalClient.js</TypeScriptOutFile>
-    <TypeScriptOutDir>C:\Users\Jacob\Documents\Git\CHAOS.Portal.Client-TypeScript\build</TypeScriptOutDir>
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TypeScriptModuleKind>none</TypeScriptModuleKind>
+    <TypeScriptTarget>ES3</TypeScriptTarget>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>$(SolutionDir)build.bat</PostBuildEvent>

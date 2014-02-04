@@ -2,7 +2,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.8.3"; }
+		public static GetClientVersion():string { return "2.9.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -135,9 +135,46 @@ module CHAOS.Portal.Client
     	private _request: any;
 		private _callback: (response: IPortalResponse<T>) => void;
 
-		public Call(callback: (response: IPortalResponse<T>) => void , path: string, method: HttpMethod, parameters:{ [index:string]:any; } = null):void
+		public Call(callback: (response: IPortalResponse<T>) => void, path: string, method: HttpMethod, parameters:{ [index:string]:any; } = null):void
     	{
-    	    var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
+			this._callback = callback;
+
+		    if (window["FormData"])
+				this.CallWithXMLHttpRequest2Browser(path, method, callback != null, parameters);
+			else if (window["XMLHttpRequest"])
+				this.CallWithXMLHttpRequestBrowser(path, method, callback != null, parameters);
+			else if (window["XDomainRequest"] || window["ActiveXObject"])
+				this.CallWithOldIEBrowser(path, method, callback != null, parameters);
+			else
+				throw new Error("Browser does not supper AJAX requests");
+		}
+
+		private CallWithXMLHttpRequest2Browser(path: string, method: HttpMethod, hasCallback: boolean, parameters:{ [index:string]:any; } = null):void
+		{
+			this._request = new XMLHttpRequest();
+			var data:FormData = null;
+
+			if (method == HttpMethod.Get)
+				path += "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters);
+			else
+			{
+				parameters = ServiceCall.AddPortalParameters(ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters)));
+				data = new FormData();
+				for (var key in parameters)
+					data.append(key, parameters[key]);
+			}
+
+			if (hasCallback)
+				this._request.onreadystatechange = () => this.RequestStateChange();
+
+			this._request.open(method == HttpMethod.Get ? "GET" : "POST", path, true);
+			this._request.send(data);
+		}
+
+		private CallWithXMLHttpRequestBrowser(path:string, method:HttpMethod, hasCallback:boolean, parameters:{ [index:string]:any; } = null):void
+		{
+			this._request = new XMLHttpRequest();
+			var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
 			if (method == HttpMethod.Get)
 			{
@@ -145,40 +182,40 @@ module CHAOS.Portal.Client
 				data = null;
 			}
 
-			this._request = window["XMLHttpRequest"] ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-			this._callback = callback;
+			if (hasCallback)
+				this._request.onreadystatechange = () => this.RequestStateChange();
 
-			if ("withCredentials" in this._request)
+			this._request.open(method == HttpMethod.Get ? "GET" : "POST", path, true);
+
+			if (method == HttpMethod.Post)
+				this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+			this._request.send(data);
+		}
+
+		private CallWithOldIEBrowser(path: string, method: HttpMethod, hasCallback: boolean, parameters: { [index: string]: any; } = null): void
+		{
+			this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+			var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
+
+			if (method == HttpMethod.Get)
 			{
-				if (callback != null)
-					this._request.onreadystatechange = ()=> this.RequestStateChange();
-
-				this._request.open(method == HttpMethod.Get ? "Get" : "Post", path, true);
-
-				if (method == HttpMethod.Post)
-					this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-				this._request.send(data);
+				path += "?" + data;
+				data = null;
 			}
-			else if (window["XDomainRequest"]) //For IE 8/9
+
+			if (hasCallback)
 			{
-				this._request = new XDomainRequest();
-
-				if (callback != null)
-				{
-					this._request.onload = () => this.ParseResponse(this._request.responseText);
-					this._request.onerror = this._request.ontimeout = () => this.ReportError();
-				}
-
-				this._request.open(method == HttpMethod.Get ? "Get" : "Post", path);
-				this._request.send(data);
-
-				if (callback != null && this._request.responseText != "")
-					setTimeout(() => this.ParseResponse(this._request.responseText), 1); // Delay cached response so callbacks can be attached
+				this._request.onload = () => this.ParseResponse(this._request.responseText);
+				this._request.onerror = this._request.ontimeout = () => this.ReportError();
 			}
-			else
-				throw new Error("Browser does not supper AJAX requests");
-    	}
+
+			this._request.open(method == HttpMethod.Get ? "Get" : "Post", path);
+			this._request.send(data);
+
+			if (hasCallback && this._request.responseText != "")
+				setTimeout(() => this.ParseResponse(this._request.responseText), 1); // Delay cached response so callbacks can be attached
+		}
 
     	private RequestStateChange(): void
     	{
@@ -208,30 +245,18 @@ module CHAOS.Portal.Client
 
 		public static CreateDataStringWithPortalParameters(parameters: { [index: string]: any; }, format:string = "json2"): string
 		{
-		    if (parameters == null)
-		        parameters = {};
-
-		    parameters["format"] = format;
-		    parameters["userHTTPStatusCodes"] = "False";
-
-            return ServiceCall.CreateDataString(parameters);
+			return ServiceCall.CreateDataString(ServiceCall.AddPortalParameters(parameters, format));
 		}
 
-		public static CreateDataString(parameters: { [index:string]:any; }): string
-		{ 
+		public static CreateDataString(parameters: { [index: string]: any; }): string
+		{
+			parameters = ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters));
+
 			var result: string = "";
 			var first: boolean = true;
-			var value:any;
-			for(var key in parameters)
+			for (var key in parameters)
 			{
-				value = parameters[key];
-				if (value == null)
-					continue;
-
-				if (Object.prototype.toString.call(value) === '[object Date]')
-					value = ServiceCall.ConvertDate(value);
-
-				result += (first ? "" : "&") + key + "=" + encodeURIComponent(value);
+				result += (first ? "" : "&") + key + "=" + encodeURIComponent(parameters[key]);
 
 				if (first)
 					first = false;
@@ -243,6 +268,46 @@ module CHAOS.Portal.Client
 		private static ConvertDate(date: Date): string
 		{
 			return ServiceCall.ToTwoDigits(date.getUTCDate()) + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + date.getUTCFullYear() + " " + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds());
+			//return date.getUTCFullYear() + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + ServiceCall.ToTwoDigits(date.getUTCDate()) + "T" + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds()) + "Z";
+		}
+
+		private static AddPortalParameters(parameters: { [index: string]: any; }, format: string = "json2"):{ [index:string]:any; }
+		{
+			if (parameters == null)
+				parameters = {};
+
+			parameters["format"] = format;
+			parameters["userHTTPStatusCodes"] = "False";
+
+			return parameters;
+		}
+
+		private static ConvertDatesToCorrectFormat(parameters:{ [index:string]:any; }):{ [index:string]:any; }
+		{
+			var value: any;
+
+			for (var key in parameters)
+			{
+				value = parameters[key];
+				if (Object.prototype.toString.call(value) === '[object Date]')
+					parameters[key] = ServiceCall.ConvertDate(value);
+			}
+
+			return parameters;
+		}
+
+		private static RemoveNullParameters(parameters:{ [index:string]:any; }):{ [index:string]:any; }
+		{
+			var value: any;
+
+			for (var key in parameters)
+			{
+				value = parameters[key];
+				if (value == null)
+					delete parameters[key];
+			}
+
+			return parameters;
 		}
 
 		private static ToTwoDigits(value: number): string
