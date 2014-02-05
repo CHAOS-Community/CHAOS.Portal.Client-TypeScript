@@ -36,6 +36,7 @@ module CHAOS.Portal.Client
 		WithCallback(callback: (response: IPortalResponse<T>) => void, context: any): ICallState<T>;
 		WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token: any): ICallState<T>;
 		WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token: any, context: any): ICallState<T>;
+		TransferProgressChanged(): IEvent<ITransferProgress>;
 	}
 
 	export interface IPortalResponse<T>
@@ -69,6 +70,13 @@ module CHAOS.Portal.Client
 	{
 		Add(handler: (data:T) => void ): void;
 		Remove(handler: (data:T) => void ): void;
+	}
+
+	export interface ITransferProgress
+	{
+		BytesTransfered: number;
+		TotalBytes: number;
+		TotalBytesIsKnown:boolean;
 	}
 
 	export enum HttpMethod

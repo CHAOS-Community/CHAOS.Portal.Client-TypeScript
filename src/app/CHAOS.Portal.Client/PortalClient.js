@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.9.0";
+                    return "2.9.1";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -107,15 +107,26 @@ var CHAOS;
 
             var CallState = (function () {
                 function CallState() {
+                    this._call = null;
+                    this._completed = new Event(this);
+                    this._progressChanged = new Event(this);
                 }
+                CallState.prototype.TransferProgressChanged = function () {
+                    return this._progressChanged;
+                };
+
                 CallState.prototype.Call = function (path, method, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
-                    this._completed = new Event(this);
+                    if (this._call != null)
+                        throw new Error("Call can not be called multiple times");
+
                     this._call = new ServiceCall();
 
                     this._call.Call(function (response) {
                         return _this._completed.Raise(response);
+                    }, function (progress) {
+                        return _this._progressChanged.Raise(progress);
                     }, path, method, parameters);
 
                     return this;
@@ -152,21 +163,22 @@ var CHAOS;
             var ServiceCall = (function () {
                 function ServiceCall() {
                 }
-                ServiceCall.prototype.Call = function (callback, path, method, parameters) {
+                ServiceCall.prototype.Call = function (completeCallback, progressCallback, path, method, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
-                    this._callback = callback;
+                    this._completeCallback = completeCallback;
+                    this._progressCallback = progressCallback;
 
                     if (window["FormData"])
-                        this.CallWithXMLHttpRequest2Browser(path, method, callback != null, parameters);
+                        this.CallWithXMLHttpRequest2Browser(path, method, parameters);
                     else if (window["XMLHttpRequest"])
-                        this.CallWithXMLHttpRequestBrowser(path, method, callback != null, parameters);
+                        this.CallWithXMLHttpRequestBrowser(path, method, parameters);
                     else if (window["XDomainRequest"] || window["ActiveXObject"])
-                        this.CallWithOldIEBrowser(path, method, callback != null, parameters);
+                        this.CallWithOldIEBrowser(path, method, parameters);
                     else
                         throw new Error("Browser does not supper AJAX requests");
                 };
 
-                ServiceCall.prototype.CallWithXMLHttpRequest2Browser = function (path, method, hasCallback, parameters) {
+                ServiceCall.prototype.CallWithXMLHttpRequest2Browser = function (path, method, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
                     this._request = new XMLHttpRequest();
@@ -181,16 +193,18 @@ var CHAOS;
                             data.append(key, parameters[key]);
                     }
 
-                    if (hasCallback)
-                        this._request.onreadystatechange = function () {
-                            return _this.RequestStateChange();
-                        };
+                    this._request.onreadystatechange = function () {
+                        return _this.RequestStateChange();
+                    };
+                    this._request.upload.onprogress = function (event) {
+                        return _this.ReportProgressUpdate(event.loaded, event.total, event.lengthComputable);
+                    };
 
                     this._request.open(method == 0 /* Get */ ? "GET" : "POST", path, true);
                     this._request.send(data);
                 };
 
-                ServiceCall.prototype.CallWithXMLHttpRequestBrowser = function (path, method, hasCallback, parameters) {
+                ServiceCall.prototype.CallWithXMLHttpRequestBrowser = function (path, method, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
                     this._request = new XMLHttpRequest();
@@ -201,10 +215,9 @@ var CHAOS;
                         data = null;
                     }
 
-                    if (hasCallback)
-                        this._request.onreadystatechange = function () {
-                            return _this.RequestStateChange();
-                        };
+                    this._request.onreadystatechange = function () {
+                        return _this.RequestStateChange();
+                    };
 
                     this._request.open(method == 0 /* Get */ ? "GET" : "POST", path, true);
 
@@ -214,7 +227,7 @@ var CHAOS;
                     this._request.send(data);
                 };
 
-                ServiceCall.prototype.CallWithOldIEBrowser = function (path, method, hasCallback, parameters) {
+                ServiceCall.prototype.CallWithOldIEBrowser = function (path, method, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
                     this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -225,21 +238,19 @@ var CHAOS;
                         data = null;
                     }
 
-                    if (hasCallback) {
-                        this._request.onload = function () {
-                            return _this.ParseResponse(_this._request.responseText);
-                        };
-                        this._request.onerror = this._request.ontimeout = function () {
-                            return _this.ReportError();
-                        };
-                    }
+                    this._request.onload = function () {
+                        return _this.ReportCompleted(_this._request.responseText);
+                    };
+                    this._request.onerror = this._request.ontimeout = function () {
+                        return _this.ReportError();
+                    };
 
                     this._request.open(method == 0 /* Get */ ? "Get" : "Post", path);
                     this._request.send(data);
 
-                    if (hasCallback && this._request.responseText != "")
+                    if (this._request.responseText != "")
                         setTimeout(function () {
-                            return _this.ParseResponse(_this._request.responseText);
+                            return _this.ReportCompleted(_this._request.responseText);
                         }, 1); // Delay cached response so callbacks can be attached
                 };
 
@@ -248,22 +259,35 @@ var CHAOS;
                         return;
 
                     if (this._request.status == 200)
-                        this.ParseResponse(this._request.responseText);
+                        this.ReportCompleted(this._request.responseText);
                     else
                         this.ReportError();
                 };
 
-                ServiceCall.prototype.ParseResponse = function (responseText) {
+                ServiceCall.prototype.ReportCompleted = function (responseText) {
+                    if (this._completeCallback == null)
+                        return;
+
                     var response = JSON && JSON.parse(responseText) || eval(responseText);
 
                     if (response.Error != null && response.Error.Fullname == null)
                         response.Error = null;
 
-                    this._callback(response);
+                    this._completeCallback(response);
+                };
+
+                ServiceCall.prototype.ReportProgressUpdate = function (bytesTransfered, totalBytes, totalBytesIsKnown) {
+                    if (this._progressCallback == null)
+                        return;
+
+                    this._progressCallback({ BytesTransfered: bytesTransfered, TotalBytes: totalBytes, TotalBytesIsKnown: totalBytesIsKnown });
                 };
 
                 ServiceCall.prototype.ReportError = function () {
-                    this._callback({ Header: null, Body: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
+                    if (this._completeCallback == null)
+                        return;
+
+                    this._completeCallback({ Header: null, Body: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
                 };
 
                 ServiceCall.CreateDataStringWithPortalParameters = function (parameters, format) {

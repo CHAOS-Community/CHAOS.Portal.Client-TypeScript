@@ -2,7 +2,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.9.0"; }
+		public static GetClientVersion():string { return "2.9.1"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -97,14 +97,28 @@ module CHAOS.Portal.Client
 	class CallState<T> implements ICallState<T>
     {
 		private _completed:Event<IPortalResponse<T>>;
-		private _call: ServiceCall<T>;
+		private _progressChanged: Event<ITransferProgress>;
+		private _call: ServiceCall<T> = null;
+
+		constructor()
+		{
+			this._completed = new Event<IPortalResponse<T>>(this);
+			this._progressChanged = new Event<ITransferProgress>(this);
+		}
+
+		public TransferProgressChanged(): IEvent<ITransferProgress>
+		{
+			return this._progressChanged;
+		}
 
 		public Call(path: string, method: HttpMethod, parameters: { [index: string]: any; } = null): ICallState<T>
-    	{
-			this._completed = new Event<IPortalResponse<T>>(this);
+		{
+			if (this._call != null)
+				throw new Error("Call can not be called multiple times");
+
 			this._call = new ServiceCall();
 
-			this._call.Call((response: IPortalResponse<T>) => this._completed.Raise(response), path, method, parameters);
+			this._call.Call((response: IPortalResponse<T>) => this._completed.Raise(response), (progress: ITransferProgress) => this._progressChanged.Raise(progress), path, method, parameters);
 
     		return this;
     	}
@@ -133,23 +147,25 @@ module CHAOS.Portal.Client
 	class ServiceCall<T>
     {
     	private _request: any;
-		private _callback: (response: IPortalResponse<T>) => void;
+		private _completeCallback: (response: IPortalResponse<T>) => void;
+		private _progressCallback: (progress: ITransferProgress) => void;
 
-		public Call(callback: (response: IPortalResponse<T>) => void, path: string, method: HttpMethod, parameters:{ [index:string]:any; } = null):void
+		public Call(completeCallback: (response: IPortalResponse<T>) => void, progressCallback: (progress: ITransferProgress) => void, path: string, method: HttpMethod, parameters:{ [index:string]:any; } = null):void
     	{
-			this._callback = callback;
+			this._completeCallback = completeCallback;
+			this._progressCallback = progressCallback;
 
 		    if (window["FormData"])
-				this.CallWithXMLHttpRequest2Browser(path, method, callback != null, parameters);
+				this.CallWithXMLHttpRequest2Browser(path, method, parameters);
 			else if (window["XMLHttpRequest"])
-				this.CallWithXMLHttpRequestBrowser(path, method, callback != null, parameters);
+				this.CallWithXMLHttpRequestBrowser(path, method, parameters);
 			else if (window["XDomainRequest"] || window["ActiveXObject"])
-				this.CallWithOldIEBrowser(path, method, callback != null, parameters);
+				this.CallWithOldIEBrowser(path, method, parameters);
 			else
 				throw new Error("Browser does not supper AJAX requests");
 		}
 
-		private CallWithXMLHttpRequest2Browser(path: string, method: HttpMethod, hasCallback: boolean, parameters:{ [index:string]:any; } = null):void
+		private CallWithXMLHttpRequest2Browser(path: string, method: HttpMethod, parameters:{ [index:string]:any; } = null):void
 		{
 			this._request = new XMLHttpRequest();
 			var data:FormData = null;
@@ -164,14 +180,14 @@ module CHAOS.Portal.Client
 					data.append(key, parameters[key]);
 			}
 
-			if (hasCallback)
-				this._request.onreadystatechange = () => this.RequestStateChange();
+			this._request.onreadystatechange = () => this.RequestStateChange();
+			this._request.upload.onprogress = (event: ProgressEvent) => this.ReportProgressUpdate(event.loaded, event.total, event.lengthComputable);
 
 			this._request.open(method == HttpMethod.Get ? "GET" : "POST", path, true);
 			this._request.send(data);
 		}
 
-		private CallWithXMLHttpRequestBrowser(path:string, method:HttpMethod, hasCallback:boolean, parameters:{ [index:string]:any; } = null):void
+		private CallWithXMLHttpRequestBrowser(path:string, method:HttpMethod, parameters:{ [index:string]:any; } = null):void
 		{
 			this._request = new XMLHttpRequest();
 			var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
@@ -182,8 +198,7 @@ module CHAOS.Portal.Client
 				data = null;
 			}
 
-			if (hasCallback)
-				this._request.onreadystatechange = () => this.RequestStateChange();
+			this._request.onreadystatechange = () => this.RequestStateChange();
 
 			this._request.open(method == HttpMethod.Get ? "GET" : "POST", path, true);
 
@@ -193,7 +208,7 @@ module CHAOS.Portal.Client
 			this._request.send(data);
 		}
 
-		private CallWithOldIEBrowser(path: string, method: HttpMethod, hasCallback: boolean, parameters: { [index: string]: any; } = null): void
+		private CallWithOldIEBrowser(path: string, method: HttpMethod, parameters: { [index: string]: any; } = null): void
 		{
 			this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 			var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
@@ -204,17 +219,14 @@ module CHAOS.Portal.Client
 				data = null;
 			}
 
-			if (hasCallback)
-			{
-				this._request.onload = () => this.ParseResponse(this._request.responseText);
-				this._request.onerror = this._request.ontimeout = () => this.ReportError();
-			}
+			this._request.onload = () => this.ReportCompleted(this._request.responseText);
+			this._request.onerror = this._request.ontimeout = () => this.ReportError();
 
 			this._request.open(method == HttpMethod.Get ? "Get" : "Post", path);
 			this._request.send(data);
 
-			if (hasCallback && this._request.responseText != "")
-				setTimeout(() => this.ParseResponse(this._request.responseText), 1); // Delay cached response so callbacks can be attached
+			if (this._request.responseText != "")
+				setTimeout(() => this.ReportCompleted(this._request.responseText), 1); // Delay cached response so callbacks can be attached
 		}
 
     	private RequestStateChange(): void
@@ -223,24 +235,35 @@ module CHAOS.Portal.Client
 				return;
 						
 			if (this._request.status == 200)
-				this.ParseResponse(this._request.responseText);
+				this.ReportCompleted(this._request.responseText);
 			else
 				this.ReportError();
     	}
 
-		private ParseResponse(responseText:string):void
+		private ReportCompleted(responseText:string):void
 		{
+			if (this._completeCallback == null) return;
+
             var response = JSON && JSON.parse(responseText) || eval(responseText);
 
 			if(response.Error != null && response.Error.Fullname == null)
 				response.Error = null;
 
-			this._callback(response);
+			this._completeCallback(response);
+		}
+
+		private ReportProgressUpdate(bytesTransfered: number, totalBytes: number, totalBytesIsKnown:boolean):void
+		{
+			if (this._progressCallback == null) return;
+
+			this._progressCallback({ BytesTransfered: bytesTransfered, TotalBytes: totalBytes, TotalBytesIsKnown: totalBytesIsKnown });
 		}
 
 		private ReportError():void
 		{
-			this._callback({Header: null, Body: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
+			if (this._completeCallback == null) return;
+
+			this._completeCallback({Header: null, Body: null, Error: { Fullname: "ServiceError", Message: "Service call failed", Stacktrace: null, InnerException: null } });
 		}
 
 		public static CreateDataStringWithPortalParameters(parameters: { [index: string]: any; }, format:string = "json2"): string
