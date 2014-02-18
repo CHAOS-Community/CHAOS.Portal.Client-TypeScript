@@ -325,6 +325,36 @@ var CHAOS;
             })();
             Client.Language = Language;
 
+            var Link = (function () {
+                function Link() {
+                }
+                Link.Create = function (objectGuid, folderID, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Link/Create", 0 /* Get */, { objectGuid: objectGuid, folderID: folderID }, true);
+                };
+
+                Link.Update = function (objectGuid, folderID, newFolderID, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Link/Update", 0 /* Get */, { objectGuid: objectGuid, folderID: folderID, newFolderID: newFolderID }, true);
+                };
+
+                Link.Delete = function (objectGuid, folderID, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("Link/Delete", 0 /* Get */, { objectGuid: objectGuid, folderID: folderID }, true);
+                };
+                return Link;
+            })();
+            Client.Link = Link;
+
             var Object = (function () {
                 function Object() {
                 }
@@ -527,7 +557,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.9.1";
+                    return "2.9.2";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;

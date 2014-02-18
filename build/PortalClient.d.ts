@@ -123,6 +123,11 @@ declare module CHAOS.Portal.Client {
     class Language {
         static Get(name?: string, languageCode?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
     }
+    class Link {
+        static Create(objectGuid: string, folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Update(objectGuid: string, folderID: number, newFolderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Delete(objectGuid: string, folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+    }
     class Object {
         static Create(guid: string, objectTypeID: number, folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static Get(objectGuids: string[], accessPointGuid?: string, includeMetadata?: boolean, includeFiles?: boolean, includeObjectRelations?: boolean, includeFolders?: boolean, includeAccessPoints?: boolean, pageSize?: number, pageIndex?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;

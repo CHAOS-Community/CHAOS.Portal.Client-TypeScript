@@ -138,6 +138,33 @@ module CHAOS.Portal.Client
     	}
 	}
 
+	export class Link
+	{
+		public static Create(objectGuid: string, folderID: number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		{
+			if (serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Link/Create", CHAOS.Portal.Client.HttpMethod.Get, { objectGuid: objectGuid, folderID: folderID }, true);
+		}
+
+		public static Update(objectGuid: string, folderID: number, newFolderID:number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		{
+			if (serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Link/Update", CHAOS.Portal.Client.HttpMethod.Get, { objectGuid: objectGuid, folderID: folderID, newFolderID: newFolderID }, true);
+		}
+
+		public static Delete(objectGuid: string, folderID: number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
+		{
+			if (serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("Link/Delete", CHAOS.Portal.Client.HttpMethod.Get, { objectGuid: objectGuid, folderID: folderID }, true);
+		}
+	}
+
 	export class Object
 	{
 		public static Create(guid: string, objectTypeID: number, folderID: number, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<any>
