@@ -238,6 +238,8 @@ declare module CHAOS.Portal.Client {
 declare module CHAOS.Portal.Client {
     class Wayf {
         static AuthenticationType(): string;
-        static Login(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: Client.IServiceCaller): void;
+        static LogIn(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: Client.IServiceCaller): void;
+        static LogOut(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: Client.IServiceCaller): void;
+        private static CallWayfService(wayfServicePath, wayfMethod, target, callback, callbackUrl?, serviceCaller?);
     }
 }

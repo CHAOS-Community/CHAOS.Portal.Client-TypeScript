@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.9.2";
+                    return "2.10.0";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -87,6 +87,8 @@ var CHAOS;
 
                     if (!hadSession && session != null)
                         this._sessionAcquired.Raise(session);
+                    else if (session == null)
+                        this._authenticationType = null;
                 };
 
                 PortalClient.prototype.SetSessionAuthenticated = function (type, userGuid, sessionDateModified) {

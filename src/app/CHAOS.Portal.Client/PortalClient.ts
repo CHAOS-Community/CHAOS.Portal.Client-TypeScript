@@ -2,7 +2,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.9.2"; }
+		public static GetClientVersion():string { return "2.10.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -76,6 +76,8 @@ module CHAOS.Portal.Client
 
 			if (!hadSession && session != null)
 				this._sessionAcquired.Raise(session);
+			else if (session == null)
+				this._authenticationType = null;
 		}
 
 		public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void

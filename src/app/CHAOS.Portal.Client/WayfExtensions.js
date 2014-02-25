@@ -9,7 +9,33 @@ var CHAOS;
                     return "Wayf";
                 };
 
-                Wayf.Login = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
+                Wayf.LogIn = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
+                    if (typeof callbackUrl === "undefined") { callbackUrl = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    var outerCallback = function (success) {
+                        if (success)
+                            serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
+
+                        callback(success);
+                    };
+
+                    Wayf.CallWayfService(wayfServicePath, "LogIn", target, outerCallback, callbackUrl, serviceCaller);
+                };
+
+                Wayf.LogOut = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
+                    if (typeof callbackUrl === "undefined") { callbackUrl = null; }
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    var outerCallback = function (success) {
+                        if (success)
+                            serviceCaller.UpdateSession(null);
+
+                        callback(success);
+                    };
+
+                    Wayf.CallWayfService(wayfServicePath, "LogOut", target, outerCallback, callbackUrl, serviceCaller);
+                };
+
+                Wayf.CallWayfService = function (wayfServicePath, wayfMethod, target, callback, callbackUrl, serviceCaller) {
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
@@ -21,7 +47,7 @@ var CHAOS;
                     if (wayfServicePath == null || wayfServicePath == "")
                         throw new Error("Parameter wayfServicePath cannot be null or empty");
                     if (target == null)
-                        throw new Error("Parameter frame cannot be null");
+                        throw new Error("Parameter target cannot be null");
 
                     if (wayfServicePath.substr(wayfServicePath.length - 1, 1) != "/")
                         wayfServicePath += "/";
@@ -42,16 +68,13 @@ var CHAOS;
                         if (statusRequesterHandle != null)
                             clearInterval(statusRequesterHandle);
 
-                        if (success)
-                            serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
-
                         if (callback != null)
                             callback(success);
                     };
 
                     window.addEventListener("message", messageRecieved, false);
 
-                    var location = wayfServicePath + "Login.php?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
+                    var location = wayfServicePath + wayfMethod + ".php?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
 
                     if (callbackUrl != null)
                         location += "&callbackUrl=" + callbackUrl;
