@@ -557,7 +557,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.1";
+                    return "2.10.2";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -1300,7 +1300,7 @@ var CHAOS;
                         callback(success);
                     };
 
-                    Wayf.CallWayfService(wayfServicePath, "Login", target, outerCallback, callbackUrl, serviceCaller);
+                    Wayf.CallWayfService(wayfServicePath, "LogIn", target, outerCallback, callbackUrl, serviceCaller);
                 };
 
                 Wayf.LogOut = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
@@ -1313,7 +1313,7 @@ var CHAOS;
                         callback(success);
                     };
 
-                    Wayf.CallWayfService(wayfServicePath, "Logout", target, outerCallback, callbackUrl, serviceCaller);
+                    Wayf.CallWayfService(wayfServicePath, "LogOut", target, outerCallback, callbackUrl, serviceCaller);
                 };
 
                 Wayf.CallWayfService = function (wayfServicePath, wayfMethod, target, callback, callbackUrl, serviceCaller) {

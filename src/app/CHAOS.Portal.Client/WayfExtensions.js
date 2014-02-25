@@ -19,7 +19,7 @@ var CHAOS;
                         callback(success);
                     };
 
-                    Wayf.CallWayfService(wayfServicePath, "Login", target, outerCallback, callbackUrl, serviceCaller);
+                    Wayf.CallWayfService(wayfServicePath, "LogIn", target, outerCallback, callbackUrl, serviceCaller);
                 };
 
                 Wayf.LogOut = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
@@ -32,7 +32,7 @@ var CHAOS;
                         callback(success);
                     };
 
-                    Wayf.CallWayfService(wayfServicePath, "Logout", target, outerCallback, callbackUrl, serviceCaller);
+                    Wayf.CallWayfService(wayfServicePath, "LogOut", target, outerCallback, callbackUrl, serviceCaller);
                 };
 
                 Wayf.CallWayfService = function (wayfServicePath, wayfMethod, target, callback, callbackUrl, serviceCaller) {
