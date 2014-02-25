@@ -14,7 +14,7 @@ module CHAOS.Portal.Client
 				callback(success);
 			};
 
-			Wayf.CallWayfService(wayfServicePath, "LogIn", target, outerCallback, callbackUrl, serviceCaller);
+			Wayf.CallWayfService(wayfServicePath, "Login", target, outerCallback, callbackUrl, serviceCaller);
 		}
 
 		public static LogOut(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl: string = null, serviceCaller: IServiceCaller = null): void
@@ -27,7 +27,7 @@ module CHAOS.Portal.Client
 				callback(success);
 			};
 
-			Wayf.CallWayfService(wayfServicePath, "LogOut", target, outerCallback, callbackUrl, serviceCaller);
+			Wayf.CallWayfService(wayfServicePath, "Logout", target, outerCallback, callbackUrl, serviceCaller);
 		}
 
 		private static CallWayfService(wayfServicePath:string, wayfMethod:string, target:any, callback:(success:boolean)=> void, callbackUrl:string = null, serviceCaller:IServiceCaller = null):void
