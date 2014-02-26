@@ -32,6 +32,7 @@ declare module CHAOS.Portal.Client {
         GetCurrentSession(): ISession;
         HasSession(): boolean;
         IsAuthenticated(): boolean;
+        AuthenticationType(): string;
         SessionAcquired(): IEvent<ISession>;
         SessionAuthenticated(): IEvent<string>;
         ClientGuid: string;
@@ -170,6 +171,7 @@ declare module CHAOS.Portal.Client {
         public GetCurrentSession(): Client.ISession;
         public HasSession(): boolean;
         public IsAuthenticated(): boolean;
+        public AuthenticationType(): string;
         public SessionAcquired(): Client.IEvent<Client.ISession>;
         public SessionAuthenticated(): Client.IEvent<string>;
         public ClientGuid: string;

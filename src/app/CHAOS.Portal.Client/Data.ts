@@ -6,6 +6,7 @@ module CHAOS.Portal.Client
 		GetCurrentSession(): ISession;
 		HasSession(): boolean;
 		IsAuthenticated(): boolean;
+		AuthenticationType():string;
 		SessionAcquired(): IEvent<ISession>;
 		SessionAuthenticated(): IEvent<string>;
 		ClientGuid: string;

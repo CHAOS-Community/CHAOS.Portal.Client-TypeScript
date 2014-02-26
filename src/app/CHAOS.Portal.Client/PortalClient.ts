@@ -2,7 +2,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.10.2"; }
+		public static GetClientVersion():string { return "2.10.4"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -15,6 +15,7 @@ module CHAOS.Portal.Client
 		public GetCurrentSession(): ISession { return this._currentSession; }
 		public HasSession(): boolean { return this.GetCurrentSession() != null; }
 		public IsAuthenticated(): boolean { return this._authenticationType != null; }
+		public AuthenticationType(): string { return this._authenticationType; }
 		public SessionAcquired():IEvent<ISession> { return this._sessionAcquired; }
 		public SessionAuthenticated():IEvent<string> { return this._sessionAuthenticated; }
 		public ClientGuid:string;
@@ -224,7 +225,7 @@ module CHAOS.Portal.Client
 			this._request.onload = () => this.ReportCompleted(this._request.responseText);
 			this._request.onerror = this._request.ontimeout = () => this.ReportError();
 
-			this._request.open(method == HttpMethod.Get ? "Get" : "Post", path);
+			this._request.open(method == HttpMethod.Get ? "GET" : "POST", path);
 			this._request.send(data);
 
 			if (this._request.responseText != "")

@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.2";
+                    return "2.10.4";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -36,6 +36,9 @@ var CHAOS;
                 };
                 PortalClient.prototype.IsAuthenticated = function () {
                     return this._authenticationType != null;
+                };
+                PortalClient.prototype.AuthenticationType = function () {
+                    return this._authenticationType;
                 };
                 PortalClient.prototype.SessionAcquired = function () {
                     return this._sessionAcquired;
@@ -247,7 +250,7 @@ var CHAOS;
                         return _this.ReportError();
                     };
 
-                    this._request.open(method == 0 /* Get */ ? "Get" : "Post", path);
+                    this._request.open(method == 0 /* Get */ ? "GET" : "POST", path);
                     this._request.send(data);
 
                     if (this._request.responseText != "")
