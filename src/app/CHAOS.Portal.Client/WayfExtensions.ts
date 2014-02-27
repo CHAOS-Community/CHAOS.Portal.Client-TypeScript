@@ -6,6 +6,9 @@ module CHAOS.Portal.Client
 
 		public static LogIn(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl:string = null, serviceCaller: IServiceCaller = null):void
 		{
+			if (serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
 			var outerCallback = (success:boolean)=>
 			{
 				if (success)
@@ -19,6 +22,9 @@ module CHAOS.Portal.Client
 
 		public static LogOut(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl: string = null, serviceCaller: IServiceCaller = null): void
 		{
+			if (serviceCaller == null)
+				serviceCaller = ServiceCallerService.GetDefaultCaller();
+
 			var outerCallback = (success: boolean) =>
 			{
 				if (success)
@@ -32,9 +38,6 @@ module CHAOS.Portal.Client
 
 		private static CallWayfService(wayfServicePath:string, wayfMethod:string, target:any, callback:(success:boolean)=> void, callbackUrl:string = null, serviceCaller:IServiceCaller = null):void
 		{
-			if (serviceCaller == null)
-				serviceCaller = ServiceCallerService.GetDefaultCaller();
-
 			if (!serviceCaller.HasSession()) throw new Error("Session not acquired");
 			if (wayfServicePath == null || wayfServicePath == "") throw new Error("Parameter wayfServicePath cannot be null or empty");
 			if (target == null) throw new Error("Parameter target cannot be null");

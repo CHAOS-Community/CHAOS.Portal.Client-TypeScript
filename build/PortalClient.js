@@ -557,7 +557,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.4";
+                    return "2.10.5";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -1296,6 +1296,9 @@ var CHAOS;
                 Wayf.LogIn = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
                     var outerCallback = function (success) {
                         if (success)
                             serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
@@ -1309,6 +1312,9 @@ var CHAOS;
                 Wayf.LogOut = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
                     var outerCallback = function (success) {
                         if (success)
                             serviceCaller.UpdateSession(null);
@@ -1323,9 +1329,6 @@ var CHAOS;
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
-                    if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
-
                     if (!serviceCaller.HasSession())
                         throw new Error("Session not acquired");
                     if (wayfServicePath == null || wayfServicePath == "")
