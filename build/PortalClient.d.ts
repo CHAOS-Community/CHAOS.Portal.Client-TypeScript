@@ -159,6 +159,13 @@ declare module CHAOS.Portal.Client {
     }
 }
 declare module CHAOS.Portal.Client {
+    class OAuth {
+        static AuthenticationType(): string;
+        static Login(oAuthServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: Client.IServiceCaller): void;
+        private static CallOAuthService(oAuthServicePath, method, target, callback, callbackUrl?, serviceCaller?);
+    }
+}
+declare module CHAOS.Portal.Client {
     class PortalClient implements Client.IPortalClient, Client.IServiceCaller {
         static GetClientVersion(): string;
         private static GetProtocolVersion();

@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.5";
+                    return "2.10.6";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
