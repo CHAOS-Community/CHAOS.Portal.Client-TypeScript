@@ -77,11 +77,10 @@ module CHAOS.Portal.Client
 
 				var sessionChecker = () => CHAOS.Portal.Client.User.Get(null, null, serviceCaller).WithCallback(response =>
 				{
+					if (reporter == null) return;
+
 					if (response.Error == null)
-					{
-						if (reporter != null)
-							reporter(true);
-					}
+						reporter(true);
 					else
 						setTimeout(sessionChecker, 1000);
 				}, this);

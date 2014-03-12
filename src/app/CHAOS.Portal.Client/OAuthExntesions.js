@@ -81,10 +81,12 @@ var CHAOS;
 
                         var sessionChecker = function () {
                             return CHAOS.Portal.Client.User.Get(null, null, serviceCaller).WithCallback(function (response) {
-                                if (response.Error == null) {
-                                    if (reporter != null)
-                                        reporter(true);
-                                } else
+                                if (reporter == null)
+                                    return;
+
+                                if (response.Error == null)
+                                    reporter(true);
+                                else
                                     setTimeout(sessionChecker, 1000);
                             }, _this);
                         };

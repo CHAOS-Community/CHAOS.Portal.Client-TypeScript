@@ -619,10 +619,12 @@ var CHAOS;
 
                         var sessionChecker = function () {
                             return CHAOS.Portal.Client.User.Get(null, null, serviceCaller).WithCallback(function (response) {
-                                if (response.Error == null) {
-                                    if (reporter != null)
-                                        reporter(true);
-                                } else
+                                if (reporter == null)
+                                    return;
+
+                                if (response.Error == null)
+                                    reporter(true);
+                                else
                                     setTimeout(sessionChecker, 1000);
                             }, _this);
                         };
@@ -664,7 +666,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.6";
+                    return "2.10.7";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
