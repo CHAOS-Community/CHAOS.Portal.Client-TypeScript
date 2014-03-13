@@ -20,6 +20,15 @@ declare module CHAOS.Portal.Client {
         static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
         static Delete(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
     }
+    class OAuth {
+        static AuthenticationType(): string;
+        static GetLoginEndPoint(callbackUrl: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<ILoginEndPoint>;
+        static ProcessLogin(callbackUrl: string, responseUrl: string, stateCode: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+    }
+    interface ILoginEndPoint {
+        Uri: string;
+        StateCode: string;
+    }
     interface IAuthKey {
         Name: string;
         Token: string;
@@ -156,13 +165,6 @@ declare module CHAOS.Portal.Client {
     class UserProfile {
         static Get(metadataSchemaGuid: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
         static Set(metadataSchemaGuid: string, metadata: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-    }
-}
-declare module CHAOS.Portal.Client {
-    class OAuth {
-        static AuthenticationType(): string;
-        static Login(oAuthServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: Client.IServiceCaller): void;
-        private static CallOAuthService(oAuthServicePath, method, target, callback, callbackUrl?, serviceCaller?);
     }
 }
 declare module CHAOS.Portal.Client {

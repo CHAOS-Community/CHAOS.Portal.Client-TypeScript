@@ -117,6 +117,41 @@ module CHAOS.Portal.Client
 		}
 	}
 
+	export class OAuth
+	{
+		public static AuthenticationType(): string { return "OAuth"; }
+
+		public static GetLoginEndPoint(callbackUrl: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<ILoginEndPoint>
+		{
+			if (serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("OAuth/GetLoginEndPoint", CHAOS.Portal.Client.HttpMethod.Get, { callbackUrl: callbackUrl }, true);
+		}
+
+		public static ProcessLogin(callbackUrl: string, responseUrl: string, stateCode: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<ISession>
+		{
+			if (serviceCaller == null)
+				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+			return serviceCaller.CallService("OAuth/ProcessLogin", CHAOS.Portal.Client.HttpMethod.Get, { callbackUrl: callbackUrl, responseUrl: responseUrl, stateCode: stateCode }, true).WithCallback(response =>
+			{
+				if (response.Error == null)
+				{
+					var session = <ISession>response.Body.Results[0];
+
+					serviceCaller.SetSessionAuthenticated(OAuth.AuthenticationType(), session.UserGuid, session.DateModified);
+				}
+			});
+		}
+	}
+
+	export interface ILoginEndPoint
+	{
+		Uri: string;
+		StateCode: string;
+	}
+
 	export interface IAuthKey
 	{
 		Name: string;

@@ -131,6 +131,38 @@ var CHAOS;
                 return AuthKey;
             })();
             Client.AuthKey = AuthKey;
+
+            var OAuth = (function () {
+                function OAuth() {
+                }
+                OAuth.AuthenticationType = function () {
+                    return "OAuth";
+                };
+
+                OAuth.GetLoginEndPoint = function (callbackUrl, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("OAuth/GetLoginEndPoint", 0 /* Get */, { callbackUrl: callbackUrl }, true);
+                };
+
+                OAuth.ProcessLogin = function (callbackUrl, responseUrl, stateCode, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("OAuth/ProcessLogin", 0 /* Get */, { callbackUrl: callbackUrl, responseUrl: responseUrl, stateCode: stateCode }, true).WithCallback(function (response) {
+                        if (response.Error == null) {
+                            var session = response.Body.Results[0];
+
+                            serviceCaller.SetSessionAuthenticated(OAuth.AuthenticationType(), session.UserGuid, session.DateModified);
+                        }
+                    });
+                };
+                return OAuth;
+            })();
+            Client.OAuth = OAuth;
         })(Portal.Client || (Portal.Client = {}));
         var Client = Portal.Client;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
@@ -540,115 +572,6 @@ var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
         (function (Client) {
-            var OAuth = (function () {
-                function OAuth() {
-                }
-                OAuth.AuthenticationType = function () {
-                    return "OAuth";
-                };
-
-                OAuth.Login = function (oAuthServicePath, target, callback, callbackUrl, serviceCaller) {
-                    if (typeof callbackUrl === "undefined") { callbackUrl = null; }
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
-
-                    var outerCallback = function (success) {
-                        if (success)
-                            serviceCaller.SetSessionAuthenticated(OAuth.AuthenticationType());
-
-                        if (callback != null)
-                            callback(success);
-                    };
-
-                    OAuth.CallOAuthService(oAuthServicePath, "Login", target, outerCallback, callbackUrl, serviceCaller);
-                };
-
-                OAuth.CallOAuthService = function (oAuthServicePath, method, target, callback, callbackUrl, serviceCaller) {
-                    if (typeof callbackUrl === "undefined") { callbackUrl = null; }
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    var _this = this;
-                    if (!serviceCaller.HasSession())
-                        throw new Error("Session not acquired");
-                    if (oAuthServicePath == null || oAuthServicePath == "")
-                        throw new Error("Parameter oAuthServicePath cannot be null or empty");
-                    if (target == null)
-                        throw new Error("Parameter target cannot be null");
-
-                    if (oAuthServicePath.substr(oAuthServicePath.length - 1, 1) != "/")
-                        oAuthServicePath += "/";
-
-                    var reporter;
-                    var statusRequesterHandle;
-                    var messageRecieved = function (event) {
-                        if (event.data.indexOf("OAuthLoginStatus: ") != 0)
-                            return;
-
-                        if (reporter != null)
-                            reporter(event.data.substr(12) == "success");
-                    };
-
-                    reporter = function (success) {
-                        reporter = null;
-                        window.removeEventListener("message", messageRecieved, false);
-                        if (statusRequesterHandle != null)
-                            clearInterval(statusRequesterHandle);
-
-                        if (callback != null)
-                            callback(success);
-                    };
-
-                    window.addEventListener("message", messageRecieved, false);
-
-                    var location = oAuthServicePath + "Authentication/" + method + "?sessionGuid=" + serviceCaller.GetCurrentSession().Guid;
-
-                    if (callbackUrl != null)
-                        location += "&callbackUrl=" + callbackUrl;
-
-                    if (target.location !== undefined && target.location.href !== undefined) {
-                        if (target.postMessage) {
-                            statusRequesterHandle = setInterval(function () {
-                                try  {
-                                    target.postMessage("OAuthLoginStatusRequest", "*");
-                                } catch (error) {
-                                    clearInterval(statusRequesterHandle); //cross domain not allowed
-                                    statusRequesterHandle = null;
-                                }
-                            }, 200);
-                        }
-
-                        var sessionChecker = function () {
-                            return CHAOS.Portal.Client.User.Get(null, null, serviceCaller).WithCallback(function (response) {
-                                if (reporter == null)
-                                    return;
-
-                                if (response.Error == null)
-                                    reporter(true);
-                                else
-                                    setTimeout(sessionChecker, 1000);
-                            }, _this);
-                        };
-
-                        setTimeout(sessionChecker, 2000);
-
-                        target.location.href = location;
-                    } else if (target.src !== undefined)
-                        target.src = location;
-                    else
-                        throw new Error("Unknown target type");
-                };
-                return OAuth;
-            })();
-            Client.OAuth = OAuth;
-        })(Portal.Client || (Portal.Client = {}));
-        var Client = Portal.Client;
-    })(CHAOS.Portal || (CHAOS.Portal = {}));
-    var Portal = CHAOS.Portal;
-})(CHAOS || (CHAOS = {}));
-var CHAOS;
-(function (CHAOS) {
-    (function (Portal) {
-        (function (Client) {
             var PortalClient = (function () {
                 function PortalClient(servicePath, clientGuid) {
                     if (typeof clientGuid === "undefined") { clientGuid = null; }
@@ -666,7 +589,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.7";
+                    return "2.10.9";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;

@@ -131,6 +131,38 @@ var CHAOS;
                 return AuthKey;
             })();
             Client.AuthKey = AuthKey;
+
+            var OAuth = (function () {
+                function OAuth() {
+                }
+                OAuth.AuthenticationType = function () {
+                    return "OAuth";
+                };
+
+                OAuth.GetLoginEndPoint = function (callbackUrl, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("OAuth/GetLoginEndPoint", 0 /* Get */, { callbackUrl: callbackUrl }, true);
+                };
+
+                OAuth.ProcessLogin = function (callbackUrl, responseUrl, stateCode, serviceCaller) {
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
+                    if (serviceCaller == null)
+                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+
+                    return serviceCaller.CallService("OAuth/ProcessLogin", 0 /* Get */, { callbackUrl: callbackUrl, responseUrl: responseUrl, stateCode: stateCode }, true).WithCallback(function (response) {
+                        if (response.Error == null) {
+                            var session = response.Body.Results[0];
+
+                            serviceCaller.SetSessionAuthenticated(OAuth.AuthenticationType(), session.UserGuid, session.DateModified);
+                        }
+                    });
+                };
+                return OAuth;
+            })();
+            Client.OAuth = OAuth;
         })(Portal.Client || (Portal.Client = {}));
         var Client = Portal.Client;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
