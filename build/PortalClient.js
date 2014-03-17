@@ -589,7 +589,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.9";
+                    return "2.10.10";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -691,8 +691,8 @@ var CHAOS;
                 };
 
                 CallState.prototype.Call = function (path, method, parameters) {
-                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    if (typeof parameters === "undefined") { parameters = null; }
                     if (this._call != null)
                         throw new Error("Call can not be called multiple times");
 
@@ -754,8 +754,8 @@ var CHAOS;
                 };
 
                 ServiceCall.prototype.CallWithXMLHttpRequest2Browser = function (path, method, parameters) {
-                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    if (typeof parameters === "undefined") { parameters = null; }
                     this._request = new XMLHttpRequest();
                     var data = null;
 
@@ -780,8 +780,8 @@ var CHAOS;
                 };
 
                 ServiceCall.prototype.CallWithXMLHttpRequestBrowser = function (path, method, parameters) {
-                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    if (typeof parameters === "undefined") { parameters = null; }
                     this._request = new XMLHttpRequest();
                     var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
@@ -803,8 +803,8 @@ var CHAOS;
                 };
 
                 ServiceCall.prototype.CallWithOldIEBrowser = function (path, method, parameters) {
-                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    if (typeof parameters === "undefined") { parameters = null; }
                     this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
                     var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
@@ -1237,9 +1237,9 @@ var CHAOS;
                 };
 
                 SecureCookieHelper.Login = function (callback, serviceCaller) {
+                    var _this = this;
                     if (typeof callback === "undefined") { callback = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    var _this = this;
                     var login = this.GetCookie();
 
                     if (login == null) {
@@ -1259,8 +1259,8 @@ var CHAOS;
                 };
 
                 SecureCookieHelper.Create = function (serviceCaller) {
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     CHAOS.Portal.Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if (response.Error == null)
                             _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
@@ -1358,9 +1358,9 @@ var CHAOS;
                 };
 
                 Wayf.CallWayfService = function (wayfServicePath, wayfMethod, target, callback, callbackUrl, serviceCaller) {
+                    var _this = this;
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    var _this = this;
                     if (!serviceCaller.HasSession())
                         throw new Error("Session not acquired");
                     if (wayfServicePath == null || wayfServicePath == "")

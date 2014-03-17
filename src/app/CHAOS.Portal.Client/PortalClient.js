@@ -19,7 +19,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.9";
+                    return "2.10.10";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -121,8 +121,8 @@ var CHAOS;
                 };
 
                 CallState.prototype.Call = function (path, method, parameters) {
-                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    if (typeof parameters === "undefined") { parameters = null; }
                     if (this._call != null)
                         throw new Error("Call can not be called multiple times");
 
@@ -184,8 +184,8 @@ var CHAOS;
                 };
 
                 ServiceCall.prototype.CallWithXMLHttpRequest2Browser = function (path, method, parameters) {
-                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    if (typeof parameters === "undefined") { parameters = null; }
                     this._request = new XMLHttpRequest();
                     var data = null;
 
@@ -210,8 +210,8 @@ var CHAOS;
                 };
 
                 ServiceCall.prototype.CallWithXMLHttpRequestBrowser = function (path, method, parameters) {
-                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    if (typeof parameters === "undefined") { parameters = null; }
                     this._request = new XMLHttpRequest();
                     var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 
@@ -233,8 +233,8 @@ var CHAOS;
                 };
 
                 ServiceCall.prototype.CallWithOldIEBrowser = function (path, method, parameters) {
-                    if (typeof parameters === "undefined") { parameters = null; }
                     var _this = this;
+                    if (typeof parameters === "undefined") { parameters = null; }
                     this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
                     var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
 

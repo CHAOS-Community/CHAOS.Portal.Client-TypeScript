@@ -42,9 +42,9 @@ var CHAOS;
                 };
 
                 Wayf.CallWayfService = function (wayfServicePath, wayfMethod, target, callback, callbackUrl, serviceCaller) {
+                    var _this = this;
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    var _this = this;
                     if (!serviceCaller.HasSession())
                         throw new Error("Session not acquired");
                     if (wayfServicePath == null || wayfServicePath == "")

@@ -10,9 +10,9 @@ var CHAOS;
                 };
 
                 SecureCookieHelper.Login = function (callback, serviceCaller) {
+                    var _this = this;
                     if (typeof callback === "undefined") { callback = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    var _this = this;
                     var login = this.GetCookie();
 
                     if (login == null) {
@@ -32,8 +32,8 @@ var CHAOS;
                 };
 
                 SecureCookieHelper.Create = function (serviceCaller) {
-                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     var _this = this;
+                    if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     CHAOS.Portal.Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if (response.Error == null)
                             _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);

@@ -1,29 +1,29 @@
 declare module CHAOS.Portal.Client {
     class EmailPassword {
         static AuthenticationType(): string;
-        static Login(email: string, password: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static SetPassword(userGuid: string, newPassword: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Login(email: string, password: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static SetPassword(userGuid: string, newPassword: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class SecureCookie {
         static AuthenticationType(): string;
-        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Login(guid: string, passwordGuid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Create(serviceCaller?: IServiceCaller): ICallState<any>;
+        static Login(guid: string, passwordGuid: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class Facebook {
         static AuthenticationType(): string;
-        static Login(signedRequest: string, userAccessToken: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Login(signedRequest: string, userAccessToken: string, serviceCaller?: IServiceCaller): ICallState<ISession>;
     }
     class AuthKey {
         static AuthenticationType(): string;
-        static Create(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
-        static Login(token: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
-        static Delete(name: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<IAuthKey>;
+        static Create(name: string, serviceCaller?: IServiceCaller): ICallState<IAuthKey>;
+        static Login(token: string, serviceCaller?: IServiceCaller): ICallState<ISession>;
+        static Get(serviceCaller?: IServiceCaller): ICallState<IAuthKey>;
+        static Delete(name: string, serviceCaller?: IServiceCaller): ICallState<IAuthKey>;
     }
     class OAuth {
         static AuthenticationType(): string;
-        static GetLoginEndPoint(callbackUrl: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<ILoginEndPoint>;
-        static ProcessLogin(callbackUrl: string, responseUrl: string, stateCode: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static GetLoginEndPoint(callbackUrl: string, serviceCaller?: IServiceCaller): ICallState<ILoginEndPoint>;
+        static ProcessLogin(callbackUrl: string, responseUrl: string, stateCode: string, serviceCaller?: IServiceCaller): ICallState<ISession>;
     }
     interface ILoginEndPoint {
         Uri: string;
@@ -107,68 +107,68 @@ declare module CHAOS.Portal.Client {
 }
 declare module CHAOS.Portal.Client {
     class MetadataSchema {
-        static Get(guid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Create(name: string, schemaXml: string, guid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Update(name: string, schemaXml: string, guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static HasPermissionToMetadataSchema(guid: string, permission: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(guid?: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Create(name: string, schemaXml: string, guid?: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Update(name: string, schemaXml: string, guid: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static HasPermissionToMetadataSchema(guid: string, permission: number, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class Folder {
-        static GetPermission(folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static SetPermission(userGuid: string, groupGuid: string, folderID: number, permission: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Get(id?: number, folderTypeID?: number, parentID?: number, permission?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(id: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Update(id: number, newTitle: string, newParentID?: number, newFolderTypeID?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Create(subscriptionGuid: string, title: string, parentID?: number, folderTypeID?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static GetPermission(folderID: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static SetPermission(userGuid: string, groupGuid: string, folderID: number, permission: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Get(id?: number, folderTypeID?: number, parentID?: number, permission?: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Delete(id: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Update(id: number, newTitle: string, newParentID?: number, newFolderTypeID?: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Create(subscriptionGuid: string, title: string, parentID?: number, folderTypeID?: number, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class FolderType {
-        static Get(name?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(name?: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class Format {
-        static Get(name?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(name?: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class FormatType {
-        static Get(name?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(name?: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class Language {
-        static Get(name?: string, languageCode?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(name?: string, languageCode?: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class Link {
-        static Create(objectGuid: string, folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Update(objectGuid: string, folderID: number, newFolderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(objectGuid: string, folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Create(objectGuid: string, folderID: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Update(objectGuid: string, folderID: number, newFolderID: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Delete(objectGuid: string, folderID: number, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class Object {
-        static Create(guid: string, objectTypeID: number, folderID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Get(objectGuids: string[], accessPointGuid?: string, includeMetadata?: boolean, includeFiles?: boolean, includeObjectRelations?: boolean, includeFolders?: boolean, includeAccessPoints?: boolean, pageSize?: number, pageIndex?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static SetPublishSettings(objectGuid: string, accessPointGuid: string, startDate: Date, endDate: Date, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Create(guid: string, objectTypeID: number, folderID: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Get(objectGuids: string[], accessPointGuid?: string, includeMetadata?: boolean, includeFiles?: boolean, includeObjectRelations?: boolean, includeFolders?: boolean, includeAccessPoints?: boolean, pageSize?: number, pageIndex?: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static SetPublishSettings(objectGuid: string, accessPointGuid: string, startDate: Date, endDate: Date, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class ObjectRelation {
-        static Set(object1Guid: string, object2Guid: string, objectRelationTypeID: number, sequence?: number, metadataGuid?: string, metadataSchemaGuid?: string, languageCode?: string, metadataXml?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(object1Guid: string, object2Guid: string, objectRelationTypeID: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Set(object1Guid: string, object2Guid: string, objectRelationTypeID: number, sequence?: number, metadataGuid?: string, metadataSchemaGuid?: string, languageCode?: string, metadataXml?: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Delete(object1Guid: string, object2Guid: string, objectRelationTypeID: number, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class ObjectRelationType {
-        static Get(value?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(value?: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class Metadata {
-        static Set(objectGuid: string, metadataSchemaGuid: string, languageCode: string, revisionID: number, metadataXml: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Set(objectGuid: string, metadataSchemaGuid: string, languageCode: string, revisionID: number, metadataXml: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class ObjectType {
-        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Set(name: string, id?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(id: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(serviceCaller?: IServiceCaller): ICallState<any>;
+        static Set(name: string, id?: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Delete(id: number, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class UserManagement {
-        static GetUserFolder(userGuid?: string, createIfMissing?: boolean, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static GetUserObject(userGuid?: string, createIfMissing?: boolean, includeMetata?: boolean, includeFiles?: boolean, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static GetUserFolder(userGuid?: string, createIfMissing?: boolean, serviceCaller?: IServiceCaller): ICallState<any>;
+        static GetUserObject(userGuid?: string, createIfMissing?: boolean, includeMetata?: boolean, includeFiles?: boolean, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class UserProfile {
-        static Get(metadataSchemaGuid: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Set(metadataSchemaGuid: string, metadata: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(metadataSchemaGuid: string, userGuid?: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Set(metadataSchemaGuid: string, metadata: string, userGuid?: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
 }
 declare module CHAOS.Portal.Client {
-    class PortalClient implements Client.IPortalClient, Client.IServiceCaller {
+    class PortalClient implements IPortalClient, IServiceCaller {
         static GetClientVersion(): string;
         private static GetProtocolVersion();
         private _servicePath;
@@ -177,70 +177,70 @@ declare module CHAOS.Portal.Client {
         private _sessionAcquired;
         private _sessionAuthenticated;
         public GetServicePath(): string;
-        public GetCurrentSession(): Client.ISession;
+        public GetCurrentSession(): ISession;
         public HasSession(): boolean;
         public IsAuthenticated(): boolean;
         public AuthenticationType(): string;
-        public SessionAcquired(): Client.IEvent<Client.ISession>;
-        public SessionAuthenticated(): Client.IEvent<string>;
+        public SessionAcquired(): IEvent<ISession>;
+        public SessionAuthenticated(): IEvent<string>;
         public ClientGuid: string;
         constructor(servicePath: string, clientGuid?: string);
-        public CallService<T>(path: string, method?: Client.HttpMethod, parameters?: {
+        public CallService<T>(path: string, method?: HttpMethod, parameters?: {
             [index: string]: any;
-        }, requiresSession?: boolean): Client.ICallState<T>;
+        }, requiresSession?: boolean): ICallState<T>;
         public GetServiceCallUri(path: string, parameters?: {
             [index: string]: any;
         }, requiresSession?: boolean, format?: string): string;
         private GetPathToExtension(path);
         private AddSessionToParameters(parameters);
-        public UpdateSession(session: Client.ISession): void;
+        public UpdateSession(session: ISession): void;
         public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
     }
 }
 declare module CHAOS.Portal.Client {
     class Session {
-        static Create(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Get(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Update(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
-        static Delete(serviceCaller?: Client.IServiceCaller): Client.ICallState<Client.ISession>;
+        static Create(serviceCaller?: IServiceCaller): ICallState<ISession>;
+        static Get(serviceCaller?: IServiceCaller): ICallState<ISession>;
+        static Update(serviceCaller?: IServiceCaller): ICallState<ISession>;
+        static Delete(serviceCaller?: IServiceCaller): ICallState<ISession>;
     }
     class User {
-        static Create(guid: string, email: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Update(guid: string, email: string, permissons?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Get(guid?: string, groupGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static GetCurrent(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Create(guid: string, email: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Update(guid: string, email: string, permissons?: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Get(guid?: string, groupGuid?: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static GetCurrent(serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class Group {
-        static Get(guid?: string, userGuid?: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Create(name: string, systemPermission: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Update(guid: string, newName: string, newSystemPermission?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Delete(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static AddUser(guid: string, userGuid: string, permissions: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static RemoveUser(guid: string, userGuid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static UpdateUserPermissions(guid: string, userGuid: string, permissions: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(guid?: string, userGuid?: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Create(name: string, systemPermission: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Update(guid: string, newName: string, newSystemPermission?: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static AddUser(guid: string, userGuid: string, permissions: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static RemoveUser(guid: string, userGuid: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static UpdateUserPermissions(guid: string, userGuid: string, permissions: number, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class View {
-        static Get(view: string, query?: string, sort?: string, filter?: string, pageIndex?: number, pageSize?: number, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static List(serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(view: string, query?: string, sort?: string, filter?: string, pageIndex?: number, pageSize?: number, serviceCaller?: IServiceCaller): ICallState<any>;
+        static List(serviceCaller?: IServiceCaller): ICallState<any>;
     }
     class ClientSettings {
-        static Get(guid: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
-        static Set(guid: string, name: string, settings: string, serviceCaller?: Client.IServiceCaller): Client.ICallState<any>;
+        static Get(guid: string, serviceCaller?: IServiceCaller): ICallState<any>;
+        static Set(guid: string, name: string, settings: string, serviceCaller?: IServiceCaller): ICallState<any>;
     }
     function Initialize(servicePath: string, clientGUID?: string, autoCreateSession?: boolean): IPortalClient;
     class ServiceCallerService {
         private static _defaultCaller;
-        static GetDefaultCaller(): Client.IServiceCaller;
-        static SetDefaultCaller(value: Client.IServiceCaller): void;
+        static GetDefaultCaller(): IServiceCaller;
+        static SetDefaultCaller(value: IServiceCaller): void;
     }
 }
 declare module CHAOS.Portal.Client {
     class SecureCookieHelper {
         private static COOKIE_LIFE_TIME_DAYS;
         static DoesCookieExist(): boolean;
-        static Login(callback?: (success: boolean) => void, serviceCaller?: Client.IServiceCaller): void;
-        static Create(serviceCaller?: Client.IServiceCaller): void;
+        static Login(callback?: (success: boolean) => void, serviceCaller?: IServiceCaller): void;
+        static Create(serviceCaller?: IServiceCaller): void;
         static Clear(): void;
         private static GetCookie();
         private static SetCookie(guid, passwordGuid, expireInDays);
@@ -249,8 +249,8 @@ declare module CHAOS.Portal.Client {
 declare module CHAOS.Portal.Client {
     class Wayf {
         static AuthenticationType(): string;
-        static LogIn(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: Client.IServiceCaller): void;
-        static LogOut(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: Client.IServiceCaller): void;
+        static LogIn(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: IServiceCaller): void;
+        static LogOut(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: IServiceCaller): void;
         private static CallWayfService(wayfServicePath, wayfMethod, target, callback, callbackUrl?, serviceCaller?);
     }
 }
