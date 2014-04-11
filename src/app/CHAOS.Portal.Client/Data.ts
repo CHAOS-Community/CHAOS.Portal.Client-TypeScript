@@ -9,15 +9,8 @@ module CHAOS.Portal.Client
 		AuthenticationType():string;
 		SessionAcquired(): IEvent<ISession>;
 		SessionAuthenticated(): IEvent<string>;
+		SetCallHandler(handler: ICallHandler):void;
 		ClientGuid: string;
-	}
-
-	export interface ISession
-	{
-		Guid: string;
-		UserGuid: string;
-		DateCreated: number;
-		DateModified: number;
 	}
 
 	export interface IServiceCaller
@@ -38,6 +31,19 @@ module CHAOS.Portal.Client
 		WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token: any): ICallState<T>;
 		WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token: any, context: any): ICallState<T>;
 		TransferProgressChanged(): IEvent<ITransferProgress>;
+	}
+
+	export interface ICallHandler
+	{
+		ProcessResponse<T>(response: IPortalResponse<T>, recaller:()=>void):boolean;
+	}
+
+	export interface ISession
+	{
+		Guid: string;
+		UserGuid: string;
+		DateCreated: number;
+		DateModified: number;
 	}
 
 	export interface IPortalResponse<T>

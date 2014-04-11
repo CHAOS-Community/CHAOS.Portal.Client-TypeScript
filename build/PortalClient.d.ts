@@ -44,13 +44,8 @@ declare module CHAOS.Portal.Client {
         AuthenticationType(): string;
         SessionAcquired(): IEvent<ISession>;
         SessionAuthenticated(): IEvent<string>;
+        SetCallHandler(handler: ICallHandler): void;
         ClientGuid: string;
-    }
-    interface ISession {
-        Guid: string;
-        UserGuid: string;
-        DateCreated: number;
-        DateModified: number;
     }
     interface IServiceCaller {
         CallService<T>(path: string, method?: HttpMethod, parameters?: {
@@ -71,6 +66,15 @@ declare module CHAOS.Portal.Client {
         WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token: any): ICallState<T>;
         WithCallbackAndToken(callback: (response: IPortalResponse<T>, token: any) => void, token: any, context: any): ICallState<T>;
         TransferProgressChanged(): IEvent<ITransferProgress>;
+    }
+    interface ICallHandler {
+        ProcessResponse<T>(response: IPortalResponse<T>, recaller: () => void): boolean;
+    }
+    interface ISession {
+        Guid: string;
+        UserGuid: string;
+        DateCreated: number;
+        DateModified: number;
     }
     interface IPortalResponse<T> {
         Header: IHeader;
@@ -176,6 +180,7 @@ declare module CHAOS.Portal.Client {
         private _authenticationType;
         private _sessionAcquired;
         private _sessionAuthenticated;
+        private _callHandler;
         public GetServicePath(): string;
         public GetCurrentSession(): ISession;
         public HasSession(): boolean;
@@ -191,6 +196,7 @@ declare module CHAOS.Portal.Client {
         public GetServiceCallUri(path: string, parameters?: {
             [index: string]: any;
         }, requiresSession?: boolean, format?: string): string;
+        public SetCallHandler(handler: ICallHandler): void;
         private GetPathToExtension(path);
         private AddSessionToParameters(parameters);
         public UpdateSession(session: ISession): void;

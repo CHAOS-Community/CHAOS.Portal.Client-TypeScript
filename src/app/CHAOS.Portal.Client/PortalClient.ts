@@ -2,14 +2,15 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.10.10"; }
+		public static GetClientVersion():string { return "2.10.11"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
 		private _currentSession:ISession;
 		private _authenticationType: string = null;
 		private _sessionAcquired:Event<ISession>;
-		private _sessionAuthenticated:Event<string>;
+		private _sessionAuthenticated: Event<string>;
+		private _callHandler:ICallHandler;
 
 		public GetServicePath():string { return this._servicePath; }
 		public GetCurrentSession(): ISession { return this._currentSession; }
@@ -40,7 +41,7 @@ module CHAOS.Portal.Client
 		    if (requiresSession)
 		        parameters = this.AddSessionToParameters(parameters);
 
-			return new CallState().Call(this.GetPathToExtension(path), method, parameters);
+			return new CallState(this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
 		}
 
 		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: boolean = true, format:string = "json2"): string
@@ -49,6 +50,11 @@ module CHAOS.Portal.Client
 		        parameters = this.AddSessionToParameters(parameters);
 
 		    return this.GetPathToExtension(path) + "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters, format);
+		}
+
+		public SetCallHandler(handler:ICallHandler):void
+		{
+			this._callHandler = handler;
 		}
 
 		private GetPathToExtension(path: string): string
@@ -102,11 +108,13 @@ module CHAOS.Portal.Client
 		private _completed:Event<IPortalResponse<T>>;
 		private _progressChanged: Event<ITransferProgress>;
 		private _call: ServiceCall<T> = null;
+		private _callHandler:ICallHandler;
 
-		constructor()
+		constructor(callHandler:ICallHandler)
 		{
 			this._completed = new Event<IPortalResponse<T>>(this);
 			this._progressChanged = new Event<ITransferProgress>(this);
+			this._callHandler = callHandler;
 		}
 
 		public TransferProgressChanged(): IEvent<ITransferProgress>
@@ -121,7 +129,18 @@ module CHAOS.Portal.Client
 
 			this._call = new ServiceCall();
 
-			this._call.Call((response: IPortalResponse<T>) => this._completed.Raise(response), (progress: ITransferProgress) => this._progressChanged.Raise(progress), path, method, parameters);
+			this._call.Call((response:IPortalResponse<T>) =>
+			{
+				var recaller = () =>
+				{
+					this._call = null;
+					this.Call(path, method, parameters)
+				};
+
+				if (this._callHandler == null || this._callHandler.ProcessResponse(response, recaller))
+					this._completed.Raise(response);
+
+			}, (progress: ITransferProgress) => this._progressChanged.Raise(progress), path, method, parameters);
 
     		return this;
     	}

@@ -589,7 +589,7 @@ var CHAOS;
                     this._sessionAuthenticated = new Event(this);
                 }
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.10";
+                    return "2.10.11";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -624,7 +624,7 @@ var CHAOS;
                     if (requiresSession)
                         parameters = this.AddSessionToParameters(parameters);
 
-                    return new CallState().Call(this.GetPathToExtension(path), method, parameters);
+                    return new CallState(this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
                 };
 
                 PortalClient.prototype.GetServiceCallUri = function (path, parameters, requiresSession, format) {
@@ -635,6 +635,10 @@ var CHAOS;
                         parameters = this.AddSessionToParameters(parameters);
 
                     return this.GetPathToExtension(path) + "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters, format);
+                };
+
+                PortalClient.prototype.SetCallHandler = function (handler) {
+                    this._callHandler = handler;
                 };
 
                 PortalClient.prototype.GetPathToExtension = function (path) {
@@ -681,10 +685,11 @@ var CHAOS;
             Client.PortalClient = PortalClient;
 
             var CallState = (function () {
-                function CallState() {
+                function CallState(callHandler) {
                     this._call = null;
                     this._completed = new Event(this);
                     this._progressChanged = new Event(this);
+                    this._callHandler = callHandler;
                 }
                 CallState.prototype.TransferProgressChanged = function () {
                     return this._progressChanged;
@@ -699,7 +704,13 @@ var CHAOS;
                     this._call = new ServiceCall();
 
                     this._call.Call(function (response) {
-                        return _this._completed.Raise(response);
+                        var recaller = function () {
+                            _this._call = null;
+                            _this.Call(path, method, parameters);
+                        };
+
+                        if (_this._callHandler == null || _this._callHandler.ProcessResponse(response, recaller))
+                            _this._completed.Raise(response);
                     }, function (progress) {
                         return _this._progressChanged.Raise(progress);
                     }, path, method, parameters);
