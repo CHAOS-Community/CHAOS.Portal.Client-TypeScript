@@ -267,7 +267,7 @@ var CHAOS;
                     if (this._request.responseText != "")
                         setTimeout(function () {
                             return _this.ReportCompleted(_this._request.responseText);
-                        }, 1); // Delay cached response so callbacks can be attached
+                        }, 1);
                 };
 
                 ServiceCall.prototype.RequestStateChange = function () {
@@ -328,7 +328,6 @@ var CHAOS;
 
                 ServiceCall.ConvertDate = function (date) {
                     return ServiceCall.ToTwoDigits(date.getUTCDate()) + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + date.getUTCFullYear() + " " + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds());
-                    //return date.getUTCFullYear() + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + ServiceCall.ToTwoDigits(date.getUTCDate()) + "T" + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds()) + "Z";
                 };
 
                 ServiceCall.AddPortalParameters = function (parameters, format) {
@@ -347,7 +346,7 @@ var CHAOS;
 
                     for (var key in parameters) {
                         value = parameters[key];
-                        if (CHAOS.Portal.Client.Object.prototype.toString.call(value) === '[object Date]')
+                        if (Client.Object.prototype.toString.call(value) === '[object Date]')
                             parameters[key] = ServiceCall.ConvertDate(value);
                     }
 
@@ -411,4 +410,3 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
-//# sourceMappingURL=PortalClient.js.map
