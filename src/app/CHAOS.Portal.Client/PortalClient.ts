@@ -2,7 +2,7 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.10.11"; }
+		public static GetClientVersion():string { return "2.11.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -134,7 +134,7 @@ module CHAOS.Portal.Client
 				var recaller = () =>
 				{
 					this._call = null;
-					this.Call(path, method, parameters)
+					this.Call(path, method, parameters);
 				};
 
 				if (this._callHandler == null || this._callHandler.ProcessResponse(response, recaller))
@@ -402,5 +402,10 @@ module CHAOS.Portal.Client
 			for (var i = 0; i < this._handlers.length; i++)
 				this._handlers[i].call(this._sender, data);
 		}
-    }
+	}	
+}
+
+interface Window
+{
+	[index: string]: any; //Allow checks for browser support
 }

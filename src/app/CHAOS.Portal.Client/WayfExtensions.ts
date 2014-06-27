@@ -4,39 +4,39 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "Wayf"; }
 
-		public static LogIn(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl:string = null, serviceCaller: IServiceCaller = null):void
+		public static LogIn(wayfServicePath: string, target: any, callback: (status: number) => void, callbackUrl:string = null, serviceCaller: IServiceCaller = null):void
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			var outerCallback = (success:boolean)=>
+			var outerCallback = (status:number)=>
 			{
-				if (success)
+				if (status == 0)
 					serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
 
-				callback(success);
+				callback(status);
 			};
 
 			Wayf.CallWayfService(wayfServicePath, "LogIn", target, outerCallback, callbackUrl, serviceCaller);
 		}
 
-		public static LogOut(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl: string = null, serviceCaller: IServiceCaller = null): void
+		public static LogOut(wayfServicePath: string, target: any, callback: (status: number) => void, callbackUrl: string = null, serviceCaller: IServiceCaller = null): void
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			var outerCallback = (success: boolean) =>
+			var outerCallback = (status: number) =>
 			{
-				if (success)
+				if (status)
 					serviceCaller.UpdateSession(null);
 
-				callback(success);
+				callback(status);
 			};
 
 			Wayf.CallWayfService(wayfServicePath, "LogOut", target, outerCallback, callbackUrl, serviceCaller);
 		}
 
-		private static CallWayfService(wayfServicePath:string, wayfMethod:string, target:any, callback:(success:boolean)=> void, callbackUrl:string = null, serviceCaller:IServiceCaller = null):void
+		private static CallWayfService(wayfServicePath:string, wayfMethod:string, target:any, callback:(status:number)=> void, callbackUrl:string = null, serviceCaller:IServiceCaller = null):void
 		{
 			if (!serviceCaller.HasSession()) throw new Error("Session not acquired");
 			if (wayfServicePath == null || wayfServicePath == "") throw new Error("Parameter wayfServicePath cannot be null or empty");
@@ -45,25 +45,25 @@ module CHAOS.Portal.Client
 			if (wayfServicePath.substr(wayfServicePath.length - 1, 1) != "/")
 				wayfServicePath += "/";
 
-			var reporter: (success: boolean) => void;
+			var reporter: (status: number) => void;
 			var statusRequesterHandle: number;
 			var messageRecieved = (event: MessageEvent) =>
 			{
 				if (event.data.indexOf("WayfStatus: ") != 0) return;
 
 				if (reporter != null)
-					reporter(event.data.substr(12) == "success");
+					reporter(parseInt(event.data.substr(12)));
 
 			};
 
-			reporter = (success: boolean) =>
+			reporter = (status: number) =>
 			{
 				reporter = null;
 				window.removeEventListener("message", messageRecieved, false);
 				if (statusRequesterHandle != null) clearInterval(statusRequesterHandle);
 
 				if (callback != null)
-					callback(success);
+					callback(status);
 			};
 
 			window.addEventListener("message", messageRecieved, false);
@@ -96,7 +96,7 @@ module CHAOS.Portal.Client
 					if (response.Error == null)
 					{
 						if (reporter != null)
-							reporter(true);
+							reporter(0);
 					}
 					else
 						setTimeout(sessionChecker, 1000);
