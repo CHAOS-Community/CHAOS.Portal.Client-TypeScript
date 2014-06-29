@@ -46,7 +46,7 @@ module CHAOS.Portal.Client
 				wayfServicePath += "/";
 
 			var reporter: (status: number) => void;
-			var statusRequesterHandle: number;
+			var statusRequesterHandle: number = null;
 			var messageRecieved = (event: MessageEvent) =>
 			{
 				if (event.data.indexOf("WayfStatus: ") != 0) return;

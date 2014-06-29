@@ -1,4 +1,4 @@
-﻿var CHAOS;
+var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
         (function (Client) {
@@ -56,7 +56,7 @@
                         wayfServicePath += "/";
 
                     var reporter;
-                    var statusRequesterHandle;
+                    var statusRequesterHandle = null;
                     var messageRecieved = function (event) {
                         if (event.data.indexOf("WayfStatus: ") != 0)
                             return;
