@@ -12,7 +12,7 @@ var CHAOS;
                 EmailPassword.Login = function (email, password, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("EmailPassword/Login", 1 /* Post */, { email: email, password: password }).WithCallback(function (response) {
                         if (response.Error == null)
@@ -23,7 +23,7 @@ var CHAOS;
                 EmailPassword.SetPassword = function (userGuid, newPassword, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("EmailPassword/SetPassword", 1 /* Post */, { userGuid: userGuid, newPassword: newPassword });
                 };
@@ -41,7 +41,7 @@ var CHAOS;
                 SecureCookie.Create = function (serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("SecureCookie/Create");
                 };
@@ -49,12 +49,12 @@ var CHAOS;
                 SecureCookie.Login = function (guid, passwordGuid, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("SecureCookie/Login", 1 /* Post */, { guid: guid, passwordGuid: passwordGuid }).WithCallback(function (response) {
                         if (response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(SecureCookie.AuthenticationType(), null, null);
-                            CHAOS.Portal.Client.Session.Get(serviceCaller); //Make sure cached session is updated
+                            Client.Session.Get(serviceCaller); //Make sure cached session is updated
                         }
                     });
                 };
@@ -72,12 +72,12 @@ var CHAOS;
                 Facebook.Login = function (signedRequest, userAccessToken, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("Facebook/Login", 1 /* Post */, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(function (response) {
                         if (response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(Facebook.AuthenticationType(), response.Body.Results[0].UserGuid, null);
-                            CHAOS.Portal.Client.Session.Get(serviceCaller); //Make sure cached session is updated
+                            Client.Session.Get(serviceCaller); //Make sure cached session is updated
                         }
                     });
                 };
@@ -95,7 +95,7 @@ var CHAOS;
                 AuthKey.Create = function (name, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("AuthKey/Create", 0 /* Get */, { name: name });
                 };
@@ -103,12 +103,12 @@ var CHAOS;
                 AuthKey.Login = function (token, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("AuthKey/Login", 1 /* Post */, { token: token }).WithCallback(function (response) {
                         if (response.Error == null) {
                             serviceCaller.SetSessionAuthenticated(AuthKey.AuthenticationType(), response.Body.Results[0].UserGuid, null);
-                            CHAOS.Portal.Client.Session.Get(serviceCaller); //Make sure cached session is updated
+                            Client.Session.Get(serviceCaller); //Make sure cached session is updated
                         }
                     });
                 };
@@ -116,7 +116,7 @@ var CHAOS;
                 AuthKey.Get = function (serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("AuthKey/Get");
                 };
@@ -124,7 +124,7 @@ var CHAOS;
                 AuthKey.Delete = function (name, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
                     return serviceCaller.CallService("AuthKey/Delete", 0 /* Get */, { name: name });
                 };
@@ -588,8 +588,11 @@ var CHAOS;
                     this._sessionAcquired = new Event(this);
                     this._sessionAuthenticated = new Event(this);
                 }
+                PortalClient.GetSessionParameterName = function () {
+                    return "sessionGUID";
+                };
                 PortalClient.GetClientVersion = function () {
-                    return "2.10.11";
+                    return "2.11.1";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -624,7 +627,7 @@ var CHAOS;
                     if (requiresSession)
                         parameters = this.AddSessionToParameters(parameters);
 
-                    return new CallState(this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
+                    return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
                 };
 
                 PortalClient.prototype.GetServiceCallUri = function (path, parameters, requiresSession, format) {
@@ -652,7 +655,7 @@ var CHAOS;
                     if (!this.HasSession())
                         throw new Error("Session not acquired");
 
-                    parameters["sessionGUID"] = this.GetCurrentSession().Guid;
+                    parameters[PortalClient.GetSessionParameterName()] = this.GetCurrentSession().Guid;
 
                     return parameters;
                 };
@@ -685,10 +688,11 @@ var CHAOS;
             Client.PortalClient = PortalClient;
 
             var CallState = (function () {
-                function CallState(callHandler) {
+                function CallState(serviceCaller, callHandler) {
                     this._call = null;
                     this._completed = new Event(this);
                     this._progressChanged = new Event(this);
+                    this._serviceCaller = serviceCaller;
                     this._callHandler = callHandler;
                 }
                 CallState.prototype.TransferProgressChanged = function () {
@@ -704,8 +708,19 @@ var CHAOS;
                     this._call = new ServiceCall();
 
                     this._call.Call(function (response) {
-                        var recaller = function () {
+                        var recaller = function (resetSession) {
                             _this._call = null;
+
+                            if (resetSession) {
+                                var sessionName = PortalClient.GetSessionParameterName();
+                                for (var key in parameters) {
+                                    if (key == sessionName) {
+                                        parameters[key] = _this._serviceCaller.GetCurrentSession().Guid;
+                                        break;
+                                    }
+                                }
+                            }
+
                             _this.Call(path, method, parameters);
                         };
 
@@ -917,7 +932,7 @@ var CHAOS;
 
                     for (var key in parameters) {
                         value = parameters[key];
-                        if (CHAOS.Portal.Client.Object.prototype.toString.call(value) === '[object Date]')
+                        if (Client.Object.prototype.toString.call(value) === '[object Date]')
                             parameters[key] = ServiceCall.ConvertDate(value);
                     }
 
@@ -1203,7 +1218,7 @@ var CHAOS;
             function Initialize(servicePath, clientGUID, autoCreateSession) {
                 if (typeof clientGUID === "undefined") { clientGUID = null; }
                 if (typeof autoCreateSession === "undefined") { autoCreateSession = true; }
-                var client = new CHAOS.Portal.Client.PortalClient(servicePath, clientGUID);
+                var client = new Client.PortalClient(servicePath, clientGUID);
 
                 if (autoCreateSession)
                     Session.Create(client);
@@ -1259,7 +1274,7 @@ var CHAOS;
                         return;
                     }
 
-                    CHAOS.Portal.Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
+                    Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
                         if (response.Error == null) {
                             _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                             if (callback != null)
@@ -1272,7 +1287,7 @@ var CHAOS;
                 SecureCookieHelper.Create = function (serviceCaller) {
                     var _this = this;
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    CHAOS.Portal.Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
+                    Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if (response.Error == null)
                             _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                     });
@@ -1340,13 +1355,13 @@ var CHAOS;
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    var outerCallback = function (success) {
-                        if (success)
+                    var outerCallback = function (status) {
+                        if (status == 0)
                             serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
 
-                        callback(success);
+                        callback(status);
                     };
 
                     Wayf.CallWayfService(wayfServicePath, "LogIn", target, outerCallback, callbackUrl, serviceCaller);
@@ -1356,13 +1371,13 @@ var CHAOS;
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
-                        serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
+                        serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    var outerCallback = function (success) {
-                        if (success)
+                    var outerCallback = function (status) {
+                        if (status)
                             serviceCaller.UpdateSession(null);
 
-                        callback(success);
+                        callback(status);
                     };
 
                     Wayf.CallWayfService(wayfServicePath, "LogOut", target, outerCallback, callbackUrl, serviceCaller);
@@ -1383,23 +1398,23 @@ var CHAOS;
                         wayfServicePath += "/";
 
                     var reporter;
-                    var statusRequesterHandle;
+                    var statusRequesterHandle = null;
                     var messageRecieved = function (event) {
                         if (event.data.indexOf("WayfStatus: ") != 0)
                             return;
 
                         if (reporter != null)
-                            reporter(event.data.substr(12) == "success");
+                            reporter(parseInt(event.data.substr(12)));
                     };
 
-                    reporter = function (success) {
+                    reporter = function (status) {
                         reporter = null;
                         window.removeEventListener("message", messageRecieved, false);
                         if (statusRequesterHandle != null)
                             clearInterval(statusRequesterHandle);
 
                         if (callback != null)
-                            callback(success);
+                            callback(status);
                     };
 
                     window.addEventListener("message", messageRecieved, false);
@@ -1425,7 +1440,7 @@ var CHAOS;
                             return CHAOS.Portal.Client.User.Get(null, null, serviceCaller).WithCallback(function (response) {
                                 if (response.Error == null) {
                                     if (reporter != null)
-                                        reporter(true);
+                                        reporter(0);
                                 } else
                                     setTimeout(sessionChecker, 1000);
                             }, _this);

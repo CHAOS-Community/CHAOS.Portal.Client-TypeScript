@@ -18,8 +18,11 @@ var CHAOS;
                     this._sessionAcquired = new Event(this);
                     this._sessionAuthenticated = new Event(this);
                 }
+                PortalClient.GetSessionParameterName = function () {
+                    return "sessionGUID";
+                };
                 PortalClient.GetClientVersion = function () {
-                    return "2.11.0";
+                    return "2.11.1";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -54,7 +57,7 @@ var CHAOS;
                     if (requiresSession)
                         parameters = this.AddSessionToParameters(parameters);
 
-                    return new CallState(this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
+                    return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
                 };
 
                 PortalClient.prototype.GetServiceCallUri = function (path, parameters, requiresSession, format) {
@@ -82,7 +85,7 @@ var CHAOS;
                     if (!this.HasSession())
                         throw new Error("Session not acquired");
 
-                    parameters["sessionGUID"] = this.GetCurrentSession().Guid;
+                    parameters[PortalClient.GetSessionParameterName()] = this.GetCurrentSession().Guid;
 
                     return parameters;
                 };
@@ -115,10 +118,11 @@ var CHAOS;
             Client.PortalClient = PortalClient;
 
             var CallState = (function () {
-                function CallState(callHandler) {
+                function CallState(serviceCaller, callHandler) {
                     this._call = null;
                     this._completed = new Event(this);
                     this._progressChanged = new Event(this);
+                    this._serviceCaller = serviceCaller;
                     this._callHandler = callHandler;
                 }
                 CallState.prototype.TransferProgressChanged = function () {
@@ -134,8 +138,19 @@ var CHAOS;
                     this._call = new ServiceCall();
 
                     this._call.Call(function (response) {
-                        var recaller = function () {
+                        var recaller = function (resetSession) {
                             _this._call = null;
+
+                            if (resetSession) {
+                                var sessionName = PortalClient.GetSessionParameterName();
+                                for (var key in parameters) {
+                                    if (key == sessionName) {
+                                        parameters[key] = _this._serviceCaller.GetCurrentSession().Guid;
+                                        break;
+                                    }
+                                }
+                            }
+
                             _this.Call(path, method, parameters);
                         };
 
@@ -267,7 +282,7 @@ var CHAOS;
                     if (this._request.responseText != "")
                         setTimeout(function () {
                             return _this.ReportCompleted(_this._request.responseText);
-                        }, 1);
+                        }, 1); // Delay cached response so callbacks can be attached
                 };
 
                 ServiceCall.prototype.RequestStateChange = function () {
@@ -328,6 +343,7 @@ var CHAOS;
 
                 ServiceCall.ConvertDate = function (date) {
                     return ServiceCall.ToTwoDigits(date.getUTCDate()) + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + date.getUTCFullYear() + " " + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds());
+                    //return date.getUTCFullYear() + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + ServiceCall.ToTwoDigits(date.getUTCDate()) + "T" + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds()) + "Z";
                 };
 
                 ServiceCall.AddPortalParameters = function (parameters, format) {
@@ -410,3 +426,4 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
+//# sourceMappingURL=PortalClient.js.map

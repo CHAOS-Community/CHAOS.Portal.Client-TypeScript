@@ -35,7 +35,7 @@ module CHAOS.Portal.Client
 
 	export interface ICallHandler
 	{
-		ProcessResponse<T>(response: IPortalResponse<T>, recaller:()=>void):boolean;
+		ProcessResponse<T>(response: IPortalResponse<T>, recaller:(resetSession:boolean)=>void):boolean;
 	}
 
 	export interface ISession

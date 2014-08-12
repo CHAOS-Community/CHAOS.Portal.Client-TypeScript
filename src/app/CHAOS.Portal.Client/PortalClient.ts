@@ -2,7 +2,8 @@ module CHAOS.Portal.Client
 {
     export class PortalClient implements IPortalClient, IServiceCaller
     {
-		public static GetClientVersion():string { return "2.11.0"; }
+		public static GetSessionParameterName(): string {return "sessionGUID";}
+		public static GetClientVersion(): string { return "2.11.1"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -41,7 +42,7 @@ module CHAOS.Portal.Client
 		    if (requiresSession)
 		        parameters = this.AddSessionToParameters(parameters);
 
-			return new CallState(this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
+			return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
 		}
 
 		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: boolean = true, format:string = "json2"): string
@@ -70,7 +71,7 @@ module CHAOS.Portal.Client
 		    if (!this.HasSession())
 		        throw new Error("Session not acquired");
 
-		    parameters["sessionGUID"] = this.GetCurrentSession().Guid;
+			parameters[PortalClient.GetSessionParameterName()] = this.GetCurrentSession().Guid;
 
 		    return parameters;
 		}
@@ -108,12 +109,14 @@ module CHAOS.Portal.Client
 		private _completed:Event<IPortalResponse<T>>;
 		private _progressChanged: Event<ITransferProgress>;
 		private _call: ServiceCall<T> = null;
+		private _serviceCaller: IServiceCaller;
 		private _callHandler:ICallHandler;
 
-		constructor(callHandler:ICallHandler)
+		constructor(serviceCaller:IServiceCaller, callHandler:ICallHandler)
 		{
 			this._completed = new Event<IPortalResponse<T>>(this);
 			this._progressChanged = new Event<ITransferProgress>(this);
+			this._serviceCaller = serviceCaller;
 			this._callHandler = callHandler;
 		}
 
@@ -131,9 +134,23 @@ module CHAOS.Portal.Client
 
 			this._call.Call((response:IPortalResponse<T>) =>
 			{
-				var recaller = () =>
+				var recaller = (resetSession:boolean) =>
 				{
 					this._call = null;
+
+					if (resetSession)
+					{
+						var sessionName = PortalClient.GetSessionParameterName();
+						for (var key in parameters)
+						{
+							if (key == sessionName)
+							{
+								parameters[key] = this._serviceCaller.GetCurrentSession().Guid;
+								break;
+							}
+						}
+					}
+
 					this.Call(path, method, parameters);
 				};
 

@@ -21,7 +21,7 @@ var CHAOS;
                         return;
                     }
 
-                    CHAOS.Portal.Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
+                    Client.SecureCookie.Login(login.Guid, login.PasswordGuid, serviceCaller).WithCallback(function (response) {
                         if (response.Error == null) {
                             _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                             if (callback != null)
@@ -34,7 +34,7 @@ var CHAOS;
                 SecureCookieHelper.Create = function (serviceCaller) {
                     var _this = this;
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
-                    CHAOS.Portal.Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
+                    Client.SecureCookie.Create(serviceCaller).WithCallback(function (response) {
                         if (response.Error == null)
                             _this.SetCookie(response.Body.Results[0].Guid, response.Body.Results[0].PasswordGuid, _this.COOKIE_LIFE_TIME_DAYS);
                     });

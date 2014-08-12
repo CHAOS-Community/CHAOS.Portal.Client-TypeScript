@@ -88,7 +88,7 @@ var CHAOS;
                                 try  {
                                     target.postMessage("WayfStatusRequest", "*");
                                 } catch (error) {
-                                    clearInterval(statusRequesterHandle);
+                                    clearInterval(statusRequesterHandle); //cross domain not allowed
                                     statusRequesterHandle = null;
                                 }
                             }, 200);
@@ -120,3 +120,4 @@ var CHAOS;
     })(CHAOS.Portal || (CHAOS.Portal = {}));
     var Portal = CHAOS.Portal;
 })(CHAOS || (CHAOS = {}));
+//# sourceMappingURL=WayfExtensions.js.map

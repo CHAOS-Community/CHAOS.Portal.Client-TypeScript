@@ -68,7 +68,7 @@ declare module CHAOS.Portal.Client {
         TransferProgressChanged(): IEvent<ITransferProgress>;
     }
     interface ICallHandler {
-        ProcessResponse<T>(response: IPortalResponse<T>, recaller: () => void): boolean;
+        ProcessResponse<T>(response: IPortalResponse<T>, recaller: (resetSession: boolean) => void): boolean;
     }
     interface ISession {
         Guid: string;
@@ -173,6 +173,7 @@ declare module CHAOS.Portal.Client {
 }
 declare module CHAOS.Portal.Client {
     class PortalClient implements IPortalClient, IServiceCaller {
+        static GetSessionParameterName(): string;
         static GetClientVersion(): string;
         private static GetProtocolVersion();
         private _servicePath;
@@ -202,6 +203,9 @@ declare module CHAOS.Portal.Client {
         public UpdateSession(session: ISession): void;
         public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
     }
+}
+interface Window {
+    [index: string]: any;
 }
 declare module CHAOS.Portal.Client {
     class Session {
@@ -255,8 +259,8 @@ declare module CHAOS.Portal.Client {
 declare module CHAOS.Portal.Client {
     class Wayf {
         static AuthenticationType(): string;
-        static LogIn(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: IServiceCaller): void;
-        static LogOut(wayfServicePath: string, target: any, callback: (success: boolean) => void, callbackUrl?: string, serviceCaller?: IServiceCaller): void;
+        static LogIn(wayfServicePath: string, target: any, callback: (status: number) => void, callbackUrl?: string, serviceCaller?: IServiceCaller): void;
+        static LogOut(wayfServicePath: string, target: any, callback: (status: number) => void, callbackUrl?: string, serviceCaller?: IServiceCaller): void;
         private static CallWayfService(wayfServicePath, wayfMethod, target, callback, callbackUrl?, serviceCaller?);
     }
 }

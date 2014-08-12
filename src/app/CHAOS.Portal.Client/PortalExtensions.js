@@ -220,7 +220,7 @@ var CHAOS;
             function Initialize(servicePath, clientGUID, autoCreateSession) {
                 if (typeof clientGUID === "undefined") { clientGUID = null; }
                 if (typeof autoCreateSession === "undefined") { autoCreateSession = true; }
-                var client = new CHAOS.Portal.Client.PortalClient(servicePath, clientGUID);
+                var client = new Client.PortalClient(servicePath, clientGUID);
 
                 if (autoCreateSession)
                     Session.Create(client);
