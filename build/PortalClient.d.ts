@@ -199,7 +199,7 @@ declare module CHAOS.Portal.Client {
         }, requiresSession?: boolean, format?: string): string;
         public SetCallHandler(handler: ICallHandler): void;
         private GetPathToExtension(path);
-        private AddSessionToParameters(parameters);
+        private AddSessionToParameters(parameters, path, method?);
         public UpdateSession(session: ISession): void;
         public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
     }

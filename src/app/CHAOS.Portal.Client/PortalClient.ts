@@ -3,7 +3,7 @@ module CHAOS.Portal.Client
     export class PortalClient implements IPortalClient, IServiceCaller
     {
 		public static GetSessionParameterName(): string {return "sessionGUID";}
-		public static GetClientVersion(): string { return "2.11.1"; }
+		public static GetClientVersion(): string { return "2.11.2"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -40,7 +40,7 @@ module CHAOS.Portal.Client
 		public CallService<T>(path:string, method:HttpMethod = HttpMethod.Get, parameters:{ [index:string]:any; } = null, requiresSession:boolean = true):ICallState<T>
 		{
 		    if (requiresSession)
-		        parameters = this.AddSessionToParameters(parameters);
+		        parameters = this.AddSessionToParameters(parameters, path);
 
 			return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
 		}
@@ -48,7 +48,7 @@ module CHAOS.Portal.Client
 		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: boolean = true, format:string = "json2"): string
 		{
 		    if (requiresSession)
-		        parameters = this.AddSessionToParameters(parameters);
+		        parameters = this.AddSessionToParameters(parameters, path);
 
 		    return this.GetPathToExtension(path) + "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters, format);
 		}
@@ -63,13 +63,13 @@ module CHAOS.Portal.Client
 		    return this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path;
 		}
 
-		private AddSessionToParameters(parameters: { [index: string]: any; }): { [index: string]: any; }
+		private AddSessionToParameters(parameters: { [index: string]: any; }, path:string, method?:string): { [index: string]: any; }
 		{
 		    if (parameters == null)
 		        parameters = {};
 
 		    if (!this.HasSession())
-		        throw new Error("Session not acquired");
+		        throw new Error("Session is not acquired, but is required for: " + path);
 
 			parameters[PortalClient.GetSessionParameterName()] = this.GetCurrentSession().Guid;
 

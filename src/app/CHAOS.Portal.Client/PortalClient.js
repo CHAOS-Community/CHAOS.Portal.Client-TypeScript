@@ -22,7 +22,7 @@ var CHAOS;
                     return "sessionGUID";
                 };
                 PortalClient.GetClientVersion = function () {
-                    return "2.11.1";
+                    return "2.11.2";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -55,7 +55,7 @@ var CHAOS;
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
                     if (requiresSession)
-                        parameters = this.AddSessionToParameters(parameters);
+                        parameters = this.AddSessionToParameters(parameters, path);
 
                     return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
                 };
@@ -65,7 +65,7 @@ var CHAOS;
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
                     if (typeof format === "undefined") { format = "json2"; }
                     if (requiresSession)
-                        parameters = this.AddSessionToParameters(parameters);
+                        parameters = this.AddSessionToParameters(parameters, path);
 
                     return this.GetPathToExtension(path) + "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters, format);
                 };
@@ -78,12 +78,12 @@ var CHAOS;
                     return this.GetServicePath() + "v" + PortalClient.GetProtocolVersion() + "/" + path;
                 };
 
-                PortalClient.prototype.AddSessionToParameters = function (parameters) {
+                PortalClient.prototype.AddSessionToParameters = function (parameters, path, method) {
                     if (parameters == null)
                         parameters = {};
 
                     if (!this.HasSession())
-                        throw new Error("Session not acquired");
+                        throw new Error("Session is not acquired, but is required for: " + path);
 
                     parameters[PortalClient.GetSessionParameterName()] = this.GetCurrentSession().Guid;
 
