@@ -53,10 +53,10 @@ client.CallService("MyExtension/MyMethod", 0, { parameter: value }, false); //Ca
 ```
   
 ##Code
-The source code is located in the [src/app](/tree/master/src/app/CHAOS.Portal.Client) folder.  
+The source code is located in the [src/app](src/app/CHAOS.Portal.Client) folder.  
 
 ##Examples
-The examples are located in the [src/examples](/tree/master/src/examples) folder.  
+The examples are located in the [src/examples](src/examples) folder.  
 Make sure to update the referenced script file paths if the examples are moved.
 
 ##Reporting problems
