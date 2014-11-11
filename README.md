@@ -27,6 +27,12 @@ client.SessionAcquired().Add(session => //Wait for session to be created
 	});
 });
 ```
+Calling a custom method without adding the full extension to the SDK
+```TypeScript
+var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com"); //Create client instance, session will be created automatically
+var serviceCaller = <CHAOS.Portal.Client.IServiceCaller>client; //Cast to IServiceCaller. CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller() will get the instance as well
+serviceCaller.CallService("MyExtension/MyMethod", CHAOS.Portal.Client.HttpMethod.Get, { parameter: value }, false); //Call MyExtention/MyMethod with one parameter and do not require session
+```
 ###JavaScript
 Creating a session and logging in  
 ```JavaScript
@@ -38,6 +44,12 @@ client.SessionAcquired().Add(function() //Wait for session to be created
 		console.log("User Email: " + response.Body.Results[0].Email);
 	});
 });
+```
+Calling a custom method without adding the full extension to the SDK
+```JavaScript
+var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com"); //Create client instance, session will be created automatically
+//CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller() will return the PortalClient instance
+client.CallService("MyExtension/MyMethod", 0, { parameter: value }, false); //Call MyExtention/MyMethod with one parameter and do not require session. Pass 1 as the second argument for POST methods
 ```
   
 ##Code
