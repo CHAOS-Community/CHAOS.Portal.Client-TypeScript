@@ -4,11 +4,11 @@ This is a TypeScript (fully JavaScript compatible) Portal API Client. It enables
 ##Content
 - [Dependencies](#user-content-dependencies)
 - [Usage](#Usage)
-	- [TypeScript](#user-content-TypeScript)
-	- [JavaScript](#user-content-JavaScript)
-- [Code](#user-content-Code)
-- [Examples](#user-content-Examples)
-- [Reporting problems](#user-content-Reporting-problems)
+	- [TypeScript](#user-content-typescript)
+	- [JavaScript](#user-content-javascript)
+- [Code](#user-content-code)
+- [Examples](#user-content-examples)
+- [Reporting problems](#user-content-reporting-problems)
   
 ##Dependencies
 None
@@ -19,19 +19,20 @@ None
 var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com");
 client.SessionAcquired().Add(session =>
 {
-	CHAOS.Portal.Client.MetadataSchema.Get().WithCallback(response => 
+	CHAOS.Portal.Client.EmailPassword.Login("My@email.com", "MyPassword").WithCallback(response => 
 	{
-		console.log("First schema name" + response.Body.Results[0].Name);
+		console.log("User Email: " + response.Body.Results[0].Email);
 	}
 });
 ```
 ###JavaScript
 ```JavaScript
-var client = client.SessionAcquired().Add(function()
+var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com");
+client.SessionAcquired().Add(function()
 {
-	CHAOS.Portal.Client.MetadataSchema.Get().WithCallback(function(response)
+	CHAOS.Portal.Client.EmailPassword.Login("My@email.com", "MyPassword").WithCallback(function(response)
 	{
-		console.log("First schema name" + response.Body.Results[0].Name);
+		console.log("User Email: " + response.Body.Results[0].Email);
 	}
 });
 ```
