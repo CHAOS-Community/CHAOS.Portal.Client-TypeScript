@@ -14,34 +14,37 @@ This is a TypeScript (fully JavaScript compatible) Portal API Client. It enables
 None
 
 ##Usage
+For complete usage, see [examples](#user-content-examples).
 ###TypeScript
+Creating a session and logging in  
 ```TypeScript
-var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com");
-client.SessionAcquired().Add(session =>
+var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com"); //Create client instance, session will be created automatically
+client.SessionAcquired().Add(session => //Wait for session to be created
 {
 	CHAOS.Portal.Client.EmailPassword.Login("My@email.com", "MyPassword").WithCallback(response => 
 	{
 		console.log("User Email: " + response.Body.Results[0].Email);
-	}
+	});
 });
 ```
 ###JavaScript
+Creating a session and logging in  
 ```JavaScript
-var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com");
-client.SessionAcquired().Add(function()
+var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com"); //Create client instance, session will be created automatically
+client.SessionAcquired().Add(function() //Wait for session to be created
 {
 	CHAOS.Portal.Client.EmailPassword.Login("My@email.com", "MyPassword").WithCallback(function(response)
 	{
 		console.log("User Email: " + response.Body.Results[0].Email);
-	}
+	});
 });
 ```
   
 ##Code
-The source code is located in the [src/app](tree/master/src/app/CHAOS.Portal.Client) folder.  
+The source code is located in the [src/app](/tree/master/src/app/CHAOS.Portal.Client) folder.  
 
 ##Examples
-The examples are located in the [src/examples](tree/master/src/examples) folder.  
+The examples are located in the [src/examples](/tree/master/src/examples) folder.  
 Make sure to update the referenced script file paths if the examples are moved.
 
 ##Reporting problems
