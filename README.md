@@ -2,20 +2,20 @@
 This is a TypeScript (fully JavaScript compatible) Portal API Client. It enables easy communication with a CHAOS Portal API (protocol version 6).  
   
 ##Content
-- [Dependencies](#Dependencies)  
-- [Usage](#Usage)  
-	- [TypeScript](#TypeScript)
-	- [JavaScript](#JavaScript)
-- [Code](#Code)  
-- [Examples](#Examples)  
-- [Reporting problems](#Reporting-problems)  
+- [Dependencies](#user-content-dependencies)
+- [Usage](#Usage)
+	- [TypeScript](#user-content-TypeScript)
+	- [JavaScript](#user-content-JavaScript)
+- [Code](#user-content-Code)
+- [Examples](#user-content-Examples)
+- [Reporting problems](#user-content-Reporting-problems)
   
 ##Dependencies
 None
 
 ##Usage
 ###TypeScript
-´´´TypeScript
+```TypeScript
 var client = CHAOS.Portal.Client.Initialize("http://MyPortalAPI.com");
 client.SessionAcquired().Add(session =>
 {
@@ -24,11 +24,17 @@ client.SessionAcquired().Add(session =>
 		console.log("First schema name" + response.Body.Results[0].Name);
 	}
 });
-´´´
+```
 ###JavaScript
-´´´JavaScript
-
-´´´
+```JavaScript
+var client = client.SessionAcquired().Add(function()
+{
+	CHAOS.Portal.Client.MetadataSchema.Get().WithCallback(function(response)
+	{
+		console.log("First schema name" + response.Body.Results[0].Name);
+	}
+});
+```
   
 ##Code
 The source code is located in the [src/app](tree/master/src/app/CHAOS.Portal.Client) folder.  
