@@ -22,7 +22,7 @@ var CHAOS;
                     return "sessionGUID";
                 };
                 PortalClient.GetClientVersion = function () {
-                    return "2.11.2";
+                    return "2.11.3";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;

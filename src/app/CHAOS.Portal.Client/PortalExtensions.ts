@@ -88,7 +88,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService<any>("User/Get", HttpMethod.Get, { guid: guid, groupGuid: groupGuid });
 		}
 
-		public static GetCurrent(serviceCaller: IServiceCaller = null): ICallState<any>
+		public static GetCurrent(serviceCaller: IServiceCaller = null): ICallState<IUserInfo>
 		{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
@@ -222,5 +222,14 @@ module CHAOS.Portal.Client
 		{
             ServiceCallerService._defaultCaller = value;
 		}
-    }
+	}
+
+	export interface IUserInfo
+	{
+		Guid: string;
+		Email: string;
+		SystemPermissions: number;
+		SessionDateCreated: number;
+		SessionDateModified: number;
+	}
 }

@@ -219,7 +219,7 @@ declare module CHAOS.Portal.Client {
         static Update(guid: string, email: string, permissons?: number, serviceCaller?: IServiceCaller): ICallState<any>;
         static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState<any>;
         static Get(guid?: string, groupGuid?: string, serviceCaller?: IServiceCaller): ICallState<any>;
-        static GetCurrent(serviceCaller?: IServiceCaller): ICallState<any>;
+        static GetCurrent(serviceCaller?: IServiceCaller): ICallState<IUserInfo>;
     }
     class Group {
         static Get(guid?: string, userGuid?: string, serviceCaller?: IServiceCaller): ICallState<any>;
@@ -243,6 +243,13 @@ declare module CHAOS.Portal.Client {
         private static _defaultCaller;
         static GetDefaultCaller(): IServiceCaller;
         static SetDefaultCaller(value: IServiceCaller): void;
+    }
+    interface IUserInfo {
+        Guid: string;
+        Email: string;
+        SystemPermissions: number;
+        SessionDateCreated: number;
+        SessionDateModified: number;
     }
 }
 declare module CHAOS.Portal.Client {
