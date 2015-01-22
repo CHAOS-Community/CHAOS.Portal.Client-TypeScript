@@ -592,7 +592,7 @@ var CHAOS;
                     return "sessionGUID";
                 };
                 PortalClient.GetClientVersion = function () {
-                    return "2.11.3";
+                    return "2.12.0";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -1351,108 +1351,48 @@ var CHAOS;
                     return "Wayf";
                 };
 
-                Wayf.LogIn = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
-                    if (typeof callbackUrl === "undefined") { callbackUrl = null; }
+                Wayf.LogIn = function (wayfServicePath, callbackUrl, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    var outerCallback = function (status) {
-                        if (status == 0)
-                            serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
-
-                        callback(status);
+                    return {
+                        Path: Wayf.BuildWayfServicePath(wayfServicePath, "LogIn", callbackUrl, serviceCaller),
+                        Callback: function (status) {
+                            if (status == 0)
+                                serviceCaller.SetSessionAuthenticated(Wayf.AuthenticationType());
+                        }
                     };
-
-                    Wayf.CallWayfService(wayfServicePath, "LogIn", target, outerCallback, callbackUrl, serviceCaller);
                 };
 
-                Wayf.LogOut = function (wayfServicePath, target, callback, callbackUrl, serviceCaller) {
-                    if (typeof callbackUrl === "undefined") { callbackUrl = null; }
+                Wayf.LogOut = function (wayfServicePath, callbackUrl, serviceCaller) {
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (serviceCaller == null)
                         serviceCaller = Client.ServiceCallerService.GetDefaultCaller();
 
-                    var outerCallback = function (status) {
-                        if (status)
-                            serviceCaller.UpdateSession(null);
-
-                        callback(status);
+                    return {
+                        Path: Wayf.BuildWayfServicePath(wayfServicePath, "LogOut", callbackUrl, serviceCaller),
+                        Callback: function (status) {
+                            if (status)
+                                serviceCaller.UpdateSession(null);
+                        }
                     };
-
-                    Wayf.CallWayfService(wayfServicePath, "LogOut", target, outerCallback, callbackUrl, serviceCaller);
                 };
 
-                Wayf.CallWayfService = function (wayfServicePath, wayfMethod, target, callback, callbackUrl, serviceCaller) {
-                    var _this = this;
+                Wayf.BuildWayfServicePath = function (wayfServicePath, wayfMethod, callbackUrl, serviceCaller) {
                     if (typeof callbackUrl === "undefined") { callbackUrl = null; }
                     if (typeof serviceCaller === "undefined") { serviceCaller = null; }
                     if (!serviceCaller.HasSession())
                         throw new Error("Session not acquired");
                     if (wayfServicePath == null || wayfServicePath == "")
                         throw new Error("Parameter wayfServicePath cannot be null or empty");
-                    if (target == null)
-                        throw new Error("Parameter target cannot be null");
+                    if (callbackUrl == null || callbackUrl == "")
+                        throw new Error("Parameter callbackUrl cannot be null or empty");
 
                     if (wayfServicePath.substr(wayfServicePath.length - 1, 1) != "/")
                         wayfServicePath += "/";
 
-                    var reporter;
-                    var statusRequesterHandle = null;
-                    var messageRecieved = function (event) {
-                        if (event.data.indexOf("WayfStatus: ") != 0)
-                            return;
-
-                        if (reporter != null)
-                            reporter(parseInt(event.data.substr(12)));
-                    };
-
-                    reporter = function (status) {
-                        reporter = null;
-                        window.removeEventListener("message", messageRecieved, false);
-                        if (statusRequesterHandle != null)
-                            clearInterval(statusRequesterHandle);
-
-                        if (callback != null)
-                            callback(status);
-                    };
-
-                    window.addEventListener("message", messageRecieved, false);
-
-                    var location = wayfServicePath + wayfMethod + ".php?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath();
-
-                    if (callbackUrl != null)
-                        location += "&callbackUrl=" + callbackUrl;
-
-                    if (target.location !== undefined && target.location.href !== undefined) {
-                        if (target.postMessage) {
-                            statusRequesterHandle = setInterval(function () {
-                                try  {
-                                    target.postMessage("WayfStatusRequest", "*");
-                                } catch (error) {
-                                    clearInterval(statusRequesterHandle); //cross domain not allowed
-                                    statusRequesterHandle = null;
-                                }
-                            }, 200);
-                        }
-
-                        var sessionChecker = function () {
-                            return CHAOS.Portal.Client.User.Get(null, null, serviceCaller).WithCallback(function (response) {
-                                if (response.Error == null) {
-                                    if (reporter != null)
-                                        reporter(0);
-                                } else
-                                    setTimeout(sessionChecker, 1000);
-                            }, _this);
-                        };
-
-                        setTimeout(sessionChecker, 2000);
-
-                        target.location.href = location;
-                    } else if (target.src !== undefined)
-                        target.src = location;
-                    else
-                        throw new Error("Unknown target type");
+                    return wayfServicePath + wayfMethod + ".php?sessionGuid=" + serviceCaller.GetCurrentSession().Guid + "&apiPath=" + serviceCaller.GetServicePath() + "&callbackUrl=" + callbackUrl;
                 };
                 return Wayf;
             })();
