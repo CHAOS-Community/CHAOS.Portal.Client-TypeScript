@@ -592,7 +592,7 @@ var CHAOS;
                     return "sessionGUID";
                 };
                 PortalClient.GetClientVersion = function () {
-                    return "2.12.0";
+                    return "2.13.0";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -620,14 +620,15 @@ var CHAOS;
                     return this._sessionAuthenticated;
                 };
 
-                PortalClient.prototype.CallService = function (path, method, parameters, requiresSession) {
+                PortalClient.prototype.CallService = function (path, method, parameters, requiresSession, format) {
                     if (typeof method === "undefined") { method = 0 /* Get */; }
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
+                    if (typeof format === "undefined") { format = "json2"; }
                     if (requiresSession)
                         parameters = this.AddSessionToParameters(parameters, path);
 
-                    return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
+                    return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, format, parameters);
                 };
 
                 PortalClient.prototype.GetServiceCallUri = function (path, parameters, requiresSession, format) {
@@ -699,7 +700,7 @@ var CHAOS;
                     return this._progressChanged;
                 };
 
-                CallState.prototype.Call = function (path, method, parameters) {
+                CallState.prototype.Call = function (path, method, format, parameters) {
                     var _this = this;
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (this._call != null)
@@ -721,14 +722,14 @@ var CHAOS;
                                 }
                             }
 
-                            _this.Call(path, method, parameters);
+                            _this.Call(path, method, format, parameters);
                         };
 
                         if (_this._callHandler == null || _this._callHandler.ProcessResponse(response, recaller))
                             _this._completed.Raise(response);
                     }, function (progress) {
                         return _this._progressChanged.Raise(progress);
-                    }, path, method, parameters);
+                    }, path, method, format, parameters);
 
                     return this;
                 };
@@ -764,10 +765,12 @@ var CHAOS;
             var ServiceCall = (function () {
                 function ServiceCall() {
                 }
-                ServiceCall.prototype.Call = function (completeCallback, progressCallback, path, method, parameters) {
+                ServiceCall.prototype.Call = function (completeCallback, progressCallback, path, method, format, parameters) {
                     if (typeof parameters === "undefined") { parameters = null; }
                     this._completeCallback = completeCallback;
                     this._progressCallback = progressCallback;
+
+                    parameters = ServiceCall.AddPortalParameters(parameters, format);
 
                     if (window["FormData"])
                         this.CallWithXMLHttpRequest2Browser(path, method, parameters);
@@ -786,9 +789,9 @@ var CHAOS;
                     var data = null;
 
                     if (method == 0 /* Get */)
-                        path += "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters);
+                        path += "?" + ServiceCall.CreateDataString(parameters);
                     else {
-                        parameters = ServiceCall.AddPortalParameters(ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters)));
+                        parameters = ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters));
                         data = new FormData();
                         for (var key in parameters)
                             data.append(key, parameters[key]);
@@ -809,7 +812,7 @@ var CHAOS;
                     var _this = this;
                     if (typeof parameters === "undefined") { parameters = null; }
                     this._request = new XMLHttpRequest();
-                    var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
+                    var data = ServiceCall.CreateDataString(parameters);
 
                     if (method == 0 /* Get */) {
                         path += "?" + data;
@@ -832,7 +835,7 @@ var CHAOS;
                     var _this = this;
                     if (typeof parameters === "undefined") { parameters = null; }
                     this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-                    var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
+                    var data = ServiceCall.CreateDataString(parameters);
 
                     if (method == 0 /* Get */) {
                         path += "?" + data;
@@ -913,7 +916,6 @@ var CHAOS;
 
                 ServiceCall.ConvertDate = function (date) {
                     return ServiceCall.ToTwoDigits(date.getUTCDate()) + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + date.getUTCFullYear() + " " + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds());
-                    //return date.getUTCFullYear() + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + ServiceCall.ToTwoDigits(date.getUTCDate()) + "T" + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds()) + "Z";
                 };
 
                 ServiceCall.AddPortalParameters = function (parameters, format) {

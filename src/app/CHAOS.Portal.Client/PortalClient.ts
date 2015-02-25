@@ -3,7 +3,7 @@ module CHAOS.Portal.Client
     export class PortalClient implements IPortalClient, IServiceCaller
     {
 		public static GetSessionParameterName(): string {return "sessionGUID";}
-		public static GetClientVersion(): string { return "2.12.0"; }
+		public static GetClientVersion(): string { return "2.13.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -37,12 +37,12 @@ module CHAOS.Portal.Client
 			this._sessionAuthenticated = new Event(this);
 		}
 
-		public CallService<T>(path:string, method:HttpMethod = HttpMethod.Get, parameters:{ [index:string]:any; } = null, requiresSession:boolean = true):ICallState<T>
+		public CallService<T>(path: string, method: HttpMethod = HttpMethod.Get, parameters: { [index: string]: any; } = null, requiresSession: boolean = true, format: string = "json2"):ICallState<T>
 		{
 		    if (requiresSession)
-		        parameters = this.AddSessionToParameters(parameters, path);
+				parameters = this.AddSessionToParameters(parameters, path);
 
-			return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, parameters);
+			return new CallState(this, this._callHandler).Call(this.GetPathToExtension(path), method, format, parameters);
 		}
 
 		public GetServiceCallUri(path: string, parameters: { [index: string]: any; } = null, requiresSession: boolean = true, format:string = "json2"): string
@@ -125,7 +125,7 @@ module CHAOS.Portal.Client
 			return this._progressChanged;
 		}
 
-		public Call(path: string, method: HttpMethod, parameters: { [index: string]: any; } = null): ICallState<T>
+		public Call(path: string, method: HttpMethod, format:string, parameters: { [index: string]: any; } = null): ICallState<T>
 		{
 			if (this._call != null)
 				throw new Error("Call can not be called multiple times");
@@ -151,13 +151,13 @@ module CHAOS.Portal.Client
 						}
 					}
 
-					this.Call(path, method, parameters);
+					this.Call(path, method, format, parameters);
 				};
 
 				if (this._callHandler == null || this._callHandler.ProcessResponse(response, recaller))
 					this._completed.Raise(response);
 
-			}, (progress: ITransferProgress) => this._progressChanged.Raise(progress), path, method, parameters);
+			}, (progress: ITransferProgress) => this._progressChanged.Raise(progress), path, method, format, parameters);
 
     		return this;
     	}
@@ -189,10 +189,12 @@ module CHAOS.Portal.Client
 		private _completeCallback: (response: IPortalResponse<T>) => void;
 		private _progressCallback: (progress: ITransferProgress) => void;
 
-		public Call(completeCallback: (response: IPortalResponse<T>) => void, progressCallback: (progress: ITransferProgress) => void, path: string, method: HttpMethod, parameters:{ [index:string]:any; } = null):void
+		public Call(completeCallback: (response: IPortalResponse<T>) => void, progressCallback: (progress: ITransferProgress) => void, path: string, method: HttpMethod, format:string, parameters:{ [index:string]:any; } = null):void
     	{
 			this._completeCallback = completeCallback;
 			this._progressCallback = progressCallback;
+
+		    parameters = ServiceCall.AddPortalParameters(parameters, format);
 
 		    if (window["FormData"])
 				this.CallWithXMLHttpRequest2Browser(path, method, parameters);
@@ -210,10 +212,10 @@ module CHAOS.Portal.Client
 			var data:FormData = null;
 
 			if (method == HttpMethod.Get)
-				path += "?" + ServiceCall.CreateDataStringWithPortalParameters(parameters);
+				path += "?" + ServiceCall.CreateDataString(parameters);
 			else
 			{
-				parameters = ServiceCall.AddPortalParameters(ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters)));
+				parameters = ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters));
 				data = new FormData();
 				for (var key in parameters)
 					data.append(key, parameters[key]);
@@ -229,7 +231,7 @@ module CHAOS.Portal.Client
 		private CallWithXMLHttpRequestBrowser(path:string, method:HttpMethod, parameters:{ [index:string]:any; } = null):void
 		{
 			this._request = new XMLHttpRequest();
-			var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
+			var data = ServiceCall.CreateDataString(parameters);
 
 			if (method == HttpMethod.Get)
 			{
@@ -250,7 +252,7 @@ module CHAOS.Portal.Client
 		private CallWithOldIEBrowser(path: string, method: HttpMethod, parameters: { [index: string]: any; } = null): void
 		{
 			this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-			var data = ServiceCall.CreateDataStringWithPortalParameters(parameters);
+			var data = ServiceCall.CreateDataString(parameters);
 
 			if (method == HttpMethod.Get)
 			{
@@ -330,7 +332,6 @@ module CHAOS.Portal.Client
 		private static ConvertDate(date: Date): string
 		{
 			return ServiceCall.ToTwoDigits(date.getUTCDate()) + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + date.getUTCFullYear() + " " + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds());
-			//return date.getUTCFullYear() + "-" + ServiceCall.ToTwoDigits(date.getUTCMonth() + 1) + "-" + ServiceCall.ToTwoDigits(date.getUTCDate()) + "T" + ServiceCall.ToTwoDigits(date.getUTCHours()) + ":" + ServiceCall.ToTwoDigits(date.getUTCMinutes()) + ":" + ServiceCall.ToTwoDigits(date.getUTCSeconds()) + "Z";
 		}
 
 		private static AddPortalParameters(parameters: { [index: string]: any; }, format: string = "json2"):{ [index:string]:any; }

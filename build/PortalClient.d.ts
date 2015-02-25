@@ -50,7 +50,7 @@ declare module CHAOS.Portal.Client {
     interface IServiceCaller {
         CallService<T>(path: string, method?: HttpMethod, parameters?: {
             [index: string]: any;
-        }, requiresSession?: boolean): ICallState<T>;
+        }, requiresSession?: boolean, format?: string): ICallState<T>;
         GetServiceCallUri(path: string, parameters?: {
             [index: string]: any;
         }, requiresSession?: boolean, format?: string): string;
@@ -193,7 +193,7 @@ declare module CHAOS.Portal.Client {
         constructor(servicePath: string, clientGuid?: string);
         public CallService<T>(path: string, method?: HttpMethod, parameters?: {
             [index: string]: any;
-        }, requiresSession?: boolean): ICallState<T>;
+        }, requiresSession?: boolean, format?: string): ICallState<T>;
         public GetServiceCallUri(path: string, parameters?: {
             [index: string]: any;
         }, requiresSession?: boolean, format?: string): string;
