@@ -22,7 +22,7 @@ var CHAOS;
                     return "sessionGUID";
                 };
                 PortalClient.GetClientVersion = function () {
-                    return "2.13.0";
+                    return "2.14.0";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
@@ -51,7 +51,7 @@ var CHAOS;
                 };
 
                 PortalClient.prototype.CallService = function (path, method, parameters, requiresSession, format) {
-                    if (typeof method === "undefined") { method = 0 /* Get */; }
+                    if (typeof method === "undefined") { method = HttpMethod.Get; }
                     if (typeof parameters === "undefined") { parameters = null; }
                     if (typeof requiresSession === "undefined") { requiresSession = true; }
                     if (typeof format === "undefined") { format = "json2"; }
@@ -218,7 +218,7 @@ var CHAOS;
                     this._request = new XMLHttpRequest();
                     var data = null;
 
-                    if (method == 0 /* Get */)
+                    if (method == HttpMethod.Get)
                         path += "?" + ServiceCall.CreateDataString(parameters);
                     else {
                         parameters = ServiceCall.ConvertDatesToCorrectFormat(ServiceCall.RemoveNullParameters(parameters));
@@ -234,7 +234,7 @@ var CHAOS;
                         return _this.ReportProgressUpdate(event.loaded, event.total, event.lengthComputable);
                     };
 
-                    this._request.open(method == 0 /* Get */ ? "GET" : "POST", path, true);
+                    this._request.open(method == HttpMethod.Get ? "GET" : "POST", path, true);
                     this._request.send(data);
                 };
 
@@ -244,7 +244,7 @@ var CHAOS;
                     this._request = new XMLHttpRequest();
                     var data = ServiceCall.CreateDataString(parameters);
 
-                    if (method == 0 /* Get */) {
+                    if (method == HttpMethod.Get) {
                         path += "?" + data;
                         data = null;
                     }
@@ -253,9 +253,9 @@ var CHAOS;
                         return _this.RequestStateChange();
                     };
 
-                    this._request.open(method == 0 /* Get */ ? "GET" : "POST", path, true);
+                    this._request.open(method == HttpMethod.Get ? "GET" : "POST", path, true);
 
-                    if (method == 1 /* Post */)
+                    if (method == HttpMethod.Post)
                         this._request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
                     this._request.send(data);
@@ -267,7 +267,7 @@ var CHAOS;
                     this._request = window["XDomainRequest"] ? new XDomainRequest() : new ActiveXObject("Microsoft.XMLHTTP");
                     var data = ServiceCall.CreateDataString(parameters);
 
-                    if (method == 0 /* Get */) {
+                    if (method == HttpMethod.Get) {
                         path += "?" + data;
                         data = null;
                     }
@@ -279,7 +279,7 @@ var CHAOS;
                         return _this.ReportError();
                     };
 
-                    this._request.open(method == 0 /* Get */ ? "GET" : "POST", path);
+                    this._request.open(method == HttpMethod.Get ? "GET" : "POST", path);
                     this._request.send(data);
 
                     if (this._request.responseText != "")

@@ -4,7 +4,7 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "EmailPassword"; }
 
-		public static Login(email: string, password: string, serviceCaller: IServiceCaller = null): ICallState<any>
+		public static Login(email: string, password: string, serviceCaller: IServiceCaller = null): ICallState<IPagedPortalResult<any>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
@@ -16,7 +16,7 @@ module CHAOS.Portal.Client
 			});
 		}
 
-		public static SetPassword(userGuid: string, newPassword: string, serviceCaller: IServiceCaller = null): ICallState<any>
+		public static SetPassword(userGuid: string, newPassword: string, serviceCaller: IServiceCaller = null): ICallState<IPagedPortalResult<any>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
@@ -29,7 +29,7 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "SecureCookie"; }
 
-		public static Create(serviceCaller: IServiceCaller = null): ICallState<any>
+		public static Create(serviceCaller: IServiceCaller = null): ICallState<IPagedPortalResult<any>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
@@ -37,7 +37,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService<any>("SecureCookie/Create");
 		}
 
-		public static Login(guid: string, passwordGuid: string, serviceCaller: IServiceCaller = null): ICallState<any>
+		public static Login(guid: string, passwordGuid: string, serviceCaller: IServiceCaller = null): ICallState<IPagedPortalResult<any>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
@@ -57,12 +57,12 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "Facebook"; }
 
-		public static Login(signedRequest: string, userAccessToken:string, serviceCaller: IServiceCaller = null): ICallState<ISession>
+		public static Login(signedRequest: string, userAccessToken: string, serviceCaller: IServiceCaller = null): ICallState<IPagedPortalResult<ISession>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<ISession>("Facebook/Login", HttpMethod.Post, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(response =>
+			return serviceCaller.CallService<IPagedPortalResult<ISession>>("Facebook/Login", HttpMethod.Post, { signedRequest: signedRequest, userAccessToken: userAccessToken }).WithCallback(response =>
 			{
 				if (response.Error == null)
 				{
@@ -77,7 +77,7 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "AuthKey"; }
 
-		public static Create(name: string, serviceCaller: IServiceCaller = null): ICallState<IAuthKey>
+		public static Create(name: string, serviceCaller: IServiceCaller = null): ICallState<IPagedPortalResult<IAuthKey>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
@@ -85,12 +85,12 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService<any>("AuthKey/Create", HttpMethod.Get, {name:name});
 		}
 
-		public static Login(token: string, serviceCaller: IServiceCaller = null): ICallState<ISession>
+		public static Login(token: string, serviceCaller: IServiceCaller = null): ICallState<IPagedPortalResult<ISession>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService<ISession>("AuthKey/Login", HttpMethod.Post, { token: token }).WithCallback(response =>
+			return serviceCaller.CallService<IPagedPortalResult<ISession>>("AuthKey/Login", HttpMethod.Post, { token: token }).WithCallback(response =>
 			{
 				if (response.Error == null)
 				{
@@ -121,7 +121,7 @@ module CHAOS.Portal.Client
 	{
 		public static AuthenticationType(): string { return "OAuth"; }
 
-		public static GetLoginEndPoint(callbackUrl: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<ILoginEndPoint>
+		public static GetLoginEndPoint(callbackUrl: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<IPagedPortalResult<ILoginEndPoint>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
@@ -129,12 +129,12 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService("OAuth/GetLoginEndPoint", CHAOS.Portal.Client.HttpMethod.Get, { callbackUrl: callbackUrl }, true);
 		}
 
-		public static ProcessLogin(callbackUrl: string, responseUrl: string, stateCode: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<ISession>
+		public static ProcessLogin(callbackUrl: string, responseUrl: string, stateCode: string, serviceCaller: CHAOS.Portal.Client.IServiceCaller = null): ICallState<IPagedPortalResult<ISession>>
 		{
 			if (serviceCaller == null)
 				serviceCaller = CHAOS.Portal.Client.ServiceCallerService.GetDefaultCaller();
 
-			return serviceCaller.CallService("OAuth/ProcessLogin", CHAOS.Portal.Client.HttpMethod.Get, { callbackUrl: callbackUrl, responseUrl: responseUrl, stateCode: stateCode }, true).WithCallback(response =>
+			return serviceCaller.CallService<IPagedPortalResult<ISession>>("OAuth/ProcessLogin", CHAOS.Portal.Client.HttpMethod.Get, { callbackUrl: callbackUrl, responseUrl: responseUrl, stateCode: stateCode }, true).WithCallback(response =>
 			{
 				if (response.Error == null)
 				{

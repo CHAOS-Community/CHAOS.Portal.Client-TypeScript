@@ -3,7 +3,7 @@ module CHAOS.Portal.Client
     export class PortalClient implements IPortalClient, IServiceCaller
     {
 		public static GetSessionParameterName(): string {return "sessionGUID";}
-		public static GetClientVersion(): string { return "2.13.0"; }
+		public static GetClientVersion(): string { return "2.14.0"; }
     	private static GetProtocolVersion():number { return 6; }
 
     	private _servicePath:string;
@@ -322,8 +322,7 @@ module CHAOS.Portal.Client
 			{
 				result += (first ? "" : "&") + key + "=" + encodeURIComponent(parameters[key]);
 
-				if (first)
-					first = false;
+				if (first) first = false;
 			}
 
 			return result;

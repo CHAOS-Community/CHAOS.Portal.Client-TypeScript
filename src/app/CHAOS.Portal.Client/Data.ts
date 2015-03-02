@@ -46,10 +46,10 @@ module CHAOS.Portal.Client
 		DateModified: number;
 	}
 
-	export interface IPortalResponse<T>
+	export interface IPortalResponse<TBody>
 	{
 		Header: IHeader;
-		Body: IPortalResult<T>;
+		Body: TBody;
 		Error: IError;
 	}
 
@@ -58,7 +58,7 @@ module CHAOS.Portal.Client
 		Duration: number;
 	}
 
-	export interface IPortalResult<T>
+	export interface IPagedPortalResult<T>
 	{
 		Count: number;
 		TotalCount: number;

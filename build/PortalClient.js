@@ -592,7 +592,7 @@ var CHAOS;
                     return "sessionGUID";
                 };
                 PortalClient.GetClientVersion = function () {
-                    return "2.13.0";
+                    return "2.14.0";
                 };
                 PortalClient.GetProtocolVersion = function () {
                     return 6;
