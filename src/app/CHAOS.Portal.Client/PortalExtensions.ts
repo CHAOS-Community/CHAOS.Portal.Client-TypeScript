@@ -88,7 +88,7 @@ module CHAOS.Portal.Client
 			return serviceCaller.CallService<any>("User/Get", HttpMethod.Get, { guid: guid, groupGuid: groupGuid });
 		}
 
-		public static GetCurrent(serviceCaller: IServiceCaller = null): ICallState<IUserInfo>
+		public static GetCurrent(serviceCaller: IServiceCaller = null): ICallState<IPagedPortalResult<IUserInfo>>
 		{
 			if(serviceCaller == null)
 				serviceCaller = ServiceCallerService.GetDefaultCaller();

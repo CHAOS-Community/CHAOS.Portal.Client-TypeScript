@@ -49,10 +49,10 @@ declare module CHAOS.Portal.Client {
     }
     interface IServiceCaller {
         CallService<T>(path: string, method?: HttpMethod, parameters?: {
-            [index: string]: any;
+            [x: string]: any;
         }, requiresSession?: boolean, format?: string): ICallState<T>;
         GetServiceCallUri(path: string, parameters?: {
-            [index: string]: any;
+            [x: string]: any;
         }, requiresSession?: boolean, format?: string): string;
         HasSession(): boolean;
         GetCurrentSession(): ISession;
@@ -182,26 +182,26 @@ declare module CHAOS.Portal.Client {
         private _sessionAcquired;
         private _sessionAuthenticated;
         private _callHandler;
-        public GetServicePath(): string;
-        public GetCurrentSession(): ISession;
-        public HasSession(): boolean;
-        public IsAuthenticated(): boolean;
-        public AuthenticationType(): string;
-        public SessionAcquired(): IEvent<ISession>;
-        public SessionAuthenticated(): IEvent<string>;
-        public ClientGuid: string;
+        GetServicePath(): string;
+        GetCurrentSession(): ISession;
+        HasSession(): boolean;
+        IsAuthenticated(): boolean;
+        AuthenticationType(): string;
+        SessionAcquired(): IEvent<ISession>;
+        SessionAuthenticated(): IEvent<string>;
+        ClientGuid: string;
         constructor(servicePath: string, clientGuid?: string);
-        public CallService<T>(path: string, method?: HttpMethod, parameters?: {
-            [index: string]: any;
+        CallService<T>(path: string, method?: HttpMethod, parameters?: {
+            [x: string]: any;
         }, requiresSession?: boolean, format?: string): ICallState<T>;
-        public GetServiceCallUri(path: string, parameters?: {
-            [index: string]: any;
+        GetServiceCallUri(path: string, parameters?: {
+            [x: string]: any;
         }, requiresSession?: boolean, format?: string): string;
-        public SetCallHandler(handler: ICallHandler): void;
+        SetCallHandler(handler: ICallHandler): void;
         private GetPathToExtension(path);
         private AddSessionToParameters(parameters, path, method?);
-        public UpdateSession(session: ISession): void;
-        public SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
+        UpdateSession(session: ISession): void;
+        SetSessionAuthenticated(type: string, userGuid?: string, sessionDateModified?: number): void;
     }
 }
 interface Window {
@@ -219,7 +219,7 @@ declare module CHAOS.Portal.Client {
         static Update(guid: string, email: string, permissons?: number, serviceCaller?: IServiceCaller): ICallState<IPagedPortalResult<any>>;
         static Delete(guid: string, serviceCaller?: IServiceCaller): ICallState<IPagedPortalResult<any>>;
         static Get(guid?: string, groupGuid?: string, serviceCaller?: IServiceCaller): ICallState<IPagedPortalResult<any>>;
-        static GetCurrent(serviceCaller?: IServiceCaller): ICallState<IUserInfo>;
+        static GetCurrent(serviceCaller?: IServiceCaller): ICallState<IPagedPortalResult<IUserInfo>>;
     }
     class Group {
         static Get(guid?: string, userGuid?: string, serviceCaller?: IServiceCaller): ICallState<IPagedPortalResult<any>>;
